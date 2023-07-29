@@ -31,3 +31,8 @@ curl --location 'localhost:8080/user' \
     "password": "1234",
     "role": "viewer"
 }'
+
+# Local Usage
+Running localy the application will use H2 to set the DB at memory.
+You can enter this URL to check the DB in a console like MySqlWorkbench
+http://localhost:8080/h2-console
