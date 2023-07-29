@@ -3,10 +3,10 @@ Seat booking api for RKMD Toki no Nagare
 
 # Contact Endpoints
 
-GET
+## GET
 curl --location 'localhost:8080/contact/35345'
 
-POST
+## POST
 curl --location 'localhost:8080/contact' \
 --header 'Content-Type: application/json' \
 --data '{
@@ -20,7 +20,7 @@ curl --location 'localhost:8080/contact' \
 
 # User Endpoints
 
-POST
+## POST
 curl --location 'localhost:8080/user' \
 --header 'Content-Type: application/json' \
 --data '{
