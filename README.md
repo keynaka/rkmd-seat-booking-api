@@ -20,6 +20,9 @@ curl --location 'localhost:8080/contact' \
 
 # User Endpoints
 
+## GET
+curl --location 'localhost:8080/user/1'
+
 ## POST
 curl --location 'localhost:8080/user' \
 --header 'Content-Type: application/json' \
