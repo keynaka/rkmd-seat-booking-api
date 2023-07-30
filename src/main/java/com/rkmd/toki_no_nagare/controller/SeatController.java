@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,5 +35,16 @@ public class SeatController {
         Seat newSeat = seatService.createSeat(json);
 
         return ResponseEntity.ok().body(newSeat);
+    }
+
+    /*
+    * This endpoint's goal is just to bootstrap theater's Seat.
+    * Returns total seat's count.
+    */
+    @PostMapping("/bootstrap")
+    public ResponseEntity<Integer> bootstrapTheaterSeats(@RequestBody @Valid Map<String, String> json) {
+        Seat newSeat = seatService.createSeat(json);
+
+        return ResponseEntity.ok().body(List.of(newSeat).size());
     }
 }
