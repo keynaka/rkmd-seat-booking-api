@@ -17,16 +17,16 @@ public class ContactController {
     @Autowired
     private ContactService contactService;
 
-    @GetMapping("/{contact_id}")
-    public ResponseEntity<Contact> getContact(@PathVariable("contact_id") Long id) {
-        Optional<Contact> contact = contactService.get(id);
+    @GetMapping("/{dni}")
+    public ResponseEntity<Contact> getContact(@PathVariable("dni") Long dni) {
+        Optional<Contact> contact = contactService.get(dni);
         if (!contact.isPresent())
            return ResponseEntity.notFound().build();
         return ResponseEntity.ok().body(contact.get());
     }
 
     @PostMapping("")
-    public ResponseEntity<Contact> save(@RequestBody @Valid Map<String, Object> json) {
+    public ResponseEntity<Contact> createContact(@RequestBody @Valid Map<String, Object> json) {
         ValidationUtils.checkParam(json.containsKey("name"), "name_missing", "Name is missing and is mandatory");
         ValidationUtils.checkParam(json.containsKey("last_name"), "last_name_missing", "Last Name is missing and is mandatory");
         ValidationUtils.checkParam(json.containsKey("dni"), "dni_missing", "Dni is missing and is mandatory");
