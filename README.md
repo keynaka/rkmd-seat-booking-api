@@ -35,13 +35,14 @@ curl --location 'localhost:8080/user' \
 # Seat Endpoints
 
 ## GET
-curl --location 'localhost:8080/seat/A/27'
+curl --location 'localhost:8080/seat?sector=pullman&row=1&column=27'
 
 ## POST
 curl --location 'localhost:8080/seat' \
 --header 'Content-Type: application/json' \
 --data '{
-"row": "A",
+"sector": "pullman",
+"row": "1",
 "column": "27",
 "status": "reserved"
 }'
