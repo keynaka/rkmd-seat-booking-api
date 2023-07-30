@@ -27,9 +27,9 @@ public class SeatController {
 
     @PostMapping("")
     public ResponseEntity<Seat> createSeat(@RequestBody @Valid Map<String, String> json) {
-        ValidationUtils.checkParam(json.containsKey("row"), "name_missing", "Name is missing and is mandatory");
-        ValidationUtils.checkParam(json.containsKey("column"), "last_name_missing", "Last Name is missing and is mandatory");
-        ValidationUtils.checkParam(json.containsKey("status"), "dni_missing", "Dni is missing and is mandatory");
+        ValidationUtils.checkParam(json.containsKey("row"), "row_missing", "Row is missing and is mandatory");
+        ValidationUtils.checkParam(json.containsKey("column"), "column_missing", "Column is missing and is mandatory");
+        ValidationUtils.checkParam(json.containsKey("status"), "status_missing", "Status is missing and is mandatory");
 
         Seat newSeat = seatService.createSeat(json);
 
