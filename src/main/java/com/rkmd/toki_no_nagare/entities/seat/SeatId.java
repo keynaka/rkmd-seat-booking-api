@@ -5,9 +5,9 @@ import java.io.Serializable;
 public class SeatId implements Serializable {
     private Long row;
     private Long column;
-    private String sector;
+    private SeatSector sector;
 
-    public SeatId(Long row, Long column, String sector) {
+    public SeatId(Long row, Long column, SeatSector sector) {
         this.row = row;
         this.column = column;
         this.sector = sector;

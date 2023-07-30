@@ -1,6 +1,7 @@
 package com.rkmd.toki_no_nagare.controller;
 
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
+import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
 import com.rkmd.toki_no_nagare.service.SeatService;
 import com.rkmd.toki_no_nagare.utils.ValidationUtils;
 import jakarta.validation.Valid;
@@ -22,7 +23,7 @@ public class SeatController {
     public ResponseEntity<Seat> getSeat(@RequestParam(name = "row") Long row,
                                         @RequestParam(name = "column") Long column,
                                         @RequestParam(name = "sector") String sector) {
-        Optional<Seat> seat = seatService.getSeat(row, column, sector);
+        Optional<Seat> seat = seatService.getSeat(row, column, SeatSector.valueOf(sector.toUpperCase()));
         if (!seat.isPresent())
             return ResponseEntity.notFound().build();
 

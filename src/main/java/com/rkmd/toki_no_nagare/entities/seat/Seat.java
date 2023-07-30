@@ -17,8 +17,9 @@ public class Seat {
     private Long column;
 
     @Id
+    @Enumerated(EnumType.STRING)
     @Column(name = "sector", nullable = false)
-    private String sector;
+    private SeatSector sector;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -45,11 +46,11 @@ public class Seat {
         this.column = column;
     }
 
-    public String getSector() {
+    public SeatSector getSector() {
         return sector;
     }
 
-    public void setSector(String sector) {
+    public void setSector(SeatSector sector) {
         this.sector = sector;
     }
 
