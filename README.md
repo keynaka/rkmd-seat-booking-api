@@ -32,7 +32,32 @@ curl --location 'localhost:8080/user' \
     "role": "viewer"
 }'
 
+# Seat Endpoints
+
+## GET
+curl --location 'localhost:8080/seat/A/27'
+
+## POST
+curl --location 'localhost:8080/seat' \
+--header 'Content-Type: application/json' \
+--data '{
+"row": "A",
+"column": "27",
+"status": "reserved"
+}'
+
 # Local Usage
-Running localy the application will use H2 to set the DB at memory.
+Running locally the application from Main will use H2 to set the DB at memory.
+
 You can enter this URL to check the DB in a console like MySqlWorkbench
 http://localhost:8080/h2-console
+
+If it does not work, check:
+- Saved Settings & Setting Name: Generic H2 (Embedded)
+- Driver Class: "org.h2.Driver"
+- JDBC URL: "jdbc:h2:mem:testdb"
+- User Name: "sa"
+- Password: ""  (empty)
+
+
+

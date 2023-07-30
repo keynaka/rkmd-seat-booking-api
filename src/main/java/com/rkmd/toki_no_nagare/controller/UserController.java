@@ -18,7 +18,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/{username}")
-    public ResponseEntity<User> getUser(@PathVariable("username") String username) throws Exception {
+    public ResponseEntity<User> getUserByName(@PathVariable("username") String username) {
         Optional<User> user = userService.get(username);
         if (!user.isPresent())
             return ResponseEntity.notFound().build();
@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("")
-    public ResponseEntity<User> save(@RequestBody @Valid Map<String, Object> json) {
+    public ResponseEntity<User> createUser(@RequestBody @Valid Map<String, Object> json) {
         ValidationUtils.checkParam(json.containsKey("username"), "username_missing", "Username is missing and is mandatory");
         ValidationUtils.checkParam(json.containsKey("password"), "password_missing", "Password is missing and is mandatory");
         ValidationUtils.checkParam(json.containsKey("role"), "role_missing", "Role is missing and is mandatory");

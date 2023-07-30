@@ -20,11 +20,11 @@ public class ContactService {
     @Autowired
     private UserService userService;
 
-    public Optional<Contact> get(Long id) {
-        return contactRepository.findById(id);
+    public Optional<Contact> getContactByDni(Long dni) {
+        return contactRepository.findById(dni);
     }
 
-    public Contact save(Map<String, Object> json) {
+    public Contact createContact(Map<String, Object> json) {
         if (contactRepository.findById(Long.valueOf((String) json.get("dni"))).isPresent())
             throw new BadRequestException("contact_already_exists", "This contact already exists");
 
