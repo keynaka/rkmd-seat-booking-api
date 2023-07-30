@@ -18,16 +18,20 @@ public class SeatController {
     @Autowired
     private SeatService seatService;
 
-    @GetMapping("/{column}/{row}")
-    public ResponseEntity<Seat> getSeat(@PathVariable("row") String row, @PathVariable("column") String column) {
-        Optional<Seat> seat = seatService.getSeat(row, column);
+    @GetMapping("")
+    public ResponseEntity<Seat> getSeat(@RequestParam(name = "row") Long row,
+                                        @RequestParam(name = "column") Long column,
+                                        @RequestParam(name = "sector") String sector) {
+        Optional<Seat> seat = seatService.getSeat(row, column, sector);
         if (!seat.isPresent())
             return ResponseEntity.notFound().build();
+
         return ResponseEntity.ok().body(seat.get());
     }
 
     @PostMapping("")
-    public ResponseEntity<Seat> createSeat(@RequestBody @Valid Map<String, String> json) {
+    public ResponseEntity<Seat> createSeat(@RequestBody @Valid Map<String, Object> json) {
+        ValidationUtils.checkParam(json.containsKey("sector"), "sector_missing", "Sector is missing and is mandatory");
         ValidationUtils.checkParam(json.containsKey("row"), "row_missing", "Row is missing and is mandatory");
         ValidationUtils.checkParam(json.containsKey("column"), "column_missing", "Column is missing and is mandatory");
         ValidationUtils.checkParam(json.containsKey("status"), "status_missing", "Status is missing and is mandatory");
@@ -42,7 +46,7 @@ public class SeatController {
     * Returns total seat's count.
     */
     @PostMapping("/bootstrap")
-    public ResponseEntity<Integer> bootstrapTheaterSeats(@RequestBody @Valid Map<String, String> json) {
+    public ResponseEntity<Integer> bootstrapTheaterSeats(@RequestBody @Valid Map<String, Object> json) {
         Seat newSeat = seatService.createSeat(json);
 
         return ResponseEntity.ok().body(List.of(newSeat).size());

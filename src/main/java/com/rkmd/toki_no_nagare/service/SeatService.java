@@ -16,19 +16,20 @@ public class SeatService {
     @Autowired
     private SeatRepository seatRepository;
 
-    public Optional<Seat> getSeat(String row, String column) {
-        SeatId id = new SeatId(row, column);
+    public Optional<Seat> getSeat(Long row, Long column, String sector) {
+        SeatId id = new SeatId(row, column, sector);
         return seatRepository.findById(id);
     }
 
-    public Seat createSeat(Map<String, String> json) {
-        if (seatRepository.findById(new SeatId(json.get("row"), json.get("column"))).isPresent())
+    public Seat createSeat(Map<String, Object> json) {
+        if (seatRepository.findById(new SeatId(Long.valueOf((String) json.get("row")), Long.valueOf((String) json.get("column")), (String) json.get("sector"))).isPresent())
             throw new BadRequestException("seat_already_exists", "This seat already exists");
 
         Seat newSeat = new Seat();
-        newSeat.setRow(json.get("row"));
-        newSeat.setColumn(json.get("column"));
-        newSeat.setStatus(SeatStatus.valueOf(json.get("status").toUpperCase()));
+        newSeat.setSector((String) json.get("sector"));
+        newSeat.setRow(Long.valueOf((String) json.get("row")));
+        newSeat.setColumn(Long.valueOf((String) json.get("column")));
+        newSeat.setStatus(SeatStatus.valueOf(((String) json.get("status")).toUpperCase()));
         newSeat.setBooking(null);
 
         try {

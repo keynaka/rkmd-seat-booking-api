@@ -3,12 +3,14 @@ package com.rkmd.toki_no_nagare.entities.seat;
 import java.io.Serializable;
 
 public class SeatId implements Serializable {
-    private String row;
-    private String column;
+    private Long row;
+    private Long column;
+    private String sector;
 
-    public SeatId(String row, String column) {
+    public SeatId(Long row, Long column, String sector) {
         this.row = row;
         this.column = column;
+        this.sector = sector;
     }
 
     public SeatId() {}
