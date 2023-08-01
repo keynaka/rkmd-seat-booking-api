@@ -10,11 +10,19 @@ import jakarta.persistence.*;
 public class Seat {
     @Id
     @Column(name = "row", nullable = false)
-    private String row;
+    private Long row;
 
     @Id
     @Column(name = "column", nullable = false)
-    private String column;
+    private Long column;
+
+    @Id
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sector", nullable = false)
+    private SeatSector sector;
+
+    @Column(name = "auxiliar_column")
+    private Long auxiliarColumn;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -25,20 +33,28 @@ public class Seat {
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
-    public String getRow() {
+    public Long getRow() {
         return row;
     }
 
-    public void setRow(String row) {
+    public void setRow(Long row) {
         this.row = row;
     }
 
-    public String getColumn() {
+    public Long getColumn() {
         return column;
     }
 
-    public void setColumn(String column) {
+    public void setColumn(Long column) {
         this.column = column;
+    }
+
+    public SeatSector getSector() {
+        return sector;
+    }
+
+    public void setSector(SeatSector sector) {
+        this.sector = sector;
     }
 
     public SeatStatus getStatus() {
@@ -55,5 +71,13 @@ public class Seat {
 
     public void setBooking(Booking booking) {
         this.booking = booking;
+    }
+
+    public Long getAuxiliarColumn() {
+        return auxiliarColumn;
+    }
+
+    public void setAuxiliarColumn(Long auxiliarColumn) {
+        this.auxiliarColumn = auxiliarColumn;
     }
 }
