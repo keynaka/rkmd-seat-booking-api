@@ -2,44 +2,59 @@ package com.rkmd.toki_no_nagare.controller;
 
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
+import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
+import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.service.SeatService;
 import com.rkmd.toki_no_nagare.utils.ValidationUtils;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
+import static com.rkmd.toki_no_nagare.utils.Constants.THEATER_LAYOUT;
 
 @RestController
 @RequestMapping("/seat")
 public class SeatController {
-    @Autowired
     private SeatService seatService;
+
+    private List<Seat> theaterSeats;
+
+    public SeatController(SeatService seatService) {
+        this.seatService = seatService;
+        this.theaterSeats = new ArrayList<>();
+    }
 
     @GetMapping("")
     public ResponseEntity<Seat> getSeat(@RequestParam(name = "row") Long row,
                                         @RequestParam(name = "column") Long column,
                                         @RequestParam(name = "sector") String sector) {
         Optional<Seat> seat = seatService.getSeat(row, column, SeatSector.valueOf(sector.toUpperCase()));
-        if (!seat.isPresent())
-            return ResponseEntity.notFound().build();
+        ValidationUtils.checkFound(seat.isPresent(), "seat_not_found", "Seat not found");
 
         return ResponseEntity.ok().body(seat.get());
     }
 
-    @PostMapping("")
-    public ResponseEntity<Seat> createSeat(@RequestBody @Valid Map<String, Object> json) {
-        ValidationUtils.checkParam(json.containsKey("sector"), "sector_missing", "Sector is missing and is mandatory");
-        ValidationUtils.checkParam(json.containsKey("row"), "row_missing", "Row is missing and is mandatory");
-        ValidationUtils.checkParam(json.containsKey("column"), "column_missing", "Column is missing and is mandatory");
-        ValidationUtils.checkParam(json.containsKey("status"), "status_missing", "Status is missing and is mandatory");
+    @PutMapping("/{sector}/{row}/{column}/{status}")
+    public ResponseEntity<Seat> updateSeat(@PathVariable("sector") String sector,
+                                           @PathVariable("row") Long row,
+                                           @PathVariable("column") Long column,
+                                           @PathVariable("status") String status) {
+        SeatSector seatSector;
+        SeatStatus newSeatStatus;
+        try {
+            seatSector = SeatSector.valueOf(sector.toUpperCase());
+            newSeatStatus = SeatStatus.valueOf(status.toUpperCase());
+        } catch (Exception e) {
+            throw new BadRequestException("Invalid_sector_value", "Invalid sector or status");
+        }
 
-        Seat newSeat = seatService.createSeat(json);
+        Optional<Seat> seat = seatService.getSeat(row, column, seatSector);
+        ValidationUtils.checkFound(seat.isPresent(), "seat_not_found", "Seat not found");
 
-        return ResponseEntity.ok().body(newSeat);
+        Seat updatedSeat = seatService.updateSeat(seat.get(), newSeatStatus);
+
+        return ResponseEntity.ok().body(updatedSeat);
     }
 
     /*
@@ -47,9 +62,17 @@ public class SeatController {
     * Returns total seat's count.
     */
     @PostMapping("/bootstrap")
-    public ResponseEntity<Integer> bootstrapTheaterSeats(@RequestBody @Valid Map<String, Object> json) {
-        Seat newSeat = seatService.createSeat(json);
+    public ResponseEntity<Integer> bootstrapTheaterSeats() {
+        for(SeatSector sector : THEATER_LAYOUT.keySet()) {
+            for(Long row : THEATER_LAYOUT.get(sector).keySet()) {
+                Long auxiliarColumn = 1L;
+                for(Long column : THEATER_LAYOUT.get(sector).get(row)) {
+                    theaterSeats.add(seatService.createSeat(sector, row, column, SeatStatus.VACANT, auxiliarColumn));
+                    auxiliarColumn ++;
+                }
+            }
+        }
 
-        return ResponseEntity.ok().body(List.of(newSeat).size());
+        return ResponseEntity.ok().body(theaterSeats.size());
     }
 }

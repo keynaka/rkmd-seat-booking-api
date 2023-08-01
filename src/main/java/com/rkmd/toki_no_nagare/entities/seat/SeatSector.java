@@ -6,5 +6,7 @@ public enum SeatSector {
     @JsonProperty("pullman")
     PULLMAN,
     @JsonProperty("platea")
-    PLATEA
+    PLATEA,
+    @JsonProperty("palcos")
+    PALCOS
 }

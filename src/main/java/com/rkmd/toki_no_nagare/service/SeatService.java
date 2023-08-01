@@ -22,25 +22,31 @@ public class SeatService {
         return seatRepository.findById(id);
     }
 
-    public Seat createSeat(Map<String, Object> json) {
-        SeatId seatId = new SeatId(
-                Long.valueOf((String) json.get("row")),
-                Long.valueOf((String) json.get("column")),
-                SeatSector.valueOf(((String) json.get("sector")).toUpperCase())
-        );
+    public Seat createSeat(SeatSector sector, Long row, Long column, SeatStatus status, Long auxiliarColumn) {
+        SeatId seatId = new SeatId(row, column, sector);
 
         if (seatRepository.findById(seatId).isPresent())
             throw new BadRequestException("seat_already_exists", "This seat already exists");
 
         Seat newSeat = new Seat();
-        newSeat.setSector(SeatSector.valueOf(((String) json.get("sector")).toUpperCase()));
-        newSeat.setRow(Long.valueOf((String) json.get("row")));
-        newSeat.setColumn(Long.valueOf((String) json.get("column")));
-        newSeat.setStatus(SeatStatus.valueOf(((String) json.get("status")).toUpperCase()));
+        newSeat.setSector(sector);
+        newSeat.setRow(row);
+        newSeat.setColumn(column);
+        newSeat.setAuxiliarColumn(sector.equals(SeatSector.PALCOS) ? null : auxiliarColumn);
+        newSeat.setStatus(status);
         newSeat.setBooking(null);
 
         try {
             return seatRepository.save(newSeat);
+        } catch (Exception e) {
+            throw new BadRequestException("bad_request", e.getMessage());
+        }
+    }
+
+    public Seat updateSeat(Seat seat, SeatStatus updatedStatus) {
+        seat.setStatus(updatedStatus);
+        try {
+            return seatRepository.save(seat);
         } catch (Exception e) {
             throw new BadRequestException("bad_request", e.getMessage());
         }
