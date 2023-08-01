@@ -5,8 +5,10 @@ import com.rkmd.toki_no_nagare.entities.user.User;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.repositories.ContactRepository;
 import com.rkmd.toki_no_nagare.repositories.UserRepository;
+import com.rkmd.toki_no_nagare.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Map;
 import java.util.Optional;
@@ -29,8 +31,17 @@ public class UserService {
             throw new BadRequestException("username_already_exists", "This username already exists");
         User newUser = new User();
 
+        ValidationUtils.checkParam(!((String) json.get("password")).isEmpty(), "invalid_password", "Invalid Password");
+
+        String salt = BCrypt.gensalt();
+        String hashedPassword = BCrypt.hashpw((String) json.get("password"), salt);
+
+        // TODO: To check if a password matches a hashed value later (Move later to AuthorizationService)
+        boolean passwordMatches = BCrypt.checkpw((String) json.get("password"), hashedPassword);
+        System.out.println("Password matches: " + passwordMatches);
+
         newUser.setUserName((String) json.get("username"));
-        newUser.setPasswordHash((String) json.get("password"));
+        newUser.setPasswordHash(hashedPassword);
         newUser.setRole(RoleType.valueOf(((String) json.get("role")).toUpperCase()));
 
         try {
