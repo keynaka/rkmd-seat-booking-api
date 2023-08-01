@@ -8,5 +8,7 @@ public enum BookingStatus {
     @JsonProperty("paid")
     PAID,
     @JsonProperty("expired")
-    EXPIRED
+    EXPIRED,
+    @JsonProperty("canceled")
+    CANCELED
 }
