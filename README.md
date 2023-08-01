@@ -37,8 +37,8 @@ curl --location 'localhost:8080/user' \
 ## GET
 curl --location 'localhost:8080/seat?sector=pullman&row=1&column=27'
 
-## POST
-curl --location 'localhost:8080/seat' \
+## PUT (to change the seat's status)
+curl --location --request PUT 'localhost:8080/seat/platea/21/27/reserved' \
 --header 'Content-Type: application/json' \
 --data '{
 "sector": "pullman",
@@ -46,6 +46,9 @@ curl --location 'localhost:8080/seat' \
 "column": "27",
 "status": "reserved"
 }'
+
+## POST (WARNING: This endpoint goal is JUST to bootstrap the theater seats)
+curl --location --request POST 'localhost:8080/seat/bootstrap'
 
 # Local Usage
 Running locally the application from Main will use H2 to set the DB at memory.
