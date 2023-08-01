@@ -34,8 +34,11 @@ curl --location 'localhost:8080/user' \
 
 # Seat Endpoints
 
-## GET
+## GET seat
 curl --location 'localhost:8080/seat?sector=pullman&row=1&column=27'
+
+## GET recommendations
+curl --location 'localhost:8080/seat/recommendation?seat_count=5&sector=platea&row=20'
 
 ## PUT (to change the seat's status)
 curl --location --request PUT 'localhost:8080/seat/platea/21/27/reserved' \
@@ -62,6 +65,11 @@ If it does not work, check:
 - JDBC URL: "jdbc:h2:mem:testdb"
 - User Name: "sa"
 - Password: ""  (empty)
+
+# Consultas
+
+- Que pasa unos asientos que estaban reservados expiran? Van a quedar lugares libres en el medio
+- 
 
 
 

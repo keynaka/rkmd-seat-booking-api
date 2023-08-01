@@ -75,4 +75,23 @@ public class SeatController {
 
         return ResponseEntity.ok().body(theaterSeats.size());
     }
+
+    @GetMapping("/recommendation")
+    public ResponseEntity<List<List<Seat>>> getRecommendedSeats(@RequestParam(name = "seat_count") int seatCount,
+                                                    @RequestParam(name = "sector") String sector,
+                                                    @RequestParam(name = "row") Long row) {
+        SeatSector seatSector;
+        try {
+            seatSector = SeatSector.valueOf(sector.toUpperCase());
+        } catch (Exception e) {
+            throw new BadRequestException("Invalid_sector_value", "Invalid sector or status");
+        }
+
+        List<Seat> seats = seatService.getSeatsBySectorAndRow(seatSector, row);
+        ValidationUtils.checkFound(!seats.isEmpty(), "seats_not_found", "There are no seats at the selected sector and row");
+
+        List<List<Seat>> recommendedSeats = seatService.searchBestOptions(seats, seatCount);
+
+        return ResponseEntity.ok().body(recommendedSeats);
+    }
 }
