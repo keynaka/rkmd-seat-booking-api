@@ -77,9 +77,8 @@ public class SeatController {
     }
 
     @GetMapping("/recommendation")
-    public ResponseEntity<List<List<Seat>>> getRecommendedSeats(@RequestParam(name = "seat_count") int seatCount,
-                                                    @RequestParam(name = "sector") String sector,
-                                                    @RequestParam(name = "row") Long row) {
+    public ResponseEntity<Map<Long, List<Double>>> getRecommendedSeats(@RequestParam(name = "seat_count") int seatCount,
+                                                    @RequestParam(name = "sector") String sector) {
         SeatSector seatSector;
         try {
             seatSector = SeatSector.valueOf(sector.toUpperCase());
@@ -87,11 +86,11 @@ public class SeatController {
             throw new BadRequestException("Invalid_sector_value", "Invalid sector or status");
         }
 
-        List<Seat> seats = seatService.getSeatsBySectorAndRow(seatSector, row);
+        Map<Long, List<Seat>> seats = seatService.getSeatsBySector(seatSector);
         ValidationUtils.checkFound(!seats.isEmpty(), "seats_not_found", "There are no seats at the selected sector and row");
 
-        List<List<Seat>> recommendedSeats = seatService.searchBestOptions(seats, seatCount);
+        Map<Long, List<Double>> scores = seatService.searchBestOptions(seats, seatCount);
 
-        return ResponseEntity.ok().body(recommendedSeats);
+        return ResponseEntity.ok().body(scores);
     }
 }
