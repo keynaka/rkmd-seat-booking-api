@@ -15,3 +15,7 @@ spring:
         globally_quoted_identifiers: true
         jdbc:
           time_zone: GMT-3
+spring-doc:
+  swagger-ui:
+    enabled: ${SWAGGER_ENABLED}
+    defaultModelsExpandDepth: -1 # Hide the model section
