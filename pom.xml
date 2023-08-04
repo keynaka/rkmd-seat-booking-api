@@ -56,5 +56,13 @@
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
+
+        <!-- Dependency for documentation -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+
     </dependencies>
 </project>
