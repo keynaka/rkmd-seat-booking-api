@@ -65,7 +65,7 @@ public class SeatController {
     public ResponseEntity<Integer> bootstrapTheaterSeats() {
         for(SeatSector sector : THEATER_LAYOUT.keySet()) {
             for(Long row : THEATER_LAYOUT.get(sector).keySet()) {
-                Long auxiliarColumn = 1L;
+                Integer auxiliarColumn = 1;
                 for(Long column : THEATER_LAYOUT.get(sector).get(row)) {
                     theaterSeats.add(seatService.createSeat(sector, row, column, SeatStatus.VACANT, auxiliarColumn));
                     auxiliarColumn ++;
@@ -77,7 +77,7 @@ public class SeatController {
     }
 
     @GetMapping("/recommendation")
-    public ResponseEntity<Map<Long, List<Double>>> getRecommendedSeats(@RequestParam(name = "seat_count") int seatCount,
+    public ResponseEntity<Map<Long, Map<String, Map<String, Object>>>> getRecommendedSeats(@RequestParam(name = "seat_count") int seatCount,
                                                     @RequestParam(name = "sector") String sector) {
         SeatSector seatSector;
         try {
@@ -89,7 +89,7 @@ public class SeatController {
         Map<Long, List<Seat>> seats = seatService.getSeatsBySector(seatSector);
         ValidationUtils.checkFound(!seats.isEmpty(), "seats_not_found", "There are no seats at the selected sector and row");
 
-        Map<Long, List<Double>> scores = seatService.searchBestOptions(seats, seatCount);
+        Map<Long, Map<String, Map<String, Object>>> scores = seatService.searchBestCombos(seats, seatCount);
 
         return ResponseEntity.ok().body(scores);
     }

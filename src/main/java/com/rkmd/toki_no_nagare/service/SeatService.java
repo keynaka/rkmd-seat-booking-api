@@ -7,7 +7,6 @@ import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.repositories.SeatRepository;
 import com.rkmd.toki_no_nagare.utils.Constants;
-import com.rkmd.toki_no_nagare.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +36,7 @@ public class SeatService {
         return seatRepository.findAllBySectorAndRow(seatSector, row);
     }
 
-    public Seat createSeat(SeatSector sector, Long row, Long column, SeatStatus status, Long auxiliarColumn) {
+    public Seat createSeat(SeatSector sector, Long row, Long column, SeatStatus status, Integer auxiliarColumn) {
         SeatId seatId = new SeatId(row, column, sector);
 
         if (seatRepository.findById(seatId).isPresent())
@@ -67,35 +66,50 @@ public class SeatService {
         }
     }
 
-    public Map<Long, List<Double>> searchBestOptions(Map<Long, List<Seat>> sectorSeats, int seatCount) {
-        Map<Long, List<Double>> scores = new HashMap<>();
+    public Map<Long, Map<String, Map<String, Object>>> filterTopBestCombos( Map<Long, Map<String, Map<String, Object>>> searchBestCombos, int topSize) {
+        return searchBestCombos; //TODO: Continue here to filter top <topSize> scoring combo seats
+    }
+
+    public Map<Long, Map<String, Map<String, Object>>> searchBestCombos(Map<Long, List<Seat>> sectorSeats, int comboSize) {
+        Map<Long, Map<String, Map<String, Object>>> scores = new HashMap<>();
         for (Map.Entry<Long, List<Seat>> row : sectorSeats.entrySet()) {
-            List<Double> s = List.of(
-                    getSeatsComboScore(getMiddleSeats(row.getValue(), seatCount)),
-                    getSeatsComboScore(getBorderSeats(row.getValue(), seatCount))
-            );
-            scores.put(row.getKey(), s);
+            List<List<Seat>> combos = findCombosAvailable(row.getValue(), comboSize);
+            Map<String, Map<String, Object>> rowAvailableCombos = new HashMap<>();
+            for (List<Seat> combo : combos) {
+                String comboMinMaxColumns = String.format("%d-%d", combo.get(0).getAuxiliarColumn(), combo.get(comboSize-1).getAuxiliarColumn());
+                rowAvailableCombos.put(
+                        comboMinMaxColumns, Map.of(
+                                "score", getSeatsComboScore(combo),
+                                "seats", combo
+                        )
+                );
+            }
+            scores.put(row.getKey(), rowAvailableCombos);
         }
 
         return scores;
     }
 
-    private static List<Seat> getMiddleSeats(List<Seat> seats, int seatCount) {
-        ValidationUtils.checkFound(seats.size() > seatCount, "no_enough_seats_at_row", "There are no enough seats for this row");
+    public static List<List<Seat>> findCombosAvailable(List<Seat> seats, int comboSize) {
+        List<List<Seat>> combos = new ArrayList<>();
 
-        int startIndex = (seats.size() / 2) - (seatCount / 2);
-        int endIndex = startIndex + seatCount;
+        for (int i = 0; i <= seats.size() - comboSize; i++) {
+            List<Seat> subsequence = seats.subList(i, i + comboSize);
+            if (isConsecutive(subsequence)) {
+                combos.add(new ArrayList<>(subsequence));
+            }
+        }
 
-        return seats.subList(startIndex, endIndex);
+        return combos;
     }
 
-    private static List<Seat> getBorderSeats(List<Seat> seats, int seatCount) {
-        ValidationUtils.checkFound(seats.size() > seatCount, "no_enough_seats_at_row", "There are no enough seats for this row");
-
-        int startIndex = 0;
-        int endIndex = startIndex + seatCount;
-
-        return seats.subList(startIndex, endIndex);
+    public static boolean isConsecutive(List<Seat> seats) {
+        for (int i = 1; i < seats.size(); i++) {
+            if (seats.get(i).getAuxiliarColumn() - seats.get(i - 1).getAuxiliarColumn() != 1) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static Double getSeatsComboScore(List<Seat> seats) {
