@@ -1,11 +1,15 @@
 package com.rkmd.toki_no_nagare.service;
 
+import com.rkmd.toki_no_nagare.dto.user.CreateUserResponseDto;
+import com.rkmd.toki_no_nagare.dto.user.GetUserResponseDto;
 import com.rkmd.toki_no_nagare.entities.user.RoleType;
 import com.rkmd.toki_no_nagare.entities.user.User;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
+import com.rkmd.toki_no_nagare.exception.NotFoundException;
 import com.rkmd.toki_no_nagare.repositories.ContactRepository;
 import com.rkmd.toki_no_nagare.repositories.UserRepository;
 import com.rkmd.toki_no_nagare.utils.ValidationUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.mindrot.jbcrypt.BCrypt;
@@ -16,6 +20,13 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
+    @Autowired
+    private ModelMapper mapper;
+
+    @Autowired
+    private AuthorizationService authorizationService;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -50,4 +61,45 @@ public class UserService {
             throw new BadRequestException("bad_request", e.getMessage());
         }
     }
+
+    public CreateUserResponseDto createUser(String userName, String password, RoleType role){
+        isUserRegistered(userName);
+        isValidPassword(password);
+        isValidRole(role);
+
+        User newUser = new User();
+        newUser.setUserName(userName);
+        newUser.setPasswordHash(authorizationService.generatePasswordHash(password));
+        newUser.setRole(role);
+        userRepository.saveAndFlush(newUser);
+
+        return new CreateUserResponseDto(newUser.getUserName(), newUser.getRole());
+    }
+
+    public GetUserResponseDto getUserByNameV2(String username){
+        Optional<User> optUser = userRepository.findById(username);
+        if(optUser.isEmpty()){
+            throw new NotFoundException("user_not_exist", "The requested user does not exist");
+        }
+        return mapper.map(optUser.get(), GetUserResponseDto.class);
+    }
+
+    public void isUserRegistered(String username){
+        if (userRepository.findById(username).isPresent())
+            throw new BadRequestException("username_already_exists", "This username already exists");
+    }
+
+    public void isValidPassword(String password){
+        if (password == null)
+            throw new BadRequestException("invalid_password", "Invalid Password");
+    }
+
+    public void isValidRole(RoleType role){
+        if (role == null)
+            throw new BadRequestException("invalid_role", "Invalid Role");
+
+        if(!role.equals(RoleType.ADMIN) && !role.equals(RoleType.VIEWER))
+            throw new BadRequestException("invalid_role", "Invalid Role");
+    }
+
 }
