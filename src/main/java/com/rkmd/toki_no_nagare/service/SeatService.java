@@ -67,7 +67,11 @@ public class SeatService {
 
     /*
     * This method looks for the best combos to recommend to the client. It will select the best <comboCount> combos of
-    * different rows that have <comboSize> consecutive seats
+    * different rows that have <comboSize> consecutive seats.
+    * If there are no <comboSize> consecutive seats in any row, it will return empty
+    * Ex.
+    *   comboSize = 50
+    *   There are no rows containing more than 32 seats, so it won't recommend any seats
     * */
     public Map<Long, Map<String, Object>> searchTopCombosByRow(Map<Long, List<Seat>> sectorSeats, int comboSize, int comboCount) {
         Map<Long, Map<String, Object>> bestComboByRow = getBestComboByRow(sectorSeats, comboSize);
