@@ -77,8 +77,10 @@ public class SeatController {
     }
 
     @GetMapping("/recommendation")
-    public ResponseEntity<Map<Long, Map<String, Map<String, Object>>>> getRecommendedSeats(@RequestParam(name = "seat_count") int seatCount,
-                                                    @RequestParam(name = "sector") String sector) {
+    public ResponseEntity<Map<Long, Map<String, Object>>> getRecommendedSeats(
+            @RequestParam(name = "combo_count") int comboCount,
+            @RequestParam(name = "combo_size") int comboSize,
+            @RequestParam(name = "sector") String sector) {
         SeatSector seatSector;
         try {
             seatSector = SeatSector.valueOf(sector.toUpperCase());
@@ -89,8 +91,11 @@ public class SeatController {
         Map<Long, List<Seat>> seats = seatService.getSeatsBySector(seatSector);
         ValidationUtils.checkFound(!seats.isEmpty(), "seats_not_found", "There are no seats at the selected sector and row");
 
-        Map<Long, Map<String, Map<String, Object>>> scores = seatService.searchBestCombos(seats, seatCount);
+        //TODO: Delete later This method is used just for Testing scores of all seats
+        //Map<Long, Map<String, Map<String, Object>>> scores = seatService.searchBestCombosData(seats, comboSize);
 
-        return ResponseEntity.ok().body(scores);
+        Map<Long, Map<String, Object>> bestCombosByRow = seatService.searchTopCombosByRow(seats, comboSize, comboCount);
+
+        return ResponseEntity.ok().body(bestCombosByRow);
     }
 }
