@@ -65,7 +65,7 @@ public class SeatController {
     public ResponseEntity<Integer> bootstrapTheaterSeats() {
         for(SeatSector sector : THEATER_LAYOUT.keySet()) {
             for(Long row : THEATER_LAYOUT.get(sector).keySet()) {
-                Long auxiliarColumn = 1L;
+                Integer auxiliarColumn = 1;
                 for(Long column : THEATER_LAYOUT.get(sector).get(row)) {
                     theaterSeats.add(seatService.createSeat(sector, row, column, SeatStatus.VACANT, auxiliarColumn));
                     auxiliarColumn ++;
@@ -77,9 +77,10 @@ public class SeatController {
     }
 
     @GetMapping("/recommendation")
-    public ResponseEntity<List<List<Seat>>> getRecommendedSeats(@RequestParam(name = "seat_count") int seatCount,
-                                                    @RequestParam(name = "sector") String sector,
-                                                    @RequestParam(name = "row") Long row) {
+    public ResponseEntity<Map<Long, Map<String, Object>>> getRecommendedSeats(
+            @RequestParam(name = "combo_count") int comboCount,
+            @RequestParam(name = "combo_size") int comboSize,
+            @RequestParam(name = "sector") String sector) {
         SeatSector seatSector;
         try {
             seatSector = SeatSector.valueOf(sector.toUpperCase());
@@ -87,11 +88,14 @@ public class SeatController {
             throw new BadRequestException("Invalid_sector_value", "Invalid sector or status");
         }
 
-        List<Seat> seats = seatService.getSeatsBySectorAndRow(seatSector, row);
+        Map<Long, List<Seat>> seats = seatService.getSeatsBySector(seatSector);
         ValidationUtils.checkFound(!seats.isEmpty(), "seats_not_found", "There are no seats at the selected sector and row");
 
-        List<List<Seat>> recommendedSeats = seatService.searchBestOptions(seats, seatCount);
+        //TODO: Delete later This method is used just for Testing scores of all seats
+        //Map<Long, Map<String, Map<String, Object>>> scores = seatService.searchBestCombosData(seats, comboSize);
 
-        return ResponseEntity.ok().body(recommendedSeats);
+        Map<Long, Map<String, Object>> bestCombosByRow = seatService.searchTopCombosByRow(seats, comboSize, comboCount);
+
+        return ResponseEntity.ok().body(bestCombosByRow);
     }
 }

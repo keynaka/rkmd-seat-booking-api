@@ -22,7 +22,7 @@ public class Seat {
     private SeatSector sector;
 
     @Column(name = "auxiliar_column")
-    private Long auxiliarColumn;
+    private Integer auxiliarColumn;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -73,11 +73,11 @@ public class Seat {
         this.booking = booking;
     }
 
-    public Long getAuxiliarColumn() {
+    public Integer getAuxiliarColumn() {
         return auxiliarColumn;
     }
 
-    public void setAuxiliarColumn(Long auxiliarColumn) {
+    public void setAuxiliarColumn(Integer auxiliarColumn) {
         this.auxiliarColumn = auxiliarColumn;
     }
 }
