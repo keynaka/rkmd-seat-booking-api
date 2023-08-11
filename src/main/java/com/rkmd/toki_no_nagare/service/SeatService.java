@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class SeatService {
+    public static final double BEST_COLUMN_POSITION = 1.0;
     @Autowired
     private SeatRepository seatRepository;
 
@@ -32,9 +33,6 @@ public class SeatService {
         }
 
         return result;
-    }
-    public List<Seat> getSeatsBySectorAndRow(SeatSector seatSector, Long row) {
-        return seatRepository.findAllBySectorAndRow(seatSector, row);
     }
 
     public Seat createSeat(SeatSector sector, Long row, Long column, SeatStatus status, Integer auxiliarColumn) {
@@ -67,12 +65,20 @@ public class SeatService {
         }
     }
 
+    /*
+    * This method looks for the best combos to recommend to the client. It will select the best <comboCount> combos of
+    * different rows that have <comboSize> consecutive seats
+    * */
     public Map<Long, Map<String, Object>> searchTopCombosByRow(Map<Long, List<Seat>> sectorSeats, int comboSize, int comboCount) {
         Map<Long, Map<String, Object>> bestComboByRow = getBestComboByRow(sectorSeats, comboSize);
 
         return filterTopCombos(comboCount, bestComboByRow);
     }
 
+    /*
+    * This method search the best combo of each Row. It will return the score and the list of seats that represent
+    * the combo
+    * */
     private static Map<Long, Map<String, Object>> getBestComboByRow(Map<Long, List<Seat>> sectorSeats, int comboSize) {
         Map<Long, Map<String, Object>> bestComboByRow = new HashMap<>();
         for (Map.Entry<Long, List<Seat>> row : sectorSeats.entrySet()) {
@@ -93,6 +99,10 @@ public class SeatService {
         return bestComboByRow;
     }
 
+    /*
+    * This method filters just the top <comboCount> combos of <allCombos>. Each of these combos contain the list of seats
+    * and the score associated
+    * */
     private static Map<Long, Map<String, Object>> filterTopCombos(int comboCount, Map<Long, Map<String, Object>> allCombos) {
         Map<Long, Map<String, Object>> top = allCombos.entrySet().stream()
                 .sorted((e1, e2) -> Double.compare((Double) e2.getValue().get("score"), (Double) e1.getValue().get("score")))
@@ -101,6 +111,9 @@ public class SeatService {
         return top;
     }
 
+    /*
+    * This method looks for all the consecutive seats available for the <comboSize>
+    * */
     public static List<List<Seat>> findCombosAvailable(List<Seat> seats, int comboSize) {
         List<List<Seat>> combos = new ArrayList<>();
 
@@ -114,6 +127,9 @@ public class SeatService {
         return combos;
     }
 
+    /*
+    * This method checks if the list of seats are consecutive
+    * */
     public static boolean isConsecutive(List<Seat> seats) {
         for (int i = 1; i < seats.size(); i++) {
             if (seats.get(i).getAuxiliarColumn() - seats.get(i - 1).getAuxiliarColumn() != 1) {
@@ -123,22 +139,27 @@ public class SeatService {
         return true;
     }
 
+    /*
+     * This method returns the score of a seat considering the seat's columns avg and the row selected taking in count
+     * the sector too
+     * */
     private static Double getSeatsComboScore(List<Seat> seats) {
         Double selectedSeatsColumnAvg = seats.stream()
                 .map(seat -> seat.getColumn())
                 .mapToLong(Long::longValue)
                 .average()
                 .orElse(0.0);
-        Double columnScore = 1.0 / (1.0 + Math.abs(selectedSeatsColumnAvg - 1.0));
+        Double columnScore = 1.0 / (1.0 + Math.abs(selectedSeatsColumnAvg - BEST_COLUMN_POSITION));
 
-        Double selectedSeatsRow = Double.valueOf(seats.get(0).getRow());
-
-
-        Double rowScore = 1.0 / (1.0 + Math.abs(selectedSeatsRow - bestRowsBySector(seats)));
+        Double rowScore = 1.0 / (1.0 + Math.abs(Double.valueOf(seats.get(0).getRow()) - bestRowsBySector(seats)));
 
         return columnScore + rowScore;
     }
 
+    /*
+    * When we are looking for Platea seats we set that middle rows are the best options.
+    * If we are looking for Pullman seats, then the first seats are the best options.
+    * */
     private static Double bestRowsBySector(List<Seat> seats) {
         Double result = 1.0;
         if (seats.get(0).getSector().equals(SeatSector.PLATEA)) {
