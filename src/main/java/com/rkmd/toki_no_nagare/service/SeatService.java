@@ -68,6 +68,8 @@ public class SeatService {
     /*
     * This method looks for the best combos to recommend to the client. It will select the best <comboCount> combos of
     * different rows that have <comboSize> consecutive seats.
+    * If the <comboCount> is greater that the available count of rows, it will recommend the best combos of each row
+    *
     * If there are no <comboSize> consecutive seats in any row, it will return empty
     * Ex.
     *   comboSize = 50
