@@ -1,5 +1,6 @@
 package com.rkmd.toki_no_nagare.service;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatId;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
@@ -31,7 +32,7 @@ public class SeatService {
         SeatId id = new SeatId(row, column, sector);
         return seatRepository.findById(id);
     }
-    public Map<Long, List<Seat>> getSeatsBySector(SeatSector seatSector) {
+    public Map<Long, List<Seat>> getSectorsSeatsByRow(SeatSector seatSector) {
         Map<Long, List<Seat>> result = new HashMap<>();
         for (Seat seat : seatRepository.findAllBySector(seatSector)) {
             if (!result.containsKey(seat.getRow()))
@@ -144,7 +145,7 @@ public class SeatService {
     /*
     * This method checks if the list of seats are consecutive
     * */
-    public static boolean isConsecutive(List<Seat> seats) {
+    private static boolean isConsecutive(List<Seat> seats) {
         for (int i = 1; i < seats.size(); i++) {
             if (seats.get(i).getAuxiliarColumn() - seats.get(i - 1).getAuxiliarColumn() != 1) {
                 return false;
@@ -217,5 +218,10 @@ public class SeatService {
         }
 
         return this.theaterSeats.size();
+    }
+
+    @VisibleForTesting
+    public void clearSeats() {
+        seatRepository.deleteAll();
     }
 }
