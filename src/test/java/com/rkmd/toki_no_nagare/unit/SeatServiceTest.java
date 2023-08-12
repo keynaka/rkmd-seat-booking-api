@@ -3,6 +3,7 @@ package com.rkmd.toki_no_nagare.unit;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
 import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
+import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.service.SeatService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ public class SeatServiceTest {
     private SeatService seatService;
 
     @Test
-    public void testCreateSeat() {
+    public void testCreateSeatAndThrowBadRequestIfAlreadyExists() {
         Seat seat = seatService.createSeat(SeatSector.PLATEA, 1L, 1L, SeatStatus.VACANT, 10);
 
         Assertions.assertEquals(SeatSector.PLATEA, seat.getSector());
@@ -23,6 +24,11 @@ public class SeatServiceTest {
         Assertions.assertEquals(1L, seat.getColumn());
         Assertions.assertEquals(SeatStatus.VACANT, seat.getStatus());
         Assertions.assertEquals(10, seat.getAuxiliarColumn());
+
+        Assertions.assertThrows(
+                BadRequestException.class,
+                ()-> seatService.createSeat(SeatSector.PLATEA, 1L, 1L, SeatStatus.VACANT, 10)
+        );
     }
 
     @Test
