@@ -45,7 +45,7 @@ public class SeatController {
         Optional<Seat> seat = seatService.getSeat(row, column, seatSector);
         ValidationUtils.checkFound(seat.isPresent(), "seat_not_found", "Seat not found");
 
-        Seat updatedSeat = seatService.updateSeat(seat.get(), newSeatStatus);
+        Seat updatedSeat = seatService.updateSeatStatus(seat.get(), newSeatStatus);
 
         return ResponseEntity.ok().body(updatedSeat);
     }
@@ -71,7 +71,7 @@ public class SeatController {
             throw new BadRequestException("Invalid_sector_value", "Invalid sector or status");
         }
 
-        Map<Long, List<Seat>> seats = seatService.getSectorsSeatsByRow(seatSector);
+        Map<Long, List<Seat>> seats = seatService.getSectorSeatsByRow(seatSector);
         ValidationUtils.checkFound(!seats.isEmpty(), "seats_not_found", "There are no seats at the selected sector and row");
 
         //TODO: Delete later This method is used just for Testing scores of all seats

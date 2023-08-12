@@ -32,9 +32,9 @@ public class SeatService {
         SeatId id = new SeatId(row, column, sector);
         return seatRepository.findById(id);
     }
-    public Map<Long, List<Seat>> getSectorsSeatsByRow(SeatSector seatSector) {
+    public Map<Long, List<Seat>> getSectorSeatsByRow(SeatSector seatSector) {
         Map<Long, List<Seat>> result = new HashMap<>();
-        for (Seat seat : seatRepository.findAllBySector(seatSector)) {
+        for (Seat seat : seatRepository.findAllBySectorAndStatus(seatSector, SeatStatus.VACANT)) {
             if (!result.containsKey(seat.getRow()))
                 result.put(seat.getRow(), new ArrayList<>());
 
@@ -65,7 +65,11 @@ public class SeatService {
         }
     }
 
-    public Seat updateSeat(Seat seat, SeatStatus updatedStatus) {
+    public List<Seat> getSeatsOfStatus(SeatStatus seatStatus) {
+        return seatRepository.findAllByStatus(seatStatus);
+    }
+
+    public Seat updateSeatStatus(Seat seat, SeatStatus updatedStatus) {
         seat.setStatus(updatedStatus);
         try {
             return seatRepository.save(seat);
@@ -223,5 +227,6 @@ public class SeatService {
     @VisibleForTesting
     public void clearSeats() {
         seatRepository.deleteAll();
+        this.theaterSeats.clear();
     }
 }
