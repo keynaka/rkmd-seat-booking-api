@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Optional;
+
 @SpringBootTest
 public class SeatServiceTest {
     @Autowired
@@ -32,13 +34,14 @@ public class SeatServiceTest {
     }
 
     @Test
-    public void testUpdateSeat() {
-        Seat seat = seatService.createSeat(SeatSector.PLATEA, 2L, 1L, SeatStatus.VACANT, 10);
+    public void testGetSeatAndUpdateSeat() {
+        seatService.createSeat(SeatSector.PLATEA, 2L, 1L, SeatStatus.VACANT, 10);
 
-        seatService.updateSeat(seat, SeatStatus.RESERVED);
-        Assertions.assertEquals(2L, seat.getRow());
-        Assertions.assertEquals(1L, seat.getColumn());
-        Assertions.assertEquals(SeatStatus.RESERVED, seat.getStatus());
-        Assertions.assertEquals(10, seat.getAuxiliarColumn());
+        Optional<Seat> seat = seatService.getSeat(2L, 1L, SeatSector.PLATEA);
+        seatService.updateSeat(seat.get(), SeatStatus.RESERVED);
+        Assertions.assertEquals(2L, seat.get().getRow());
+        Assertions.assertEquals(1L, seat.get().getColumn());
+        Assertions.assertEquals(SeatStatus.RESERVED, seat.get().getStatus());
+        Assertions.assertEquals(10, seat.get().getAuxiliarColumn());
     }
 }
