@@ -6,24 +6,17 @@ import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.service.SeatService;
 import com.rkmd.toki_no_nagare.utils.ValidationUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-import static com.rkmd.toki_no_nagare.utils.Constants.THEATER_LAYOUT;
-
 @RestController
 @RequestMapping("/seat")
 public class SeatController {
+    @Autowired
     private SeatService seatService;
-
-    private List<Seat> theaterSeats;
-
-    public SeatController(SeatService seatService) {
-        this.seatService = seatService;
-        this.theaterSeats = new ArrayList<>();
-    }
 
     @GetMapping("")
     public ResponseEntity<Seat> getSeat(@RequestParam(name = "row") Long row,
@@ -63,17 +56,7 @@ public class SeatController {
     */
     @PostMapping("/bootstrap")
     public ResponseEntity<Integer> bootstrapTheaterSeats() {
-        for(SeatSector sector : THEATER_LAYOUT.keySet()) {
-            for(Long row : THEATER_LAYOUT.get(sector).keySet()) {
-                Integer auxiliarColumn = 1;
-                for(Long column : THEATER_LAYOUT.get(sector).get(row)) {
-                    theaterSeats.add(seatService.createSeat(sector, row, column, SeatStatus.VACANT, auxiliarColumn));
-                    auxiliarColumn ++;
-                }
-            }
-        }
-
-        return ResponseEntity.ok().body(theaterSeats.size());
+        return ResponseEntity.ok().body(seatService.bootstrapTheaterSeats());
     }
 
     @GetMapping("/recommendation")

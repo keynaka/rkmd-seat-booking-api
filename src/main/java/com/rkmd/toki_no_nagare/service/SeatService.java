@@ -13,11 +13,19 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.rkmd.toki_no_nagare.utils.Constants.THEATER_LAYOUT;
+
 @Service
 public class SeatService {
+    private List<Seat> theaterSeats;
     public static final double BEST_COLUMN_POSITION = 1.0;
     @Autowired
     private SeatRepository seatRepository;
+
+    public SeatService(SeatRepository seatRepository) {
+        this.seatRepository = seatRepository;
+        this.theaterSeats = new ArrayList<>();
+    }
 
     public Optional<Seat> getSeat(Long row, Long column, SeatSector sector) {
         SeatId id = new SeatId(row, column, sector);
@@ -195,5 +203,19 @@ public class SeatService {
         }
 
         return scores;
+    }
+
+    public int bootstrapTheaterSeats() {
+        for(SeatSector sector : THEATER_LAYOUT.keySet()) {
+            for(Long row : THEATER_LAYOUT.get(sector).keySet()) {
+                Integer auxiliarColumn = 1;
+                for(Long column : THEATER_LAYOUT.get(sector).get(row)) {
+                    theaterSeats.add(createSeat(sector, row, column, SeatStatus.VACANT, auxiliarColumn));
+                    auxiliarColumn ++;
+                }
+            }
+        }
+
+        return this.theaterSeats.size();
     }
 }
