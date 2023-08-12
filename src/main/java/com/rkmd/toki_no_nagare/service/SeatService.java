@@ -54,7 +54,7 @@ public class SeatService {
         newSeat.setSector(sector);
         newSeat.setRow(row);
         newSeat.setColumn(column);
-        newSeat.setAuxiliarColumn(sector.equals(SeatSector.PALCOS) ? null : auxiliarColumn);
+        newSeat.setAuxiliarColumn(sector.equals(SeatSector.PALCOS) ? null : auxiliarColumn); //TODO: Check if PALCOS part should be included on recommendations logic
         newSeat.setStatus(status);
         newSeat.setBooking(null);
 
@@ -151,6 +151,8 @@ public class SeatService {
     * */
     private static boolean isConsecutive(List<Seat> seats) {
         for (int i = 1; i < seats.size(); i++) {
+            if (seats.get(0).getAuxiliarColumn() == null) return false; //TODO: Check if PALCOS part should be included on recommendations logic
+
             if (seats.get(i).getAuxiliarColumn() - seats.get(i - 1).getAuxiliarColumn() != 1) {
                 return false;
             }
