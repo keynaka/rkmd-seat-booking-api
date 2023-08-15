@@ -59,7 +59,7 @@ public class SeatServiceTest {
     public void testSearchTopCombosByRow() {
         Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
 
-        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(SeatSector.PLATEA);
+        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(SeatSector.PLATEA);
         int comboSize = 5;
         int comboCount = 4;
 
@@ -87,7 +87,7 @@ public class SeatServiceTest {
 
         for (SeatSector sector : List.of(SeatSector.PLATEA, SeatSector.PULLMAN, SeatSector.PALCOS)) {
             for (int i = 0 ; i < MAX_COLUMN_SIZE ; i++) {
-                Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(sector);
+                Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(sector);
                 int comboSize = 1;
                 int comboCount = 24; // To simulate that all rows are offered and reserved by the client. Each iteration reserves the whole column
 
@@ -125,7 +125,7 @@ public class SeatServiceTest {
 
         for (SeatSector sector : List.of(SeatSector.PLATEA, SeatSector.PULLMAN, SeatSector.PALCOS)) {
             for (int i = 0 ; i < 2 ; i++) {
-                Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(sector);
+                Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(sector);
                 int comboSize = 16;
                 int comboCount = 24; // To simulate that all rows are offered and reserved by the client. Each iteration reserves the whole column
 
@@ -146,5 +146,58 @@ public class SeatServiceTest {
 
         List<Seat> vacantSeats = seatService.getSeatsOfStatus(SeatStatus.VACANT);
         Assertions.assertTrue(!vacantSeats.isEmpty());
+    }
+
+    @Test
+    public void testReserving5PULLMANFullColumnsInTheMiddleAndReleasing1RowShouldRecommendInTheMiddleAgain() {
+        Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
+        SeatSector sector = SeatSector.PULLMAN;
+
+        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(sector);
+        int comboSize = 5;
+        int comboCount = 24; // To simulate that all rows are offered and reserved by the client. Each iteration reserves the whole column
+
+        Map<Long, Map<String, Object>> topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
+        for (Map.Entry<Long, Map<String, Object>> bestRowCombo : topCombosByRow.entrySet()) {
+            if (!bestRowCombo.getKey().equals(1L)) {
+                for (Seat seat : ((List<Seat>) bestRowCombo.getValue().get("combo"))) {
+                    seatService.updateSeatStatus(seat, SeatStatus.RESERVED);
+                }
+            }
+        }
+
+        plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(sector);
+        // We didn't reserve the 1st row, so the bestOption should be that row
+        comboCount = 1;
+        topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
+
+        Assertions.assertTrue(topCombosByRow.containsKey(1L));
+    }
+
+    @Test
+    public void testReserving5PLATEAFullColumnsInTheMiddleAndReleasing1RowShouldStillRecommend12thRow() {
+        Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
+        SeatSector sector = SeatSector.PLATEA;
+
+        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(sector);
+        int comboSize = 5;
+        int comboCount = 24; // To simulate that all rows are offered and reserved by the client. Each iteration reserves the whole column
+
+        Map<Long, Map<String, Object>> topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
+        for (Map.Entry<Long, Map<String, Object>> bestRowCombo : topCombosByRow.entrySet()) {
+            if (!bestRowCombo.getKey().equals(1L)) {
+                for (Seat seat : ((List<Seat>) bestRowCombo.getValue().get("combo"))) {
+                    seatService.updateSeatStatus(seat, SeatStatus.RESERVED);
+                }
+            }
+        }
+
+        plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(sector);
+        // We didn't reserve the 1st row, so the bestOption should be that row
+        comboCount = 1;
+        topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
+
+        // Even if first row middle is free, it will still recommend the 12th row because has better scoring
+        Assertions.assertTrue(topCombosByRow.containsKey(12L));
     }
 }

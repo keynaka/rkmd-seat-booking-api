@@ -32,7 +32,7 @@ public class SeatService {
         SeatId id = new SeatId(row, column, sector);
         return seatRepository.findById(id);
     }
-    public Map<Long, List<Seat>> getSectorSeatsByRow(SeatSector seatSector) {
+    public Map<Long, List<Seat>> getSectorAvailableSeatsByRow(SeatSector seatSector) {
         Map<Long, List<Seat>> result = new HashMap<>();
         for (Seat seat : seatRepository.findAllBySectorAndStatus(seatSector, SeatStatus.VACANT)) {
             if (!result.containsKey(seat.getRow()))

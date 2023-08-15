@@ -71,7 +71,7 @@ public class SeatController {
             throw new BadRequestException("Invalid_sector_value", "Invalid sector or status");
         }
 
-        Map<Long, List<Seat>> seats = seatService.getSectorSeatsByRow(seatSector);
+        Map<Long, List<Seat>> seats = seatService.getSectorAvailableSeatsByRow(seatSector);
         ValidationUtils.checkFound(!seats.isEmpty(), "seats_not_found", "There are no seats at the selected sector and row");
 
         //TODO: Delete later This method is used just for Testing scores of all seats
