@@ -131,11 +131,15 @@ public class SeatServiceTest {
 
                 Map<Long, Map<String, Object>> topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
                 for (Map<String, Object> bestRowCombo : topCombosByRow.values()) {
-                    seatService.updateSeatStatus(((List<Seat>) bestRowCombo.get("combo")).get(0), SeatStatus.RESERVED);
+                    for (Seat seat : ((List<Seat>) bestRowCombo.get("combo"))) {
+                        seatService.updateSeatStatus(seat, SeatStatus.RESERVED);
+                    }
                 }
 
                 if (!sector.equals(SeatSector.PALCOS)) {
-                    // TODO: Continue here... This assertion is wrong. We should check that in the second iteration the topCombosByRow should be empty
+                    if (i == 1) {
+                        Assertions.assertTrue(topCombosByRow.isEmpty());
+                    }
                 }
             }
         }
