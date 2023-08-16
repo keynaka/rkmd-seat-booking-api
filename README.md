@@ -115,6 +115,17 @@ If it does not work, check:
 - Password: ""  (empty)
 ```
 
+## Envs
+~~~conf
+APP_PORT=5000
+DB_DDL_AUTO=update
+DB_HOST=rkmd-seat-booking.cvc7mgpitmse.us-east-2.rds.amazonaws.com
+DB_NAME=
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=Rkmd4dm1n2023
+~~~
+
 ## Consultas
 
 - Que pasa unos asientos que estaban reservados expiran? Van a quedar lugares libres en el medio
