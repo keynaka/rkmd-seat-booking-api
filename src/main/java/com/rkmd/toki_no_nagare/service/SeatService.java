@@ -11,10 +11,12 @@ import com.rkmd.toki_no_nagare.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.rkmd.toki_no_nagare.utils.Constants.THEATER_LAYOUT;
+import static com.rkmd.toki_no_nagare.utils.SeatPrices.SEAT_PRICES;
 
 @Service
 public class SeatService {
@@ -208,4 +210,42 @@ public class SeatService {
         seatRepository.deleteAll();
         this.theaterSeats.clear();
     }
+
+    /** This method sets the seat prices by sector. It receives as arguments the prices of each sector.
+     * @param pullmanSeatPrices The price for 'PULLMAN' sector
+     * @param palcoSeatPrices The price for 'PALCO' sector
+     * @param plateaSeatPrices The price for 'PLATEA' sector
+     * */
+    public void setSeatPricesBySector(BigDecimal pullmanSeatPrices, BigDecimal palcoSeatPrices, BigDecimal plateaSeatPrices){
+        List<Seat> seats = seatRepository.findAll();
+
+        for (Seat seat : seats){
+            if(seat.getPrice() == null){
+                switch (seat.getSector()) {
+                    case PULLMAN -> seat.setPrice(pullmanSeatPrices);
+                    case PALCOS -> seat.setPrice(palcoSeatPrices);
+                    case PLATEA -> seat.setPrice(plateaSeatPrices);
+                }
+                seatRepository.save(seat);
+            }
+        }
+    }
+
+
+    /** This method sets the seat prices per row, according to the prices defined in the utils.SeatPrices */
+    public void setSeatPricesByRow(){
+        for(SeatSector sector : THEATER_LAYOUT.keySet()) {
+            for(Long row : THEATER_LAYOUT.get(sector).keySet()) {
+                for(Long column : THEATER_LAYOUT.get(sector).get(row)) {
+                    SeatId id = new SeatId(row, column, sector);
+                    Optional<Seat> seat = seatRepository.findById(id);
+                    seat.ifPresent(s -> {
+                        seat.get().setPrice(SEAT_PRICES.get(sector).get(row));
+                        seatRepository.save(seat.get());
+                    });
+                }
+            }
+        }
+    }
+
 }
