@@ -32,9 +32,13 @@ public class SeatService {
         SeatId id = new SeatId(row, column, sector);
         return seatRepository.findById(id);
     }
-    public Map<Long, List<Seat>> getSectorAvailableSeatsByRow(SeatSector seatSector) {
+    public Map<Long, List<Seat>> getSectorSeatsByRow(SeatSector seatSector, SeatStatus seatStatus) {
         Map<Long, List<Seat>> result = new HashMap<>();
-        for (Seat seat : seatRepository.findAllBySectorAndStatus(seatSector, SeatStatus.VACANT)) {
+        List<Seat> seats = seatStatus != null ?
+                seatRepository.findAllBySectorAndStatus(seatSector, seatStatus) :
+                seatRepository.findAllBySector(seatSector);
+
+        for (Seat seat : seats) {
             if (!result.containsKey(seat.getRow()))
                 result.put(seat.getRow(), new ArrayList<>());
 
@@ -182,13 +186,7 @@ public class SeatService {
     * If we are looking for Pullman seats, then the first seats are the best options.
     * */
     private static Double bestRowsBySector(List<Seat> seats) {
-        Double result = 1.0;
-        if (seats.get(0).getSector().equals(SeatSector.PLATEA)) {
-            Double totalRowsCount = (double) Constants.THEATER_LAYOUT.get(seats.get(0).getSector()).size();
-            result = totalRowsCount / 2;
-        }
-
-        return result;
+        return seats.get(0).getSector().equals(SeatSector.PLATEA) ? Constants.PLATEA_BEST_ROW : Constants.PULLMAN_BEST_ROW;
     }
 
     // TODO: Delete later. Just to analyze combos scores

@@ -5,6 +5,7 @@ import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
 import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.service.SeatService;
+import com.rkmd.toki_no_nagare.utils.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,7 +60,7 @@ public class SeatServiceTest {
     public void testSearchTopCombosByRow() {
         Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
 
-        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(SeatSector.PLATEA);
+        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(SeatSector.PLATEA, SeatStatus.VACANT);
         int comboSize = 5;
         int comboCount = 4;
 
@@ -87,7 +88,7 @@ public class SeatServiceTest {
 
         for (SeatSector sector : List.of(SeatSector.PLATEA, SeatSector.PULLMAN, SeatSector.PALCOS)) {
             for (int i = 0 ; i < MAX_COLUMN_SIZE ; i++) {
-                Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(sector);
+                Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(sector, SeatStatus.VACANT);
                 int comboSize = 1;
                 int comboCount = 24; // To simulate that all rows are offered and reserved by the client. Each iteration reserves the whole column
 
@@ -125,7 +126,7 @@ public class SeatServiceTest {
 
         for (SeatSector sector : List.of(SeatSector.PLATEA, SeatSector.PULLMAN, SeatSector.PALCOS)) {
             for (int i = 0 ; i < 2 ; i++) {
-                Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(sector);
+                Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(sector, SeatStatus.VACANT);
                 int comboSize = 16;
                 int comboCount = 24; // To simulate that all rows are offered and reserved by the client. Each iteration reserves the whole column
 
@@ -153,11 +154,11 @@ public class SeatServiceTest {
         Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
         SeatSector sector = SeatSector.PULLMAN;
 
-        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(sector);
+        Map<Long, List<Seat>> pullmanSeatsByRow = seatService.getSectorSeatsByRow(sector, SeatStatus.VACANT);
         int comboSize = 5;
         int comboCount = 24; // To simulate that all rows are offered and reserved by the client. Each iteration reserves the whole column
 
-        Map<Long, Map<String, Object>> topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
+        Map<Long, Map<String, Object>> topCombosByRow = seatService.searchTopCombosByRow(pullmanSeatsByRow, comboSize, comboCount);
         for (Map.Entry<Long, Map<String, Object>> bestRowCombo : topCombosByRow.entrySet()) {
             if (!bestRowCombo.getKey().equals(1L)) {
                 for (Seat seat : ((List<Seat>) bestRowCombo.getValue().get("combo"))) {
@@ -166,12 +167,12 @@ public class SeatServiceTest {
             }
         }
 
-        plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(sector);
+        pullmanSeatsByRow = seatService.getSectorSeatsByRow(sector, SeatStatus.VACANT);
         // We didn't reserve the 1st row, so the bestOption should be that row
         comboCount = 1;
-        topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
+        topCombosByRow = seatService.searchTopCombosByRow(pullmanSeatsByRow, comboSize, comboCount);
 
-        Assertions.assertTrue(topCombosByRow.containsKey(1L));
+        Assertions.assertTrue(topCombosByRow.containsKey(Constants.PULLMAN_BEST_ROW.longValue()));
     }
 
     @Test
@@ -179,7 +180,7 @@ public class SeatServiceTest {
         Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
         SeatSector sector = SeatSector.PLATEA;
 
-        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(sector);
+        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(sector, SeatStatus.VACANT);
         int comboSize = 5;
         int comboCount = 24; // To simulate that all rows are offered and reserved by the client. Each iteration reserves the whole column
 
@@ -192,12 +193,69 @@ public class SeatServiceTest {
             }
         }
 
-        plateaSeatsByRow = seatService.getSectorAvailableSeatsByRow(sector);
+        plateaSeatsByRow = seatService.getSectorSeatsByRow(sector, SeatStatus.VACANT);
         // We didn't reserve the 1st row, so the bestOption should be that row
         comboCount = 1;
         topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
 
         // Even if first row middle is free, it will still recommend the 12th row because has better scoring
-        Assertions.assertTrue(topCombosByRow.containsKey(12L));
+        Assertions.assertTrue(topCombosByRow.containsKey(Constants.PLATEA_BEST_ROW.longValue()));
+    }
+
+    @Test
+    public void testReserving5PLATEAFullColumnsInTheMiddleAndReleasing4SeatsOf12thRowAndRequesting3ShouldGiveMeMiddleSeatsAndLeave1Seat() {
+        Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
+        SeatSector sector = SeatSector.PLATEA;
+
+        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(sector, SeatStatus.VACANT);
+        int comboSize = 5;
+        int comboCount = 1;
+
+        Map<Long, Map<String, Object>> topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
+        for (Map.Entry<Long, Map<String, Object>> bestRowCombo : topCombosByRow.entrySet()) {
+            List<Seat> seats = ((List<Seat>) bestRowCombo.getValue().get("combo"));
+            seatService.updateSeatStatus(seats.get(0), SeatStatus.RESERVED); // FIRST ITERATION: Only reserve the 1st of the 5 seats
+            seatService.updateSeatStatus(seats.get(seats.size()-1), SeatStatus.RESERVED); // FIRST ITERATION: Only reserve the 5th of the 5 seats
+        }
+
+        plateaSeatsByRow = seatService.getSectorSeatsByRow(sector, SeatStatus.VACANT);
+        comboSize = 2;
+        topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
+
+        Assertions.assertTrue(topCombosByRow.containsKey(Constants.PLATEA_BEST_ROW.longValue()));
+
+        for (Map.Entry<Long, Map<String, Object>> bestRowCombo : topCombosByRow.entrySet()) {
+            for (Seat seat : ((List<Seat>) bestRowCombo.getValue().get("combo"))) {
+                seatService.updateSeatStatus(seat, SeatStatus.RESERVED); // SECOND ITERATION
+            }
+        }
+
+        List<Seat> plateaBestRow = seatService.getSectorSeatsByRow(sector, null).get(Constants.PLATEA_BEST_ROW.longValue());
+        Assertions.assertTrue(plateaBestRow.get(14).getColumn().equals(4L) && plateaBestRow.get(14).getStatus().equals(SeatStatus.RESERVED)); //The column 4 is reserved at FIRST ITERATION
+        Assertions.assertTrue(plateaBestRow.get(15).getColumn().equals(2L) && plateaBestRow.get(15).getStatus().equals(SeatStatus.RESERVED)); //The column 2 is reserved at SECOND ITERATION
+        Assertions.assertTrue(plateaBestRow.get(16).getColumn().equals(1L) && plateaBestRow.get(16).getStatus().equals(SeatStatus.RESERVED)); //The column 1 is reserved at SECOND ITERATION
+        Assertions.assertTrue(plateaBestRow.get(17).getColumn().equals(3L) && plateaBestRow.get(17).getStatus().equals(SeatStatus.VACANT)); //The column 3 is vacant (1 seat space)
+        Assertions.assertTrue(plateaBestRow.get(18).getColumn().equals(5L) && plateaBestRow.get(18).getStatus().equals(SeatStatus.RESERVED)); //The column 5 is reserved at FIRST ITERATION
+
+        plateaSeatsByRow = seatService.getSectorSeatsByRow(sector, SeatStatus.VACANT);
+        comboCount = 4; //We need to request more combos because column 1 of other rows have better scoring than the column 3 of the PLATEA_BEST_ROW
+        comboSize = 1;
+        topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
+
+        Assertions.assertTrue(topCombosByRow.containsKey(Constants.PLATEA_BEST_ROW.longValue()));
+
+        for (Map.Entry<Long, Map<String, Object>> bestRowCombo : topCombosByRow.entrySet()) {
+            for (Seat seat : ((List<Seat>) bestRowCombo.getValue().get("combo"))) {
+                seatService.updateSeatStatus(seat, SeatStatus.RESERVED); // THIRD ITERATION
+            }
+        }
+
+        plateaBestRow = seatService.getSectorSeatsByRow(sector, null).get(Constants.PLATEA_BEST_ROW.longValue());
+        Assertions.assertTrue(plateaBestRow.get(14).getColumn().equals(4L) && plateaBestRow.get(14).getStatus().equals(SeatStatus.RESERVED)); //The column 4 is reserved at FIRST ITERATION
+        Assertions.assertTrue(plateaBestRow.get(15).getColumn().equals(2L) && plateaBestRow.get(15).getStatus().equals(SeatStatus.RESERVED)); //The column 2 is reserved at SECOND ITERATION
+        Assertions.assertTrue(plateaBestRow.get(16).getColumn().equals(1L) && plateaBestRow.get(16).getStatus().equals(SeatStatus.RESERVED)); //The column 1 is reserved at SECOND ITERATION
+        Assertions.assertTrue(plateaBestRow.get(17).getColumn().equals(3L) && plateaBestRow.get(17).getStatus().equals(SeatStatus.RESERVED)); //The column 3 is reserved at THIRD ITERATION
+        Assertions.assertTrue(plateaBestRow.get(18).getColumn().equals(5L) && plateaBestRow.get(18).getStatus().equals(SeatStatus.RESERVED)); //The column 5 is reserved at FIRST ITERATION
+
     }
 }

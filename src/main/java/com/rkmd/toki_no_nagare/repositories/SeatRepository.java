@@ -11,4 +11,5 @@ import java.util.List;
 public interface SeatRepository extends JpaRepository<Seat, SeatId> {
     List<Seat> findAllBySectorAndStatus(SeatSector sector, SeatStatus status);
     List<Seat> findAllByStatus(SeatStatus status);
+    List<Seat> findAllBySector(SeatSector sector);
 }
