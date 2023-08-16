@@ -1,5 +1,11 @@
 # Changelog
 
+### 2023.08.16
+- docs: Se actualiza archivo README.md con url local de swagger. (717aa97)
+- docs: Se actualiza archivo README.md con envs para conexión a BD en MySQL. (ec51bb2)
+- feat: Se implementa conexión a DB MySQL. (16524c2)
+- docs: Se actualiza archivo .gitignore. (c54214c)
+
 ### 2023.08.15
 - feat: Se agrega enpoints para la asignación de precios por sector o por fila (edfeda2)
 - feat: Se agrega DTO para la asignación de precios por sector y se agrega Constantes para la asignación de precios por fila (9f48922)
