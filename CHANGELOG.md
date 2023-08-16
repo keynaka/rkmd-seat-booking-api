@@ -1,5 +1,10 @@
 # Changelog
 
+### 2023.08.15
+- feat: Se agrega enpoints para la asignación de precios por sector o por fila (edfeda2)
+- feat: Se agrega DTO para la asignación de precios por sector y se agrega Constantes para la asignación de precios por fila (9f48922)
+- refactor: Se agrega el atributo 'price' en la entidad Seat para fijar el precio de las butacas (53c05de)
+
 - feat: Se agrega la interfaz de UserController.java que contiene las anotaciones para la documentación de Swagger. Y se agregan dos nuevos endpoints para la creación del usuario y la obtención de datos del usuario. (6376e3c)
 - feat: Se agregan nuevos métodos en UserService.java. Método de creación de usuario, método para obtener datos del usuario, validaciones de userName, password y role. (7642390)
 - feat: Se agrega el servicio de autenticación para el hashing de contraseñas (c2cc60e)
