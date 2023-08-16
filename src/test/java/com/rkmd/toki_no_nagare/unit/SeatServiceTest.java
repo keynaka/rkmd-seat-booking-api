@@ -68,17 +68,17 @@ public class SeatServiceTest {
 
         Assertions.assertTrue(topCombosByRow.containsKey(10L));
         Assertions.assertTrue(topCombosByRow.containsKey(11L));
-        Assertions.assertTrue(topCombosByRow.containsKey(12L));
+        Assertions.assertTrue(topCombosByRow.containsKey(Constants.PLATEA_BEST_ROW.longValue()));
         Assertions.assertTrue(topCombosByRow.containsKey(13L));
 
-        Assertions.assertEquals(5, ((List) topCombosByRow.get(12L).get("combo")).size());
-        Assertions.assertEquals(4, ((List<Seat>) topCombosByRow.get(12L).get("combo")).get(0).getColumn());
-        Assertions.assertEquals(2, ((List<Seat>) topCombosByRow.get(12L).get("combo")).get(1).getColumn());
-        Assertions.assertEquals(1, ((List<Seat>) topCombosByRow.get(12L).get("combo")).get(2).getColumn());
-        Assertions.assertEquals(3, ((List<Seat>) topCombosByRow.get(12L).get("combo")).get(3).getColumn());
-        Assertions.assertEquals(5, ((List<Seat>) topCombosByRow.get(12L).get("combo")).get(4).getColumn());
+        Assertions.assertEquals(5, ((List) topCombosByRow.get(Constants.PLATEA_BEST_ROW.longValue()).get("combo")).size());
+        Assertions.assertEquals(4, ((List<Seat>) topCombosByRow.get(Constants.PLATEA_BEST_ROW.longValue()).get("combo")).get(0).getColumn());
+        Assertions.assertEquals(2, ((List<Seat>) topCombosByRow.get(Constants.PLATEA_BEST_ROW.longValue()).get("combo")).get(1).getColumn());
+        Assertions.assertEquals(1, ((List<Seat>) topCombosByRow.get(Constants.PLATEA_BEST_ROW.longValue()).get("combo")).get(2).getColumn());
+        Assertions.assertEquals(3, ((List<Seat>) topCombosByRow.get(Constants.PLATEA_BEST_ROW.longValue()).get("combo")).get(3).getColumn());
+        Assertions.assertEquals(5, ((List<Seat>) topCombosByRow.get(Constants.PLATEA_BEST_ROW.longValue()).get("combo")).get(4).getColumn());
 
-        Assertions.assertEquals(1.3333333333333333, ((Double) topCombosByRow.get(12L).get("score")));
+        Assertions.assertEquals(1.3333333333333333, ((Double) topCombosByRow.get(Constants.PLATEA_BEST_ROW.longValue()).get("score")));
     }
 
     @Test
@@ -176,7 +176,7 @@ public class SeatServiceTest {
     }
 
     @Test
-    public void testReserving5PLATEAFullColumnsInTheMiddleAndReleasing1RowShouldStillRecommend12thRow() {
+    public void testReserving5PLATEAFullColumnsInTheMiddleAndReleasing1stRowShouldStillRecommendPlateaBestRow() {
         Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
         SeatSector sector = SeatSector.PLATEA;
 
@@ -198,12 +198,12 @@ public class SeatServiceTest {
         comboCount = 1;
         topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
 
-        // Even if first row middle is free, it will still recommend the 12th row because has better scoring
+        // Even if first row middle is free, it will still recommend the platea best row because has better scoring not being in the middle
         Assertions.assertTrue(topCombosByRow.containsKey(Constants.PLATEA_BEST_ROW.longValue()));
     }
 
     @Test
-    public void testReserving5PLATEAFullColumnsInTheMiddleAndReleasing4SeatsOf12thRowAndRequesting3ShouldGiveMeMiddleSeatsAndLeave1Seat() {
+    public void testReserving5PLATEAFullColumnsInTheMiddleAndReleasing4SeatsOfPlateaBestRowAndRequesting3ShouldGiveMeMiddleSeatsAndLeave1Seat() {
         Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
         SeatSector sector = SeatSector.PLATEA;
 
