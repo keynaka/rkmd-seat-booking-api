@@ -74,9 +74,6 @@ public class SeatController {
         Map<Long, List<Seat>> seats = seatService.getSectorSeatsByRow(seatSector, SeatStatus.VACANT);
         ValidationUtils.checkFound(!seats.isEmpty(), "seats_not_found", "There are no seats at the selected sector and row");
 
-        //TODO: Delete later This method is used just for Testing scores of all seats
-        //Map<Long, Map<String, Map<String, Object>>> scores = seatService.searchBestCombosData(seats, comboSize);
-
         Map<Long, Map<String, Object>> bestCombosByRow = seatService.searchTopCombosByRow(seats, comboSize, comboCount);
 
         return ResponseEntity.ok().body(bestCombosByRow);

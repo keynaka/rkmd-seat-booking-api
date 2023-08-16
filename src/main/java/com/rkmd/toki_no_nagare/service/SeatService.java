@@ -189,27 +189,6 @@ public class SeatService {
         return seats.get(0).getSector().equals(SeatSector.PLATEA) ? Constants.PLATEA_BEST_ROW : Constants.PULLMAN_BEST_ROW;
     }
 
-    // TODO: Delete later. Just to analyze combos scores
-    public Map<Long, Map<String, Map<String, Object>>> searchBestCombosData(Map<Long, List<Seat>> sectorSeats, int comboSize) {
-        Map<Long, Map<String, Map<String, Object>>> scores = new HashMap<>();
-        for (Map.Entry<Long, List<Seat>> row : sectorSeats.entrySet()) {
-            List<List<Seat>> combos = findCombosAvailable(row.getValue(), comboSize);
-            Map<String, Map<String, Object>> rowAvailableCombos = new HashMap<>();
-            for (List<Seat> combo : combos) {
-                String comboMinMaxColumns = String.format("%d-%d", combo.get(0).getAuxiliarColumn(), combo.get(comboSize-1).getAuxiliarColumn());
-                rowAvailableCombos.put(
-                        comboMinMaxColumns, Map.of(
-                                "score", getSeatsComboScore(combo),
-                                "seats", combo
-                        )
-                );
-            }
-            scores.put(row.getKey(), rowAvailableCombos);
-        }
-
-        return scores;
-    }
-
     public int bootstrapTheaterSeats() {
         for(SeatSector sector : THEATER_LAYOUT.keySet()) {
             for(Long row : THEATER_LAYOUT.get(sector).keySet()) {
