@@ -1,14 +1,16 @@
+server:
+  port: ${APP_PORT} # AWS espera que el puerto se presente por el puerto 5000
+
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-  h2:
-    console:
-      enabled: true
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: ${DB_DDL_AUTO}
     open-in-view: false
     properties:
       hibernate:
