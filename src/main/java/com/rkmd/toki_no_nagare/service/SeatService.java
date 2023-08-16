@@ -1,5 +1,6 @@
 package com.rkmd.toki_no_nagare.service;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatId;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
@@ -13,19 +14,31 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.rkmd.toki_no_nagare.utils.Constants.THEATER_LAYOUT;
+
 @Service
 public class SeatService {
+    private List<Seat> theaterSeats;
     public static final double BEST_COLUMN_POSITION = 1.0;
     @Autowired
     private SeatRepository seatRepository;
+
+    public SeatService(SeatRepository seatRepository) {
+        this.seatRepository = seatRepository;
+        this.theaterSeats = new ArrayList<>();
+    }
 
     public Optional<Seat> getSeat(Long row, Long column, SeatSector sector) {
         SeatId id = new SeatId(row, column, sector);
         return seatRepository.findById(id);
     }
-    public Map<Long, List<Seat>> getSeatsBySector(SeatSector seatSector) {
+    public Map<Long, List<Seat>> getSectorSeatsByRow(SeatSector seatSector, SeatStatus seatStatus) {
         Map<Long, List<Seat>> result = new HashMap<>();
-        for (Seat seat : seatRepository.findAllBySector(seatSector)) {
+        List<Seat> seats = seatStatus != null ?
+                seatRepository.findAllBySectorAndStatus(seatSector, seatStatus) :
+                seatRepository.findAllBySector(seatSector);
+
+        for (Seat seat : seats) {
             if (!result.containsKey(seat.getRow()))
                 result.put(seat.getRow(), new ArrayList<>());
 
@@ -45,7 +58,7 @@ public class SeatService {
         newSeat.setSector(sector);
         newSeat.setRow(row);
         newSeat.setColumn(column);
-        newSeat.setAuxiliarColumn(sector.equals(SeatSector.PALCOS) ? null : auxiliarColumn);
+        newSeat.setAuxiliarColumn(sector.equals(SeatSector.PALCOS) ? null : auxiliarColumn); //TODO: Check if PALCOS part should be included on recommendations logic
         newSeat.setStatus(status);
         newSeat.setBooking(null);
 
@@ -56,7 +69,11 @@ public class SeatService {
         }
     }
 
-    public Seat updateSeat(Seat seat, SeatStatus updatedStatus) {
+    public List<Seat> getSeatsOfStatus(SeatStatus seatStatus) {
+        return seatRepository.findAllByStatus(seatStatus);
+    }
+
+    public Seat updateSeatStatus(Seat seat, SeatStatus updatedStatus) {
         seat.setStatus(updatedStatus);
         try {
             return seatRepository.save(seat);
@@ -136,8 +153,10 @@ public class SeatService {
     /*
     * This method checks if the list of seats are consecutive
     * */
-    public static boolean isConsecutive(List<Seat> seats) {
+    private static boolean isConsecutive(List<Seat> seats) {
         for (int i = 1; i < seats.size(); i++) {
+            if (seats.get(0).getAuxiliarColumn() == null) return false; //TODO: Check if PALCOS part should be included on recommendations logic
+
             if (seats.get(i).getAuxiliarColumn() - seats.get(i - 1).getAuxiliarColumn() != 1) {
                 return false;
             }
@@ -167,33 +186,26 @@ public class SeatService {
     * If we are looking for Pullman seats, then the first seats are the best options.
     * */
     private static Double bestRowsBySector(List<Seat> seats) {
-        Double result = 1.0;
-        if (seats.get(0).getSector().equals(SeatSector.PLATEA)) {
-            Double totalRowsCount = (double) Constants.THEATER_LAYOUT.get(seats.get(0).getSector()).size();
-            result = totalRowsCount / 2;
-        }
-
-        return result;
+        return seats.get(0).getSector().equals(SeatSector.PLATEA) ? Constants.PLATEA_BEST_ROW : Constants.PULLMAN_BEST_ROW;
     }
 
-    // TODO: Delete later. Just to analyze combos scores
-    public Map<Long, Map<String, Map<String, Object>>> searchBestCombosData(Map<Long, List<Seat>> sectorSeats, int comboSize) {
-        Map<Long, Map<String, Map<String, Object>>> scores = new HashMap<>();
-        for (Map.Entry<Long, List<Seat>> row : sectorSeats.entrySet()) {
-            List<List<Seat>> combos = findCombosAvailable(row.getValue(), comboSize);
-            Map<String, Map<String, Object>> rowAvailableCombos = new HashMap<>();
-            for (List<Seat> combo : combos) {
-                String comboMinMaxColumns = String.format("%d-%d", combo.get(0).getAuxiliarColumn(), combo.get(comboSize-1).getAuxiliarColumn());
-                rowAvailableCombos.put(
-                        comboMinMaxColumns, Map.of(
-                                "score", getSeatsComboScore(combo),
-                                "seats", combo
-                        )
-                );
+    public int bootstrapTheaterSeats() {
+        for(SeatSector sector : THEATER_LAYOUT.keySet()) {
+            for(Long row : THEATER_LAYOUT.get(sector).keySet()) {
+                Integer auxiliarColumn = 1;
+                for(Long column : THEATER_LAYOUT.get(sector).get(row)) {
+                    theaterSeats.add(createSeat(sector, row, column, SeatStatus.VACANT, auxiliarColumn));
+                    auxiliarColumn ++;
+                }
             }
-            scores.put(row.getKey(), rowAvailableCombos);
         }
 
-        return scores;
+        return this.theaterSeats.size();
+    }
+
+    @VisibleForTesting
+    public void clearSeats() {
+        seatRepository.deleteAll();
+        this.theaterSeats.clear();
     }
 }
