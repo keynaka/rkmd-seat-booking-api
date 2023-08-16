@@ -1,5 +1,6 @@
 package com.rkmd.toki_no_nagare.controller;
 
+import com.rkmd.toki_no_nagare.dto.seat.SeatPricesBySectorDto;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
 import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
@@ -7,6 +8,7 @@ import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.service.SeatService;
 import com.rkmd.toki_no_nagare.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,4 +80,20 @@ public class SeatController {
 
         return ResponseEntity.ok().body(bestCombosByRow);
     }
+
+    @PutMapping("/prices/sector")
+    public ResponseEntity<Void> setupSeatPricesBySector(@RequestBody SeatPricesBySectorDto request) {
+        seatService.setSeatPricesBySector(
+            request.getPullmanSeatPrices(),
+            request.getPalcoSeatPrices(),
+            request.getPlateaSeatPrices());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/prices/seat")
+    public ResponseEntity<Void> setupSeatPricesByRow() {
+        seatService.setSeatPricesByRow();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
