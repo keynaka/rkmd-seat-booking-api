@@ -1,5 +1,8 @@
 # RKMD Seat Booking API
 
+## Swagger
+http://localhost:5000/swagger-ui/index.html
+
 API for seat booking at RKMD Toki no Nagare
 
 - [RKMD Seat Booking API](#rkmd-seat-booking-api)
