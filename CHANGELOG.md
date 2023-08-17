@@ -1,5 +1,8 @@
 # Changelog
 
+### 2023.08.17
+- Se modifica archivo pom.xml para buildeo de la aplicación con mvn install. (882036f)
+
 ### 2023.08.16
 - docs: Se actualiza archivo README.md con url local de swagger. (717aa97)
 - docs: Se actualiza archivo README.md con envs para conexión a BD en MySQL. (ec51bb2)
