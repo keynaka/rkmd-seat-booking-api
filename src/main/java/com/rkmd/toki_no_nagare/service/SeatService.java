@@ -1,6 +1,8 @@
 package com.rkmd.toki_no_nagare.service;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.rkmd.toki_no_nagare.dto.seat.recommendation.BestSeatsResponseDto;
+import com.rkmd.toki_no_nagare.dto.seat.recommendation.SeatRecommendationResponseDto;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatId;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
@@ -94,8 +96,8 @@ public class SeatService {
     *   comboSize = 50
     *   There are no rows containing more than 32 seats, so it won't recommend any seats
     * */
-    public Map<Long, Map<String, Object>> searchTopCombosByRow(Map<Long, List<Seat>> sectorSeats, int comboSize, int comboCount) {
-        Map<Long, Map<String, Object>> bestComboByRow = getBestComboByRow(sectorSeats, comboSize);
+    public SeatRecommendationResponseDto searchTopCombosByRow(Map<Long, List<Seat>> sectorSeats, int comboSize, int comboCount) {
+        SeatRecommendationResponseDto bestComboByRow = getBestComboByRow(sectorSeats, comboSize);
 
         return filterTopCombos(comboCount, bestComboByRow);
     }
@@ -104,8 +106,8 @@ public class SeatService {
     * This method search the best combo of each Row. It will return the score and the list of seats that represent
     * the combo
     * */
-    private static Map<Long, Map<String, Object>> getBestComboByRow(Map<Long, List<Seat>> sectorSeats, int comboSize) {
-        Map<Long, Map<String, Object>> bestComboByRow = new HashMap<>();
+    private static SeatRecommendationResponseDto getBestComboByRow(Map<Long, List<Seat>> sectorSeats, int comboSize) {
+        Map<Long, BestSeatsResponseDto> bestSeatsByRow = new HashMap<>();
         for (Map.Entry<Long, List<Seat>> row : sectorSeats.entrySet()) {
             List<List<Seat>> combos = findCombosAvailable(row.getValue(), comboSize);
             if (!combos.isEmpty()) {
@@ -118,22 +120,26 @@ public class SeatService {
                         maxScore = score;
                     }
                 }
-                bestComboByRow.put(row.getKey(), Map.of("score", maxScore, "combo", selectedRowCombo));
+                bestSeatsByRow.put(row.getKey(), new BestSeatsResponseDto(maxScore, selectedRowCombo));
             }
         }
-        return bestComboByRow;
+
+        return new SeatRecommendationResponseDto(bestSeatsByRow);
     }
 
     /*
     * This method filters just the top <comboCount> combos of <allCombos>. Each of these combos contain the list of seats
     * and the score associated
     * */
-    private static Map<Long, Map<String, Object>> filterTopCombos(int comboCount, Map<Long, Map<String, Object>> allCombos) {
-        Map<Long, Map<String, Object>> top = allCombos.entrySet().stream()
-                .sorted((e1, e2) -> Double.compare((Double) e2.getValue().get("score"), (Double) e1.getValue().get("score")))
+    private static SeatRecommendationResponseDto filterTopCombos(int comboCount, SeatRecommendationResponseDto allCombos) {
+        Map<Long, BestSeatsResponseDto> top = allCombos.getBestSeatsByRow().entrySet().stream()
+                .sorted((e1, e2) -> Double.compare(e2.getValue().getScore(), e1.getValue().getScore()))
                 .limit(comboCount)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        return top;
+
+        allCombos.setBestSeatsByRow(top);
+
+        return allCombos;
     }
 
     /*

@@ -1,6 +1,7 @@
 package com.rkmd.toki_no_nagare.controller;
 
 import com.rkmd.toki_no_nagare.dto.seat.SeatPricesBySectorDto;
+import com.rkmd.toki_no_nagare.dto.seat.recommendation.SeatRecommendationResponseDto;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
 import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
@@ -62,7 +63,7 @@ public class SeatController {
     }
 
     @GetMapping("/recommendation")
-    public ResponseEntity<Map<Long, Map<String, Object>>> getRecommendedSeats(
+    public ResponseEntity<SeatRecommendationResponseDto> getRecommendedSeats(
             @RequestParam(name = "combo_count") int comboCount,
             @RequestParam(name = "combo_size") int comboSize,
             @RequestParam(name = "sector") String sector) {
@@ -76,7 +77,7 @@ public class SeatController {
         Map<Long, List<Seat>> seats = seatService.getSectorSeatsByRow(seatSector, SeatStatus.VACANT);
         ValidationUtils.checkFound(!seats.isEmpty(), "seats_not_found", "There are no seats at the selected sector and row");
 
-        Map<Long, Map<String, Object>> bestCombosByRow = seatService.searchTopCombosByRow(seats, comboSize, comboCount);
+        SeatRecommendationResponseDto bestCombosByRow = seatService.searchTopCombosByRow(seats, comboSize, comboCount);
 
         return ResponseEntity.ok().body(bestCombosByRow);
     }
