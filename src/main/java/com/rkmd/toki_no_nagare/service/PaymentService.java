@@ -1,5 +1,8 @@
 package com.rkmd.toki_no_nagare.service;
 
+import com.rkmd.toki_no_nagare.dto.payment.BalanceResponseDto;
+import com.rkmd.toki_no_nagare.dto.payment.ChangePaymentResponseDto;
+import com.rkmd.toki_no_nagare.dto.payment.PaymentResponseDto;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentMethod;
 import com.rkmd.toki_no_nagare.repositories.PaymentRepository;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Service
 public class PaymentService {
@@ -45,6 +49,22 @@ public class PaymentService {
   public ZonedDateTime expirationDateByPaymentMethod(PaymentMethod paymentMethod, ZonedDateTime dateCreated){
     return (paymentMethod.equals(PaymentMethod.MERCADO_PAGO)) ?
         dateCreated.plusDays(paymentTimeLimitForMercadoPago) : dateCreated.plusDays(paymentTimeLimitForCash);
+  }
+
+
+  public ChangePaymentResponseDto changePaymentStatus(){
+    // TODO: Implement
+    return null;
+  }
+
+  public List<PaymentResponseDto> getAllPayments(){
+    // TODO: Implement
+    return null;
+  }
+
+  public BalanceResponseDto getBalance(){
+    // TODO: Implement
+    return null;
   }
 
 }
