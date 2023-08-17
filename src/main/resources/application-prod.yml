@@ -5,19 +5,11 @@ spring:
     password: # A COMPLETAR
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    open-in-view: false
     generate-ddl: true
     properties:
       hibernate:
         ddl-auto: "validate"
         naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-        globally_quoted_identifiers: true
-        jdbc:
-          time_zone: GMT-3
 spring-doc:
   swagger-ui:
     enabled: false
-    defaultModelsExpandDepth: -1 # Hide the model section
-paymentTimeLimitFor:
-  mercadoPago: 1
-  cash: 5
