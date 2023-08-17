@@ -1,5 +1,9 @@
 # Changelog
 
+### 2023.08.16
+- docs: Se actualiza el archivo README y se agrega nueva variable de entorno 'SPRING_PROFILES_ACTIVE' para el manejo de perfiles (8cc2e8b)
+- feat: Se agrega tres nuevos application.yml (h2, postgresql, prod) para el uso de perfiles (9d64dbd)
+
 ### 2023.08.15
 - feat: Se agrega enpoints para la asignación de precios por sector o por fila (edfeda2)
 - feat: Se agrega DTO para la asignación de precios por sector y se agrega Constantes para la asignación de precios por fila (9f48922)
