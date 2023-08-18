@@ -1,6 +1,8 @@
 # Changelog
 
 ### 2023.08.17
+- feat: Se agrega implementación para el cambio de estado de un pago y de una reserva (f4ae7b6)
+- build: Se agrega dependencia para PostgreSQL (28c6ea5)
 - feat: Se agrega nuevo controlador Payment con su respectiva documentación y servicio (6bf1281)
 - feat: Se agregan las clases DTO para la entidad Payment (aeba1e9)
 - feat: Se agrega servicio gestiona los pagos (969474a)
