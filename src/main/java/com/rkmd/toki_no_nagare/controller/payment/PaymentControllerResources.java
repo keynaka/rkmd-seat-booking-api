@@ -48,7 +48,7 @@ public interface PaymentControllerResources {
               responseCode = "500",
               description = "Internal server error",
               content = @Content(schema = @Schema(implementation = ApiError.class)))})
-  List<PaymentResponseDto> getAllPayment();
+  PaymentResponseDto getAllPayment();
 
 
   @Operation(

@@ -39,6 +39,8 @@ public class Booking {
 
     @Column(name = "expiration_date", nullable = false)
     private ZonedDateTime expirationDate;
+    
+    private String hashedBookingCode;
 
     @OneToOne
     @JoinColumn(name = "paymentId")
@@ -118,5 +120,13 @@ public class Booking {
 
     public void setPayment(Payment payment) {
         this.payment = payment;
+    }
+
+    public String getHashedBookingCode() {
+        return hashedBookingCode;
+    }
+
+    public void setHashedBookingCode(String hashedBookingCode) {
+        this.hashedBookingCode = hashedBookingCode;
     }
 }
