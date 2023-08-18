@@ -1,5 +1,9 @@
 # Changelog
 
+### 2023.08.18
+- refactor: Se quita método de '.getBalance()' del controller Payment para migrarlo a otro controller (391b772)
+- feat: Se agrega implementación del cambio de estado de un pago, reserva y butaca (72a4983)
+
 ### 2023.08.17
 - feat: Se agrega implementación para el cambio de estado de un pago y de una reserva (f4ae7b6)
 - build: Se agrega dependencia para PostgreSQL (28c6ea5)
