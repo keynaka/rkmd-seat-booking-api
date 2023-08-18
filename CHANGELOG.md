@@ -4,6 +4,8 @@
 - Se modifica archivo pom.xml para buildeo de la aplicación con mvn install. (882036f)
 
 ### 2023.08.16
+- docs: Se actualiza el archivo README y se agrega nueva variable de entorno 'SPRING_PROFILES_ACTIVE' para el manejo de perfiles (8cc2e8b)
+- feat: Se agrega tres nuevos application.yml (h2, postgresql, prod) para el uso de perfiles (9d64dbd)
 - docs: Se actualiza archivo README.md con url local de swagger. (717aa97)
 - docs: Se actualiza archivo README.md con envs para conexión a BD en MySQL. (ec51bb2)
 - feat: Se implementa conexión a DB MySQL. (16524c2)

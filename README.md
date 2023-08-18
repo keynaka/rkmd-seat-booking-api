@@ -118,6 +118,9 @@ If it does not work, check:
 - Password: ""  (empty)
 ```
 
+## Environment variables
+For local testing it is necessary to set _`SPRING_PROFILES_ACTIVE`_ environment variable. The supported profiles are: _`h2`_, _`postgresql`_, _`test`_, _`prod`_
+
 ## Envs
 ~~~conf
 APP_PORT=5000
