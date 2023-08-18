@@ -1,10 +1,14 @@
 package com.rkmd.toki_no_nagare.service;
 
-import com.rkmd.toki_no_nagare.dto.payment.BalanceResponseDto;
-import com.rkmd.toki_no_nagare.dto.payment.ChangePaymentResponseDto;
-import com.rkmd.toki_no_nagare.dto.payment.PaymentResponseDto;
+import com.rkmd.toki_no_nagare.dto.payment.*;
+import com.rkmd.toki_no_nagare.entities.booking.BookingStatus;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentMethod;
+import com.rkmd.toki_no_nagare.entities.payment.PaymentStatus;
+import com.rkmd.toki_no_nagare.entities.seat.Seat;
+import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
+import com.rkmd.toki_no_nagare.exception.BadRequestException;
+import com.rkmd.toki_no_nagare.exception.NotFoundException;
 import com.rkmd.toki_no_nagare.repositories.PaymentRepository;
 import com.rkmd.toki_no_nagare.utils.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PaymentService {
@@ -52,19 +57,58 @@ public class PaymentService {
   }
 
 
-  public ChangePaymentResponseDto changePaymentStatus(){
-    // TODO: Implement
-    return null;
+  /** This method checks if a booking exists according to the 'contactDni' and 'bookingCode' passed as parameters.
+   * If exists, updates the payment status passed as a parameter and change the booking status. If it doesn't exist,
+   * it throws an exception.
+   * @param bookingCode Booking code
+   * @param contactDni User identity number
+   * @param paymentStatus Payment status
+   * @throws BadRequestException Throw BadRequestException is booking not exists
+   * @return ChangePaymentResponseDto
+   */
+  public ChangePaymentResponseDto changePaymentStatus(String bookingCode, Long contactDni, PaymentStatus paymentStatus){
+    String hashedBookingCode = Tools.generateHashCode(contactDni, bookingCode);
+    List<Payment> payments = paymentRepository.findAll();
+    Optional<Payment> payment = payments.stream().filter(p -> p.getBooking().getHashedBookingCode().equals(hashedBookingCode)).findFirst();
+
+    if(payment.isEmpty()){
+      throw new NotFoundException("booking_not_found", "The requested booking does not exist.");
+    }
+
+    // Change the payment status
+    payment.get().setPaymentStatus(paymentStatus);
+    payment.get().setLastUpdated(Tools.getCurrentDate());
+
+    // Change the booking status
+    switch (paymentStatus) {
+      case PAID -> payment.get().getBooking().setStatus(BookingStatus.PAID);
+      case CANCELED -> payment.get().getBooking().setStatus(BookingStatus.CANCELED);
+      case EXPIRED -> payment.get().getBooking().setStatus(BookingStatus.EXPIRED);
+    }
+    payment.get().getBooking().setLastUpdated(Tools.getCurrentDate());
+
+    // Change de seat status
+    List<Seat> seats = payment.get().getBooking().getSeats();
+    for(Seat seat : seats){
+      if(paymentStatus.equals(PaymentStatus.PAID)){
+        seat.setStatus(SeatStatus.OCCUPIED);
+      } else {
+        seat.setStatus(SeatStatus.VACANT);
+      }
+    }
+
+    // Save changes
+    BookingStatus finalStatus = paymentRepository.saveAndFlush(payment.get()).getBooking().getStatus();
+
+    return new ChangePaymentResponseDto(bookingCode, finalStatus, "Modificación realizada exitosamente.");
   }
 
-  public List<PaymentResponseDto> getAllPayments(){
-    // TODO: Implement
-    return null;
+
+  /** This method returns all registered payments. * */
+  public PaymentResponseDto getAllPayments(){
+    List<Payment> payments = paymentRepository.findAll();
+    return new PaymentResponseDto(payments);
   }
 
-  public BalanceResponseDto getBalance(){
-    // TODO: Implement
-    return null;
-  }
 
 }
