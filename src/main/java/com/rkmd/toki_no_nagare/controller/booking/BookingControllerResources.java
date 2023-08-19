@@ -1,6 +1,8 @@
 package com.rkmd.toki_no_nagare.controller.booking;
 
 import com.rkmd.toki_no_nagare.dto.booking.BookingResponseDto;
+import com.rkmd.toki_no_nagare.dto.booking.CreateBookingRequestDto;
+import com.rkmd.toki_no_nagare.dto.booking.CreateBookingResponseDto;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.exception.ApiError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,5 +43,24 @@ public interface BookingControllerResources {
               description = "Internal server error",
               content = @Content(schema = @Schema(implementation = ApiError.class)))})
   BookingResponseDto getBookingByCodeAndDni(@PathVariable("bookingCode") String bookingCode, @PathVariable("dni") Long dni);
+
+
+  @Operation(
+      summary = "Crea una reserva",
+      description = "Endpoint para la web de RKMD",
+      responses = {
+          @ApiResponse(
+              responseCode = "201",
+              description = "Created",
+              useReturnTypeSchema = true),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content = @Content(schema = @Schema(implementation = ApiError.class))),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Internal server error",
+              content = @Content(schema = @Schema(implementation = ApiError.class)))})
+  CreateBookingResponseDto createBooking(@RequestBody CreateBookingRequestDto request);
 
 }
