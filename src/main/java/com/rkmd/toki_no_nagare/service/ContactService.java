@@ -1,6 +1,7 @@
 package com.rkmd.toki_no_nagare.service;
 
 import com.rkmd.toki_no_nagare.entities.contact.Contact;
+import com.rkmd.toki_no_nagare.entities.contact.PhoneType;
 import com.rkmd.toki_no_nagare.entities.user.RoleType;
 import com.rkmd.toki_no_nagare.entities.user.User;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
@@ -55,4 +56,11 @@ public class ContactService {
             throw new BadRequestException("bad_request", e.getMessage());
         }
     }
+
+
+    public Contact create(Long dni, String name, String lastName, String email, String phone, PhoneType phoneType){
+        Contact contact = new Contact(dni, name, lastName, email, phone, phoneType);
+        return contactRepository.saveAndFlush(contact);
+    }
+
 }
