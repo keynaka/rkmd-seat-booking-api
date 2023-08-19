@@ -36,7 +36,7 @@ public class Booking {
     @Column(name = "date_created", nullable = false)
     private ZonedDateTime dateCreated;
 
-    @Column(name = "last_updated", nullable = false)
+    @Column(name = "last_updated")
     private ZonedDateTime lastUpdated;
 
     @Column(name = "expiration_date", nullable = false)
