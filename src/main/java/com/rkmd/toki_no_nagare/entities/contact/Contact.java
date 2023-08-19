@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -27,6 +28,10 @@ public class Contact {
 
     @Column(name = "phone")
     private String phone;
+    
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private PhoneType phoneType;
 
     @JsonManagedReference
     @OneToOne(mappedBy = "contact", cascade = CascadeType.ALL)
@@ -90,5 +95,13 @@ public class Contact {
 
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
+    }
+
+    public PhoneType getPhoneType() {
+        return phoneType;
+    }
+
+    public void setPhoneType(PhoneType phoneType) {
+        this.phoneType = phoneType;
     }
 }
