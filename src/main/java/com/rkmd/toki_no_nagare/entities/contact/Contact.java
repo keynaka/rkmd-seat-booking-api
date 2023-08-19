@@ -6,9 +6,11 @@ import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@NoArgsConstructor
 @Entity
 @Table(name="contact")
 public class Contact {
@@ -40,6 +42,15 @@ public class Contact {
     @JsonManagedReference
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "client", cascade = CascadeType.ALL) //TODO: Change to LAZY if possible
     private List<Booking> bookings;
+
+    public Contact(Long dni, String name, String lastName, String email, String phone, PhoneType phoneType){
+        this.dni = dni;
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.phoneType = phoneType;
+    }
 
     public Long getDni() {
         return dni;
