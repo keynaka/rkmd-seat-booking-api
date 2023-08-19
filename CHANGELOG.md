@@ -1,5 +1,16 @@
 # Changelog
 
+### 2023.08.19
+- feat: Se agregan clases DTO para generar una reserva (4662364)
+- feat: Se agrego implementación para reservar butacas (1c60892)
+- feat: Se agrega documentación de BookingController (408f168)
+- feat: Se agrega constructor a clases Booking y Contact (9fbc239)
+- feat: Se agrega método (en Tools) para generar el código de reserva de forma aleatoria (148f094)
+- feat: Se agrega endpoint e implementación para obtener los datos de una reserva (115cc4a)
+- feat: Se agregan clases DTO para obtener los datos de una reserva (047a7b2)
+- refactor: Se agregan anotaciones de Swagger en enums (2a42dc5)
+- feat: Se agrega enum PhoneType para determinar que tipo de telefono ingresa el usuario (9ef7301)
+
 ### 2023.08.18
 - refactor: Se quita método de '.getBalance()' del controller Payment para migrarlo a otro controller (391b772)
 - feat: Se agrega implementación del cambio de estado de un pago, reserva y butaca (72a4983)
