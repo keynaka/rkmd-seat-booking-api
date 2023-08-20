@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: # A COMPLETAR
+    username: # A COMPLETAR
+    password: # A COMPLETAR
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    properties:
+      hibernate:
+        ddl-auto: "validate"
+        naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+spring-doc:
+  swagger-ui:
+    enabled: false

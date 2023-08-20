@@ -3,6 +3,7 @@ package com.rkmd.toki_no_nagare.entities.booking;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rkmd.toki_no_nagare.entities.contact.Contact;
+import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import jakarta.persistence.*;
 
@@ -30,10 +31,6 @@ public class Booking {
     @Column(name = "status", nullable = false)
     private BookingStatus status;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "payment_method", nullable = false)
-    private BookingPaymentMethod paymentMethod;
-
     @Column(name = "date_created", nullable = false)
     private ZonedDateTime dateCreated;
 
@@ -42,6 +39,12 @@ public class Booking {
 
     @Column(name = "expiration_date", nullable = false)
     private ZonedDateTime expirationDate;
+    
+    private String hashedBookingCode;
+
+    @OneToOne
+    @JoinColumn(name = "paymentId")
+    private Payment payment;
 
     @JsonManagedReference
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "booking", cascade = CascadeType.ALL)
@@ -79,14 +82,6 @@ public class Booking {
         this.status = status;
     }
 
-    public BookingPaymentMethod getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(BookingPaymentMethod paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
     public ZonedDateTime getDateCreated() {
         return dateCreated;
     }
@@ -117,5 +112,21 @@ public class Booking {
 
     public void setSeats(List<Seat> seats) {
         this.seats = seats;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    public String getHashedBookingCode() {
+        return hashedBookingCode;
+    }
+
+    public void setHashedBookingCode(String hashedBookingCode) {
+        this.hashedBookingCode = hashedBookingCode;
     }
 }

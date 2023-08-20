@@ -96,5 +96,12 @@
             <version>3.1.1</version>
         </dependency>
 
+        <!-- Dependency for PostgreSQL -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.6.0</version>
+        </dependency>
+
     </dependencies>
 </project>

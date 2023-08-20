@@ -115,6 +115,7 @@ If it does not work, check:
 - Password: ""  (empty)
 ```
 
-## Consultas
+## Environment variables
+For local testing it is necessary to set _`SPRING_PROFILES_ACTIVE`_ environment variable. The supported profiles are: _`h2`_, _`postgresql`_, _`test`_, _`prod`_
 
-- Que pasa unos asientos que estaban reservados expiran? Van a quedar lugares libres en el medio
+> Example: SPRING_PROFILES_ACTIVE=h2

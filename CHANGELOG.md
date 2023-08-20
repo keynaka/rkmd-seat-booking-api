@@ -1,5 +1,25 @@
 # Changelog
 
+### 2023.08.18
+- refactor: Se quita método de '.getBalance()' del controller Payment para migrarlo a otro controller (391b772)
+- feat: Se agrega implementación del cambio de estado de un pago, reserva y butaca (72a4983)
+
+### 2023.08.17
+- feat: Se agrega implementación para el cambio de estado de un pago y de una reserva (f4ae7b6)
+- build: Se agrega dependencia para PostgreSQL (28c6ea5)
+- feat: Se agrega nuevo controlador Payment con su respectiva documentación y servicio (6bf1281)
+- feat: Se agregan las clases DTO para la entidad Payment (aeba1e9)
+- feat: Se agrega servicio gestiona los pagos (969474a)
+- refactor: Se agregan nuevas variables de configuración que definen el tiempo limite de pago según la forma de pago elegida por el usuario. (790f5a8)
+- feat: agrego clase Tools que contiene método que retorna la fecha y hora actual (e81ab4d)
+- refactor: Se agrega la interfaz de PaymentRepository (5df6b32)
+- refactor: Se agrega la relación de la entidad Booking con la entidad Payment (fff1292)
+- feat: Se agrega nueva entidad Payment y enums donde se define "la forma de pago" y "el estado del pago" (646bb82)
+
+### 2023.08.16
+- docs: Se actualiza el archivo README y se agrega nueva variable de entorno 'SPRING_PROFILES_ACTIVE' para el manejo de perfiles (8cc2e8b)
+- feat: Se agrega tres nuevos application.yml (h2, postgresql, prod) para el uso de perfiles (9d64dbd)
+
 ### 2023.08.15
 - feat: Se agrega enpoints para la asignación de precios por sector o por fila (edfeda2)
 - feat: Se agrega DTO para la asignación de precios por sector y se agrega Constantes para la asignación de precios por fila (9f48922)

@@ -1,4 +1,3 @@
 spring-doc:
   swagger-ui:
     enabled: false
-    defaultModelsExpandDepth: -1 # Hide the model section

@@ -1,14 +1,5 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-  h2:
-    console:
-      enabled: true
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     open-in-view: false
     properties:
       hibernate:
@@ -17,5 +8,7 @@ spring:
           time_zone: GMT-3
 spring-doc:
   swagger-ui:
-    enabled: true
     defaultModelsExpandDepth: -1 # Hide the model section
+paymentTimeLimitFor:
+  mercadoPago: 1
+  cash: 5
