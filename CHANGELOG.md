@@ -1,5 +1,13 @@
 # Changelog
 
+### 2023.08.21
+- refactor: Se modifica método de creación de Bookings para evitar NullPointer y errores de duplicidad. Se agrega anotación @Transactional para evitar persistencia de datos ante un error (5420646)
+- feat: Se agrega método que asocia la entidad Booking con Seat y modifica el 'status' de Seat según corresponda (9807672)
+- refactor: Se quitan algunos simbolos en la generación del BookingCode debido a errores que se pueden presentar al colocar el bookingCode en la URI de un método del tipo GET (324d972)
+- refactor: Se modifica el método de creación de un Contacto. En caso de que "NO EXISTA" se crea un nuevo contacto y en caso de que "EXISTA", se modifican los datos existentes (5b30b9c)
+- fix: Se corrige error de NullPointer al crear la respuesta de una reserva y se corrige error al intentar persistir un Seat ya existente. (3ab3296)
+- fix: Se quita nullable en la propiedad last_updated de Booking (9d4c8ba)
+
 ### 2023.08.19
 - feat: Se agregan clases DTO para generar una reserva (4662364)
 - feat: Se agrego implementación para reservar butacas (1c60892)
