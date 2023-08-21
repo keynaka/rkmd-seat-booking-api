@@ -1,15 +1,19 @@
+server:
+  port: ${APP_PORT}
+
 spring:
   datasource:
-    url: # A COMPLETAR
-    username: # A COMPLETAR
-    password: # A COMPLETAR
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     generate-ddl: true
     properties:
       hibernate:
-        ddl-auto: "validate"
+        ddl-auto: ${DB_DDL_AUTO}
         naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
 spring-doc:
   swagger-ui:
-    enabled: false
+    enabled: ${SWAGGER_ENABLE}
