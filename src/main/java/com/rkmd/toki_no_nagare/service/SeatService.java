@@ -2,6 +2,7 @@ package com.rkmd.toki_no_nagare.service;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.rkmd.toki_no_nagare.dto.seat.SeatRequestDto;
+import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatId;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
@@ -292,6 +293,19 @@ public class SeatService {
      * */
     public void updateSeatStatus(List<Seat> seats){
         for(Seat seat : seats){
+            seat.setStatus(SeatStatus.RESERVED);
+            seatRepository.save(seat);
+        }
+    }
+
+
+    /** This method associates the seat data with the booking, changes the seat's status and persists it in the database
+     * @param seats Seats requested by the user
+     * @param booking Booking data
+     * */
+    public void updateSeatData(List<Seat> seats, Booking booking){
+        for(Seat seat : seats){
+            seat.setBooking(booking);
             seat.setStatus(SeatStatus.RESERVED);
             seatRepository.save(seat);
         }
