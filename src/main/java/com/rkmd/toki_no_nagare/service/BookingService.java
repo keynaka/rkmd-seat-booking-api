@@ -14,16 +14,15 @@ import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
 import com.rkmd.toki_no_nagare.repositories.BookingRepository;
 import com.rkmd.toki_no_nagare.utils.Tools;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.tools.Tool;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class BookingService {
@@ -89,45 +88,54 @@ public class BookingService {
      * @throws BadRequestException Throw BadRequestException if seats already reserved
      * @return CreateBookingResponseDto
      */
+    @Transactional
     public CreateBookingResponseDto createBooking(CreateBookingRequestDto request){
 
-        // Search in the database for the seats requested by the user and verify if the status is vacant.
+        // Step 1: Search in the database for the seats requested by the user
         List<Seat> seats = seatService.getSeatsRequestedByUser(request.getSeats());
+
+        // Step 2: Verify if the 'SEAT STATUS' is 'VACANT'
         seatService.validateSeatsStatus(seats);
 
-        // Change the seat's status and then persisted in the database
-        seatService.updateSeatStatus(seats);
+        // Step 3: Create the contact if not exist or update if exist
+        Contact contact = contactService.createOrUpdate(request.getContact());
+
+        // Step 4: Calculate the total price to pay for the booking
         BigDecimal paymentAmount = seatService.getTotalPaymentAmount(seats);
 
-        // Create the contact and then persisted in the database
-        Contact newContact = contactService.create(
-            request.getContact().getDni(),
-            request.getContact().getName(),
-            request.getContact().getLastName(),
-            request.getContact().getEmail(),
-            request.getContact().getPhone(),
-            request.getContact().getPhoneType()
-        );
+        // Step 5: Creates the payment and then persists it in the database
+        Payment payment = paymentService.createPayment(request.getPaymentMethod(), paymentAmount);
 
-        // Creates the payment and then persists it in the database
-        Payment newPayment = paymentService.createPayment(request.getPaymentMethod(), paymentAmount);
-
-        // Generates a random booking code and generates a booking hash code to persists in the database
-        String bookingCode = Tools.generateRandomHash();  // TODO: This bookingCode should be sent to the user via email
+        // Step 6: Generates a random booking code and generates a booking hash code to persists in the database
+        String bookingCode = Tools.generateRandomHash();
         String hashedBookingCode = Tools.generateHashCode(request.getContact().getDni(), bookingCode);
 
-        // Creates a booking with the data requested by the user and persists it in the database
-        Booking newBooking = new Booking(newContact, newPayment, seats, hashedBookingCode);
-        newBooking = bookingRepository.saveAndFlush(newBooking);
+        // Step 7: Creates a booking with the data requested by the user and persists it in the database
+        Booking booking = bookingRepository.saveAndFlush(new Booking(contact, payment, hashedBookingCode));
 
-        // Create the response for the user
+        // Step 8: Associate the seat data with the booking, changes the seat's status and persists it in the database
+        seatService.updateSeatData(seats, booking);
+
+        // Step 9: Create the response for the user // TODO: This response should be sent to the user via email
+        return createResponse(booking, bookingCode, seats);
+    }
+
+
+    /** This method creates the user response according to the booking data passed as parameters.
+     * @param booking Booking data
+     * @param bookingCode Booking code
+     * @param seats List of seats
+     * @return CreateBookingResponseDto
+     * */
+    public CreateBookingResponseDto createResponse(Booking booking, String bookingCode, List<Seat> seats){
         CreateBookingResponseDto response = new CreateBookingResponseDto();
+        response.setStatus(booking.getStatus());
         response.setBookingCode(bookingCode);
-        response.setDateCreated(newBooking.getDateCreated());
-        response.setExpirationDate(newBooking.getExpirationDate());
-        response.setContact(modelMapper.map(newBooking.getClient(), ContactDto.class));
-        response.setPayment(modelMapper.map(newBooking.getPayment(), PaymentDto.class));
-        response.setSeats(newBooking.getSeats()
+        response.setDateCreated(booking.getDateCreated());
+        response.setExpirationDate(booking.getExpirationDate());
+        response.setContact(modelMapper.map(booking.getClient(), ContactDto.class));
+        response.setPayment(modelMapper.map(booking.getPayment(), PaymentDto.class));
+        response.setSeats(seats
             .stream()
             .map(seat -> modelMapper.map(seat, SeatDto.class))
             .toList());

@@ -5,16 +5,14 @@ import com.rkmd.toki_no_nagare.dto.payment.PaymentDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
 import com.rkmd.toki_no_nagare.entities.booking.BookingStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Setter
 @Schema(description = "Datos de la reserva")
 public class BookingResponseDto {
 
