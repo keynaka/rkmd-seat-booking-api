@@ -1,7 +1,7 @@
 package com.rkmd.toki_no_nagare.service;
 
+import com.rkmd.toki_no_nagare.dto.Contact.ContactRequestDto;
 import com.rkmd.toki_no_nagare.entities.contact.Contact;
-import com.rkmd.toki_no_nagare.entities.contact.PhoneType;
 import com.rkmd.toki_no_nagare.entities.user.RoleType;
 import com.rkmd.toki_no_nagare.entities.user.User;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
@@ -57,9 +57,20 @@ public class ContactService {
         }
     }
 
+    /** This method creates a Contact if it doesn't exist in the database. If existed, update the existing data.
+     * @param request Contact data
+     * @return Contact
+     * */
+    public Contact createOrUpdate(ContactRequestDto request){
+        Optional<Contact> optionalContact = contactRepository.findById(request.getDni());
 
-    public Contact create(Long dni, String name, String lastName, String email, String phone, PhoneType phoneType){
-        Contact contact = new Contact(dni, name, lastName, email, phone, phoneType);
+        Contact contact = optionalContact.orElseGet(() -> new Contact(request.getDni()));
+        contact.setName(request.getName());
+        contact.setLastName(request.getLastName());
+        contact.setEmail(request.getEmail());
+        contact.setPhone(request.getPhone());
+        contact.setPhoneType(request.getPhoneType());
+
         return contactRepository.saveAndFlush(contact);
     }
 

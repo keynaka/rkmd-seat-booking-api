@@ -43,6 +43,10 @@ public class Contact {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "client", cascade = CascadeType.ALL) //TODO: Change to LAZY if possible
     private List<Booking> bookings;
 
+    public Contact(Long dni){
+        this.dni = dni;
+    }
+
     public Contact(Long dni, String name, String lastName, String email, String phone, PhoneType phoneType){
         this.dni = dni;
         this.name = name;
