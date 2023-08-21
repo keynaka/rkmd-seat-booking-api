@@ -17,3 +17,7 @@ spring:
 spring-doc:
   swagger-ui:
     enabled: ${SWAGGER_ENABLE}
+
+paymentTimeLimitFor:
+  mercadoPago: ${RESERVATION_MERCADOPAGO_EXPIRATION_TIME}
+  cash: ${RESERVATION_CASH_EXPIRATION_TIME}
