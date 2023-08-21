@@ -52,13 +52,12 @@ public class Booking {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "booking", cascade = CascadeType.ALL)
     private List<Seat> seats;
 
-    public Booking(Contact contact, Payment payment, List<Seat> seats, String hashedBookingCode){
+    public Booking(Contact contact, Payment payment, String hashedBookingCode){
         this.client = contact;
         this.payment = payment;
         this.status = BookingStatus.PENDING;
         this.dateCreated = payment.getDateCreated();
         this.expirationDate = payment.getExpirationDate();
-        this.seats = seats;
         this.hashedBookingCode = hashedBookingCode;
     }
 

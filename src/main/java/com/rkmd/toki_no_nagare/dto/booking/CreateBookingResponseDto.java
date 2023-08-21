@@ -37,7 +37,8 @@ public class CreateBookingResponseDto {
   @Schema(
       name = "lastUpdated",
       description = "detail: Fecha de última modificación de la reserva",
-      example = "2023-08-17T15:30:45.123456789-03:00[America/Argentina/Buenos_Aires]")
+      example = "2023-08-17T15:30:45.123456789-03:00[America/Argentina/Buenos_Aires]",
+      nullable = true)
   private ZonedDateTime lastUpdated;
 
   @Schema(

@@ -3,17 +3,14 @@ package com.rkmd.toki_no_nagare.dto.payment;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentMethod;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Setter
 @Schema(description = "Datos del pago")
 public class PaymentDto {
 
@@ -37,7 +34,8 @@ public class PaymentDto {
   @Schema(
       name = "receiptNumber",
       description = "detail: Número de comprobante",
-      example = "30000")
+      example = "30000",
+      nullable = true)
   private String receiptNumber;
 
   @Schema(
@@ -49,7 +47,8 @@ public class PaymentDto {
   @Schema(
       name = "lastUpdated",
       description = "detail: Fecha de última modificación",
-      example = "2023-08-17T15:30:45.123456789-03:00[America/Argentina/Buenos_Aires]")
+      example = "2023-08-17T15:30:45.123456789-03:00[America/Argentina/Buenos_Aires]",
+      nullable = true)
   @Setter
   private ZonedDateTime lastUpdated;
 

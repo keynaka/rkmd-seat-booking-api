@@ -2,13 +2,11 @@ package com.rkmd.toki_no_nagare.dto.Contact;
 
 import com.rkmd.toki_no_nagare.entities.contact.PhoneType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Setter
 @Schema(description = "Datos del contacto")
 public class ContactDto {
 
