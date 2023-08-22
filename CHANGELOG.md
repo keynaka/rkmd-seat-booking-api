@@ -1,6 +1,10 @@
 # Changelog
 
 ### 2023.08.21
+- fix: Se corrige error al obtener los datos de una reserva (fb8d30e)
+- feat: Se agrega método para validar un BookingCode + Dni (8f2ad9d)
+
+### 2023.08.21
 - refactor: Se modifica método de creación de Bookings para evitar NullPointer y errores de duplicidad. Se agrega anotación @Transactional para evitar persistencia de datos ante un error (5420646)
 - feat: Se agrega método que asocia la entidad Booking con Seat y modifica el 'status' de Seat según corresponda (9807672)
 - refactor: Se quitan algunos simbolos en la generación del BookingCode debido a errores que se pueden presentar al colocar el bookingCode en la URI de un método del tipo GET (324d972)
