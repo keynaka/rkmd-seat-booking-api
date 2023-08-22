@@ -33,4 +33,9 @@ public class Tools {
     return randomHash.toString();
   }
 
+  public static boolean validateBookingCode(Long contactDni, String bookingCode, String hashedBookingCode){
+    String key = contactDni + bookingCode;
+    return BCrypt.checkpw(key, hashedBookingCode);
+  }
+
 }
