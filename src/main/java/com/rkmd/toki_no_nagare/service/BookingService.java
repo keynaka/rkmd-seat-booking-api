@@ -63,22 +63,40 @@ public class BookingService {
 
 
     /** This method checks if a booking exists according to the 'dni' and 'bookingCode' passed as parameters.
-     * If exists, returns the booking data. If it doesn't exist, it throws an exception.
+     * If exists, returns the booking data. If it doesn't exist or 'bookingCode' is invalid, it throws an exception.
      * @param bookingCode Booking code
      * @param dni User identity number
-     * @throws BadRequestException Throw BadRequestException if booking not exists
+     * @throws NotFoundException if booking not exists
+     * @throws BadRequestException if booking code is invalid
      * @return BookingResponseDto
      */
     public BookingResponseDto getBookingByCodeAndDni(String bookingCode, Long dni){
-        String hashedBookingCode = Tools.generateHashCode(dni, bookingCode);
-        List<Booking> bookings = bookingRepository.findAll();
-        Optional<Booking> booking = bookings.stream().filter(b -> b.getHashedBookingCode().equals(hashedBookingCode)).findFirst();
+        List<Booking> allBookings = bookingRepository.findAll();
+        List<Booking> userBookings = allBookings.stream().filter(b -> b.getClient().getDni().equals(dni)).toList();
 
-        if(booking.isEmpty()){
+        if(userBookings.isEmpty()){
             throw new NotFoundException("booking_not_found", "The requested booking does not exist.");
         }
 
-        return modelMapper.map(booking.get(), BookingResponseDto.class);
+        Booking reservedBooking = null;
+
+        for(Booking booking : userBookings){
+            boolean isValid = Tools.validateBookingCode(dni, bookingCode, booking.getHashedBookingCode());
+            if(isValid) {
+                reservedBooking = booking;
+            }
+        }
+
+        if(reservedBooking == null){
+            throw new BadRequestException("booking_code_invalid", "The booking code is invalid.");
+        }
+
+        BookingResponseDto response = modelMapper.map(reservedBooking, BookingResponseDto.class);
+
+        // This step is necessary because the "Contact" attribute of the "Booking" class was defined with the name client
+        response.setContact(modelMapper.map(reservedBooking.getClient(), ContactDto.class));
+
+        return response;
     }
 
 
