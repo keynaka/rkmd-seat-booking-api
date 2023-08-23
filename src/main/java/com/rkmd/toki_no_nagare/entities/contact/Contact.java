@@ -5,9 +5,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@NoArgsConstructor
 @Entity
 @Table(name="contact")
 public class Contact {
@@ -27,6 +30,10 @@ public class Contact {
 
     @Column(name = "phone")
     private String phone;
+    
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private PhoneType phoneType;
 
     @JsonManagedReference
     @OneToOne(mappedBy = "contact", cascade = CascadeType.ALL)
@@ -35,6 +42,19 @@ public class Contact {
     @JsonManagedReference
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "client", cascade = CascadeType.ALL) //TODO: Change to LAZY if possible
     private List<Booking> bookings;
+
+    public Contact(Long dni){
+        this.dni = dni;
+    }
+
+    public Contact(Long dni, String name, String lastName, String email, String phone, PhoneType phoneType){
+        this.dni = dni;
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.phoneType = phoneType;
+    }
 
     public Long getDni() {
         return dni;
@@ -90,5 +110,13 @@ public class Contact {
 
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
+    }
+
+    public PhoneType getPhoneType() {
+        return phoneType;
+    }
+
+    public void setPhoneType(PhoneType phoneType) {
+        this.phoneType = phoneType;
     }
 }

@@ -1,6 +1,7 @@
-package com.rkmd.toki_no_nagare.dto.payment;
+package com.rkmd.toki_no_nagare.dto.booking;
 
 import com.rkmd.toki_no_nagare.dto.Contact.ContactDto;
+import com.rkmd.toki_no_nagare.dto.payment.PaymentDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
 import com.rkmd.toki_no_nagare.entities.booking.BookingStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,13 +15,12 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@Schema(description = "Estado final de la reserva.")
-public class ChangePaymentResponseDto {
+public class CreateBookingResponseDto {
 
   @Schema(
       name = "bookingCode",
       description = "detail: Código de reserva",
-      example = "e6-g_E")
+      example = "e6%g!E")
   private String bookingCode;
 
   @Schema(
