@@ -1,5 +1,35 @@
 # Changelog
 
+### 2023.08.22
+- refactor: Se modifica validación de estado de Seat (a2d1c28)
+- refactor: Se agrega anotación @Transactional en el cambio de estado de Payment, Booking y Seat (15c849a)
+- refactor: Se modifica implementación en el método que actualiza el estado de Payment, Seats y Booking (66c4bbc)
+- refactor: Se modifica la relación entre entidades Payment y Booking (d3c2c40)
+- refactor: quito simbolos al generar el bookingCode, ya que traen conflictos al ser utilizados en una petición GET (356177d)
+- fix: Se corrige error al obtener los datos de una reserva (fb8d30e)
+- feat: Se agrega método para validar un BookingCode + Dni (8f2ad9d)
+
+### 2023.08.21
+- refactor: Se modifica método de creación de Bookings para evitar NullPointer y errores de duplicidad. Se agrega anotación @Transactional para evitar persistencia de datos ante un error (5420646)
+- feat: Se agrega método que asocia la entidad Booking con Seat y modifica el 'status' de Seat según corresponda (9807672)
+- refactor: Se quitan algunos simbolos en la generación del BookingCode debido a errores que se pueden presentar al colocar el bookingCode en la URI de un método del tipo GET (324d972)
+- refactor: Se modifica el método de creación de un Contacto. En caso de que "NO EXISTA" se crea un nuevo contacto y en caso de que "EXISTA", se modifican los datos existentes (5b30b9c)
+- fix: Se corrige error de NullPointer al crear la respuesta de una reserva y se corrige error al intentar persistir un Seat ya existente. (3ab3296)
+- fix: Se quita nullable en la propiedad last_updated de Booking (9d4c8ba)
+- fix: se crean envs RESERVATION_MERCADOPAGO_EXPIRATION_TIME y RESERVATION_CASH_EXPIRATION_TIME para manejo del tiempo de expiración de las reservar. (c94554d)
+- fix: archivo pom.xml para poder buildear el binario .jar con mvn install. (811f317)
+
+### 2023.08.19
+- feat: Se agregan clases DTO para generar una reserva (4662364)
+- feat: Se agrego implementación para reservar butacas (1c60892)
+- feat: Se agrega documentación de BookingController (408f168)
+- feat: Se agrega constructor a clases Booking y Contact (9fbc239)
+- feat: Se agrega método (en Tools) para generar el código de reserva de forma aleatoria (148f094)
+- feat: Se agrega endpoint e implementación para obtener los datos de una reserva (115cc4a)
+- feat: Se agregan clases DTO para obtener los datos de una reserva (047a7b2)
+- refactor: Se agregan anotaciones de Swagger en enums (2a42dc5)
+- feat: Se agrega enum PhoneType para determinar que tipo de telefono ingresa el usuario (9ef7301)
+
 ### 2023.08.18
 - refactor: Se quita método de '.getBalance()' del controller Payment para migrarlo a otro controller (391b772)
 - feat: Se agrega implementación del cambio de estado de un pago, reserva y butaca (72a4983)

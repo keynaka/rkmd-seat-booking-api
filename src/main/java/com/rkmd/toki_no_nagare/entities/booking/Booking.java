@@ -6,10 +6,12 @@ import com.rkmd.toki_no_nagare.entities.contact.Contact;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
+@NoArgsConstructor
 @Entity
 @Table(name="booking")
 public class Booking {
@@ -34,7 +36,7 @@ public class Booking {
     @Column(name = "date_created", nullable = false)
     private ZonedDateTime dateCreated;
 
-    @Column(name = "last_updated", nullable = false)
+    @Column(name = "last_updated")
     private ZonedDateTime lastUpdated;
 
     @Column(name = "expiration_date", nullable = false)
@@ -49,6 +51,15 @@ public class Booking {
     @JsonManagedReference
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "booking", cascade = CascadeType.ALL)
     private List<Seat> seats;
+
+    public Booking(Contact contact, Payment payment, String hashedBookingCode){
+        this.client = contact;
+        this.payment = payment;
+        this.status = BookingStatus.PENDING;
+        this.dateCreated = payment.getDateCreated();
+        this.expirationDate = payment.getExpirationDate();
+        this.hashedBookingCode = hashedBookingCode;
+    }
 
     public Long getId() {
         return id;

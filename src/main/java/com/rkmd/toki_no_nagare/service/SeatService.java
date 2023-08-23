@@ -3,6 +3,8 @@ package com.rkmd.toki_no_nagare.service;
 import com.google.common.annotations.VisibleForTesting;
 import com.rkmd.toki_no_nagare.dto.seat.recommendation.BestSeatsResponseDto;
 import com.rkmd.toki_no_nagare.dto.seat.recommendation.SeatRecommendationResponseDto;
+import com.rkmd.toki_no_nagare.dto.seat.SeatRequestDto;
+import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatId;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
@@ -251,6 +253,67 @@ public class SeatService {
                     });
                 }
             }
+        }
+    }
+
+
+    /** This method returns the seats requested by the user from the database.
+     * @param request Seats requested by the user
+     * @return List<Seat>
+     * */
+    public List<Seat> getSeatsRequestedByUser(List<SeatRequestDto> request){
+        List<Seat> allSeats = seatRepository.findAll();
+        List<Seat> seats = new ArrayList<>();
+
+        for(SeatRequestDto seatRequested : request){
+            seats.add(allSeats.stream()
+                .filter(s -> s.getSector().equals(seatRequested.getSector()) && s.getRow().equals(seatRequested.getRow()) && s.getColumn().equals(seatRequested.getColumn()))
+                .findFirst()
+                .get());
+        }
+        return seats;
+    }
+
+    /** Validates the seat status
+     * @param seats Seats requested by the user
+     * @throws BadRequestException When the seat is not equals to seat status requested
+     * */
+    public void validateSeatsStatus(List<Seat> seats, SeatStatus seatStatus){
+        for(Seat seat : seats){
+            if(!seat.getStatus().equals(seatStatus)){
+                throw new BadRequestException("invalid_seat", String.format("The seats are not %s", seatStatus.name()));
+            }
+        }
+    }
+
+    /** Calculates the sum of the prices of the requested seats
+     * @param seats Seats requested by the user
+     * @return BigDecimal Payment amounts
+     * */
+    public BigDecimal getTotalPaymentAmount(List<Seat> seats){
+        return seats.stream().map(Seat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /** Updates the status of a seat to reserved
+     * @param seats Seats requested by the user
+     * */
+    public void updateSeatStatus(List<Seat> seats){
+        for(Seat seat : seats){
+            seat.setStatus(SeatStatus.RESERVED);
+            seatRepository.save(seat);
+        }
+    }
+
+
+    /** This method associates the seat data with the booking, changes the seat's status and persists it in the database
+     * @param seats Seats requested by the user
+     * @param booking Booking data
+     * */
+    public void updateSeatData(List<Seat> seats, Booking booking){
+        for(Seat seat : seats){
+            seat.setBooking(booking);
+            seat.setStatus(SeatStatus.RESERVED);
+            seatRepository.save(seat);
         }
     }
 

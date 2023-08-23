@@ -4,6 +4,7 @@ import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.time.ZonedDateTime;
 @SequenceGenerator(name = "seq_payment", initialValue = 1, allocationSize = 1, sequenceName = "seq_payment")
 @Table(name = "payment")
 @Getter
+@NoArgsConstructor
 public class Payment {
 
   @Id
@@ -46,8 +48,7 @@ public class Payment {
   @Version
   private int version;
 
-  @OneToOne
-  @JoinColumn(name = "paymentId")
+  @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
   private Booking booking;
 
   public Payment(PaymentMethod paymentMethod, BigDecimal amount, ZonedDateTime dateCreated, ZonedDateTime expirationDate){

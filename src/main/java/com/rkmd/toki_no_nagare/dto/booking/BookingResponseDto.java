@@ -1,27 +1,20 @@
-package com.rkmd.toki_no_nagare.dto.payment;
+package com.rkmd.toki_no_nagare.dto.booking;
 
 import com.rkmd.toki_no_nagare.dto.Contact.ContactDto;
+import com.rkmd.toki_no_nagare.dto.payment.PaymentDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
 import com.rkmd.toki_no_nagare.entities.booking.BookingStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
-@NoArgsConstructor
 @Getter
 @Setter
-@Schema(description = "Estado final de la reserva.")
-public class ChangePaymentResponseDto {
-
-  @Schema(
-      name = "bookingCode",
-      description = "detail: Código de reserva",
-      example = "e6-g_E")
-  private String bookingCode;
+@Schema(description = "Datos de la reserva")
+public class BookingResponseDto {
 
   @Schema(
       name = "bookingStatus",
@@ -37,8 +30,7 @@ public class ChangePaymentResponseDto {
   @Schema(
       name = "lastUpdated",
       description = "detail: Fecha de última modificación de la reserva",
-      example = "2023-08-17T15:30:45.123456789-03:00[America/Argentina/Buenos_Aires]",
-      nullable = true)
+      example = "2023-08-17T15:30:45.123456789-03:00[America/Argentina/Buenos_Aires]")
   private ZonedDateTime lastUpdated;
 
   @Schema(

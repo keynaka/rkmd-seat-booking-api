@@ -1,6 +1,9 @@
 package com.rkmd.toki_no_nagare.service;
 
+import com.rkmd.toki_no_nagare.dto.Contact.ContactDto;
 import com.rkmd.toki_no_nagare.dto.payment.*;
+import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
+import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.booking.BookingStatus;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentMethod;
@@ -11,6 +14,8 @@ import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
 import com.rkmd.toki_no_nagare.repositories.PaymentRepository;
 import com.rkmd.toki_no_nagare.utils.Tools;
+import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,6 +33,9 @@ public class PaymentService {
 
   @Value("${paymentTimeLimitFor.cash}")
   private Long paymentTimeLimitForCash;
+
+  @Autowired
+  private ModelMapper modelMapper;
 
   @Autowired
   private PaymentRepository paymentRepository;
@@ -61,54 +69,135 @@ public class PaymentService {
    * If exists, updates the payment status passed as a parameter and change the booking status. If it doesn't exist,
    * it throws an exception.
    * @param bookingCode Booking code
-   * @param contactDni User identity number
+   * @param dni User identity number
    * @param paymentStatus Payment status
    * @throws BadRequestException Throw BadRequestException is booking not exists
    * @return ChangePaymentResponseDto
    */
-  public ChangePaymentResponseDto changePaymentStatus(String bookingCode, Long contactDni, PaymentStatus paymentStatus){
-    String hashedBookingCode = Tools.generateHashCode(contactDni, bookingCode);
-    List<Payment> payments = paymentRepository.findAll();
-    Optional<Payment> payment = payments.stream().filter(p -> p.getBooking().getHashedBookingCode().equals(hashedBookingCode)).findFirst();
+  @Transactional
+  public ChangePaymentResponseDto changePaymentStatus(String bookingCode, Long dni, PaymentStatus paymentStatus){
 
-    if(payment.isEmpty()){
-      throw new NotFoundException("booking_not_found", "The requested booking does not exist.");
-    }
+    // Step 1: Get all the user's payments
+    List<Payment> userPayments = getUserPayments(dni);
 
-    // Change the payment status
-    payment.get().setPaymentStatus(paymentStatus);
-    payment.get().setLastUpdated(Tools.getCurrentDate());
+    // Step 2: Get the payment corresponding to the booking code and dni
+    Payment payment = getPaymentByBookingCodeAndDni(dni, bookingCode, userPayments);
 
-    // Change the booking status
-    switch (paymentStatus) {
-      case PAID -> payment.get().getBooking().setStatus(BookingStatus.PAID);
-      case CANCELED -> payment.get().getBooking().setStatus(BookingStatus.CANCELED);
-      case EXPIRED -> payment.get().getBooking().setStatus(BookingStatus.EXPIRED);
-    }
-    payment.get().getBooking().setLastUpdated(Tools.getCurrentDate());
+    // Step 3: update the booking status based on the payment status
+    Booking booking = payment.getBooking();
+    updateBookingStatus(booking, paymentStatus);
 
-    // Change de seat status
-    List<Seat> seats = payment.get().getBooking().getSeats();
-    for(Seat seat : seats){
-      if(paymentStatus.equals(PaymentStatus.PAID)){
-        seat.setStatus(SeatStatus.OCCUPIED);
-      } else {
-        seat.setStatus(SeatStatus.VACANT);
-      }
-    }
+    // Step 4: update the seat status based on the payment status
+    List<Seat> seats = payment.getBooking().getSeats();
+    updateSeatStatus(seats, paymentStatus);
 
-    // Save changes
-    BookingStatus finalStatus = paymentRepository.saveAndFlush(payment.get()).getBooking().getStatus();
+    // Step 5: update the payment status
+    payment.setPaymentStatus(paymentStatus);
+    payment.setLastUpdated(Tools.getCurrentDate());
 
-    return new ChangePaymentResponseDto(bookingCode, finalStatus, "Modificación realizada exitosamente.");
+    // Step 6: save the payment data
+    paymentRepository.saveAndFlush(payment);
+
+    // Step 7: Create the response for the user  // TODO: This response should be sent to the user via email
+    return createResponse(booking, bookingCode, seats);
   }
 
 
-  /** This method returns all registered payments. * */
+  /** This method returns all registered payments
+   * @return PaymentResponseDto
+   * */
   public PaymentResponseDto getAllPayments(){
     List<Payment> payments = paymentRepository.findAll();
     return new PaymentResponseDto(payments);
   }
 
+
+  /** This method updates the booking status based on the payment status
+   * @param booking Booking data
+   * @param paymentStatus Payment status
+   * */
+  public void updateBookingStatus(Booking booking, PaymentStatus paymentStatus){
+    switch (paymentStatus) {
+      case PAID -> booking.setStatus(BookingStatus.PAID);
+      case CANCELED -> booking.setStatus(BookingStatus.CANCELED);
+      case EXPIRED -> booking.setStatus(BookingStatus.EXPIRED);
+    }
+    booking.setLastUpdated(Tools.getCurrentDate());
+  }
+
+
+  /** This method updates the seats status based on the payment status
+   * @param seats List of seats
+   * @param paymentStatus Payment status
+   * */
+  public void updateSeatStatus(List<Seat> seats, PaymentStatus paymentStatus){
+    for(Seat seat : seats){
+      if(paymentStatus.equals(PaymentStatus.PAID)){
+        seat.setStatus(SeatStatus.OCCUPIED);
+      } else {
+        seat.setStatus(SeatStatus.VACANT);
+        seat.setBooking(null);
+      }
+    }
+  }
+
+
+  /** This method creates the user response according to the booking data passed as parameters.
+   * @param booking Booking data
+   * @param bookingCode Booking code
+   * @param seats List of seats
+   * @return ChangePaymentResponseDto
+   * */
+  public ChangePaymentResponseDto createResponse(Booking booking, String bookingCode, List<Seat> seats){
+    ChangePaymentResponseDto response = new ChangePaymentResponseDto();
+    response.setStatus(booking.getStatus());
+    response.setBookingCode(bookingCode);
+    response.setDateCreated(booking.getDateCreated());
+    response.setExpirationDate(booking.getExpirationDate());
+    response.setContact(modelMapper.map(booking.getClient(), ContactDto.class));
+    response.setPayment(modelMapper.map(booking.getPayment(), PaymentDto.class));
+    response.setSeats(seats
+        .stream()
+        .map(seat -> modelMapper.map(seat, SeatDto.class))
+        .toList());
+
+    return response;
+  }
+
+
+  /** This method get all the user payments according to the dni passed as parameters.
+   * @param dni User identity number
+   * @return List<Payment>
+   * @throws NotFoundException If payment not found
+   * */
+  public List<Payment> getUserPayments(Long dni){
+    List<Payment> allPayments = paymentRepository.findAll();
+    List<Payment> userPayments = allPayments.stream().filter(p -> p.getBooking().getClient().getDni().equals(dni)).toList();
+
+    if(userPayments.isEmpty()){
+      throw new NotFoundException("payment_not_found", "The requested payment does not exist.");
+    }
+
+    return userPayments;
+  }
+
+
+  /** This method filters the user payment by the DNI and booking code passed as parameters
+   * @param dni User identity number
+   * @param bookingCode Booking code
+   * @param userPayments Lists of user payments
+   * @throws NotFoundException If booking is invalid
+   * */
+  public Payment getPaymentByBookingCodeAndDni(Long dni, String bookingCode, List<Payment> userPayments){
+    Optional<Payment> paymentOptional = userPayments.stream()
+        .filter(p -> Tools.validateBookingCode(dni, bookingCode, p.getBooking().getHashedBookingCode()))
+        .findFirst();
+
+    if(paymentOptional.isEmpty()){
+      throw new NotFoundException("booking_code_invalid", "The booking code is invalid.");
+    }
+
+    return paymentOptional.get();
+  }
 
 }
