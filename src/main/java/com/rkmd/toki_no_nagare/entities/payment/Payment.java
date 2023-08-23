@@ -48,8 +48,7 @@ public class Payment {
   @Version
   private int version;
 
-  @OneToOne
-  @JoinColumn(name = "paymentId")
+  @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
   private Booking booking;
 
   public Payment(PaymentMethod paymentMethod, BigDecimal amount, ZonedDateTime dateCreated, ZonedDateTime expirationDate){
