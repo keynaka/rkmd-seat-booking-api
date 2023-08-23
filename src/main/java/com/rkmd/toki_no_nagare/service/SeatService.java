@@ -270,12 +270,12 @@ public class SeatService {
 
     /** Validates the seat status
      * @param seats Seats requested by the user
-     * @throws BadRequestException When the seat is already reserved
+     * @throws BadRequestException When the seat is not equals to seat status requested
      * */
-    public void validateSeatsStatus(List<Seat> seats){
+    public void validateSeatsStatus(List<Seat> seats, SeatStatus seatStatus){
         for(Seat seat : seats){
-            if(!seat.getStatus().equals(SeatStatus.VACANT)){
-                throw new BadRequestException("seat_already_reserved", "The seat is already reserved");
+            if(!seat.getStatus().equals(seatStatus)){
+                throw new BadRequestException("invalid_seat", String.format("The seats are not %s", seatStatus.name()));
             }
         }
     }
