@@ -16,6 +16,8 @@
 - refactor: Se modifica el método de creación de un Contacto. En caso de que "NO EXISTA" se crea un nuevo contacto y en caso de que "EXISTA", se modifican los datos existentes (5b30b9c)
 - fix: Se corrige error de NullPointer al crear la respuesta de una reserva y se corrige error al intentar persistir un Seat ya existente. (3ab3296)
 - fix: Se quita nullable en la propiedad last_updated de Booking (9d4c8ba)
+- fix: se crean envs RESERVATION_MERCADOPAGO_EXPIRATION_TIME y RESERVATION_CASH_EXPIRATION_TIME para manejo del tiempo de expiración de las reservar. (c94554d)
+- fix: archivo pom.xml para poder buildear el binario .jar con mvn install. (811f317)
 
 ### 2023.08.19
 - feat: Se agregan clases DTO para generar una reserva (4662364)
