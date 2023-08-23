@@ -1,6 +1,9 @@
 # Changelog
 
 ### 2023.08.21
+- refactor: Se modifica implementación en el método que actualiza el estado de Payment, Seats y Booking (66c4bbc)
+- refactor: Se modifica la relación entre entidades Payment y Booking (d3c2c40)
+- refactor: quito simbolos al generar el bookingCode, ya que traen conflictos al ser utilizados en una petición GET (356177d)
 - fix: Se corrige error al obtener los datos de una reserva (fb8d30e)
 - feat: Se agrega método para validar un BookingCode + Dni (8f2ad9d)
 
