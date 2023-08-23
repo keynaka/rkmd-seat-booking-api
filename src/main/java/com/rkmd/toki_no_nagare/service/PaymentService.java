@@ -14,6 +14,7 @@ import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
 import com.rkmd.toki_no_nagare.repositories.PaymentRepository;
 import com.rkmd.toki_no_nagare.utils.Tools;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,6 +74,7 @@ public class PaymentService {
    * @throws BadRequestException Throw BadRequestException is booking not exists
    * @return ChangePaymentResponseDto
    */
+  @Transactional
   public ChangePaymentResponseDto changePaymentStatus(String bookingCode, Long dni, PaymentStatus paymentStatus){
 
     // Step 1: Get all the user's payments
