@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 public class Tools {
 
   static int hashLength = 6;
-  static String hashCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*_+=";
+  static String hashCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@$%&*_+";
 
   public static ZonedDateTime getCurrentDate(){
     ZoneId zoneIdArgentina = ZoneId.of("America/Argentina/Buenos_Aires");
