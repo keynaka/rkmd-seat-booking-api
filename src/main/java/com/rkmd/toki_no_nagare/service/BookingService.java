@@ -10,6 +10,7 @@ import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.contact.Contact;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
+import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
 import com.rkmd.toki_no_nagare.repositories.BookingRepository;
@@ -113,7 +114,7 @@ public class BookingService {
         List<Seat> seats = seatService.getSeatsRequestedByUser(request.getSeats());
 
         // Step 2: Verify if the 'SEAT STATUS' is 'VACANT'
-        seatService.validateSeatsStatus(seats);
+        seatService.validateSeatsStatus(seats, SeatStatus.VACANT);
 
         // Step 3: Create the contact if not exist or update if exist
         Contact contact = contactService.createOrUpdate(request.getContact());
