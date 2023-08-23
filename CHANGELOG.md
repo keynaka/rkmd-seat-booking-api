@@ -1,5 +1,9 @@
 # Changelog
 
+### 2023.08.21
+- fix: se crean envs RESERVATION_MERCADOPAGO_EXPIRATION_TIME y RESERVATION_CASH_EXPIRATION_TIME para manejo del tiempo de expiración de las reservar. (c94554d)
+- fix: archivo pom.xml para poder buildear el binario .jar con mvn install. (811f317)
+
 ### 2023.08.18
 - refactor: Se quita método de '.getBalance()' del controller Payment para migrarlo a otro controller (391b772)
 - feat: Se agrega implementación del cambio de estado de un pago, reserva y butaca (72a4983)
