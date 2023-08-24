@@ -164,15 +164,13 @@ public class SeatService {
     * This method checks if the list of seats are consecutive
     * */
     private static boolean isConsecutive(List<Seat> seats) {
-        logger.info(String.format("Seats size: %d", seats.size()));
         for (int i = 1; i < seats.size(); i++) {
-            logger.info(String.format("Seat auxiliarColumn: %d", seats.get(i).getAuxiliarColumn()));
             if (seats.get(0).getAuxiliarColumn() == null) return false; //TODO: Check if PALCOS part should be included on recommendations logic
 
-            if (seats.get(i).getAuxiliarColumn() - seats.get(i - 1).getAuxiliarColumn() != 1) {
-                logger.info(String.format("i: %d   -  i-1: %d", seats.get(i).getAuxiliarColumn(), seats.get(i - 1).getAuxiliarColumn()));
-                return false;
-            }
+            logger.info(String.format("i: %d   -  i-1: %d", seats.get(i).getAuxiliarColumn(), seats.get(i - 1).getAuxiliarColumn()));
+
+            Integer result = seats.get(i).getAuxiliarColumn() - seats.get(i - 1).getAuxiliarColumn();
+            if (result.intValue() != 1) return false;
         }
         logger.info(String.format("isConsecutive: true"));
         return true;
