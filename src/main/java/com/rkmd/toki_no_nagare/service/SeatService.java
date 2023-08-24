@@ -32,6 +32,9 @@ public class SeatService {
         this.theaterSeats = new ArrayList<>();
     }
 
+    public List<Seat> getAllSeats() {
+        return seatRepository.findAll();
+    }
     public Optional<Seat> getSeat(Long row, Long column, SeatSector sector) {
         SeatId id = new SeatId(row, column, sector);
         return seatRepository.findById(id);

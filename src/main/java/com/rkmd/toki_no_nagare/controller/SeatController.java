@@ -30,6 +30,13 @@ public class SeatController {
         return ResponseEntity.ok().body(seat.get());
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Seat>> getAllSeats() {
+        List<Seat> seats = seatService.getAllSeats();
+
+        return ResponseEntity.ok().body(seats);
+    }
+
     @PutMapping("/{sector}/{row}/{column}/{status}")
     public ResponseEntity<Seat> updateSeat(@PathVariable("sector") String sector,
                                            @PathVariable("row") Long row,
