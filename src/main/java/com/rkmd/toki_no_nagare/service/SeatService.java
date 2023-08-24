@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.rkmd.toki_no_nagare.utils.Constants.THEATER_LAYOUT;
@@ -22,6 +23,7 @@ import static com.rkmd.toki_no_nagare.utils.SeatPrices.SEAT_PRICES;
 
 @Service
 public class SeatService {
+    private static final Logger logger = Logger.getLogger(SeatService.class.getName());
     private List<Seat> theaterSeats;
     public static final double BEST_COLUMN_POSITION = 1.0;
     @Autowired
@@ -113,6 +115,7 @@ public class SeatService {
         Map<Long, Map<String, Object>> bestComboByRow = new HashMap<>();
         for (Map.Entry<Long, List<Seat>> row : sectorSeats.entrySet()) {
             List<List<Seat>> combos = findCombosAvailable(row.getValue(), comboSize);
+            logger.info(String.format("CombosAvailable: %d at row: %d", combos.size(), row.getKey()));
             if (!combos.isEmpty()) {
                 Double maxScore = Double.valueOf(0);
                 List<Seat> selectedRowCombo = new ArrayList<>();
@@ -168,6 +171,7 @@ public class SeatService {
                 return false;
             }
         }
+        logger.info(String.format("isConsecutive: true"));
         return true;
     }
 
