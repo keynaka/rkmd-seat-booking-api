@@ -37,6 +37,16 @@ public class SeatController {
         return ResponseEntity.ok().body(seats);
     }
 
+    @GetMapping("/{sector}")
+    public ResponseEntity<Map<Long, List<Seat>>> getSectorSeatsByRow(@PathVariable("sector") String sector,
+                                                                     @RequestParam(name = "status", required = false) String status) {
+        SeatSector seatSector = SeatSector.valueOf(sector.toUpperCase());
+        SeatStatus seatStatus = status != null ? SeatStatus.valueOf(status.toUpperCase()) : null;
+        Map<Long, List<Seat>> seats = seatService.getSectorSeatsByRow(seatSector, seatStatus);
+
+        return ResponseEntity.ok().body(seats);
+    }
+
     @PutMapping("/{sector}/{row}/{column}/{status}")
     public ResponseEntity<Seat> updateSeat(@PathVariable("sector") String sector,
                                            @PathVariable("row") Long row,

@@ -4,6 +4,7 @@
 - fix: Asientos faltantes en Platea
 - fix: Agregar response headers para CORS
 - feat: Add getAllSeats
+- feat: Add getSectorSeatsByRow
 
 ### 2023.08.22
 - refactor: Se modifica validación de estado de Seat (a2d1c28)
