@@ -70,7 +70,7 @@ public class Constants {
         SeatSector.PALCOS, PALCOS_LAYOUT
     );
 
-    public static final int TOTAL_SEATS = 1024;
+    public static final int TOTAL_SEATS = 1026;
     public static final Double PLATEA_BEST_ROW = 12.0;
     public static final Double PULLMAN_BEST_ROW = 1.0;
 }

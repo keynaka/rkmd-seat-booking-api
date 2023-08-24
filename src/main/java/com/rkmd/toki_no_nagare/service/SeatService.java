@@ -114,7 +114,10 @@ public class SeatService {
     private static Map<Long, Map<String, Object>> getBestComboByRow(Map<Long, List<Seat>> sectorSeats, int comboSize) {
         Map<Long, Map<String, Object>> bestComboByRow = new HashMap<>();
         for (Map.Entry<Long, List<Seat>> row : sectorSeats.entrySet()) {
-            List<List<Seat>> combos = findCombosAvailable(row.getValue(), comboSize);
+            List<Seat> sortedSeats = row.getValue().get(0).getSector().equals(SeatSector.PALCOS) ?
+                    row.getValue() :
+                    row.getValue().stream().sorted((r1, r2) -> r1.getAuxiliarColumn() - r2.getAuxiliarColumn()).collect(Collectors.toList());
+            List<List<Seat>> combos = findCombosAvailable(sortedSeats, comboSize);
             logger.info(String.format("CombosAvailable: %d at row: %d", combos.size(), row.getKey()));
             if (!combos.isEmpty()) {
                 Double maxScore = Double.valueOf(0);
