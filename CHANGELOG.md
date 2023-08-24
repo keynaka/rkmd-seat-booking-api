@@ -1,5 +1,9 @@
 # Changelog
 
+### 2023.08.24
+- fix: Asientos faltantes en Platea
+- fix: Agregar response headers para CORS
+
 ### 2023.08.22
 - refactor: Se modifica validación de estado de Seat (a2d1c28)
 - refactor: Se agrega anotación @Transactional en el cambio de estado de Payment, Booking y Seat (15c849a)
