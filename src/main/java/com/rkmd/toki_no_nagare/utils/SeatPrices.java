@@ -10,7 +10,6 @@ import java.util.Map;
 public class SeatPrices {
   private static final Map<Long, BigDecimal> PLATEA_SEAT_PRICE = new HashMap<>();
   private static final Map<Long, BigDecimal> PULLMAN_SEAT_PRICE = new HashMap<>();
-  private static final Map<Long, BigDecimal> PALCOS_SEAT_PRICE = new HashMap<>();
 
   static {
     //Respetan el mismo orden que lo visto en la imagen theater_map.png visto de izquierda a derecha. Esto es util luego para la logica de recomendacion de asientos
@@ -50,25 +49,10 @@ public class SeatPrices {
     PULLMAN_SEAT_PRICE.put(9L, BigDecimal.valueOf(4000L));
     PULLMAN_SEAT_PRICE.put(10L, BigDecimal.valueOf(4000L));
     PULLMAN_SEAT_PRICE.put(11L, BigDecimal.valueOf(4000L));
-
-    PALCOS_SEAT_PRICE.put(8L, BigDecimal.valueOf(0L));
-    PALCOS_SEAT_PRICE.put(9L, BigDecimal.valueOf(0L));
-    PALCOS_SEAT_PRICE.put(11L, BigDecimal.valueOf(0L));
-    PALCOS_SEAT_PRICE.put(12L, BigDecimal.valueOf(0L));
-    PALCOS_SEAT_PRICE.put(15L, BigDecimal.valueOf(0L));
-    PALCOS_SEAT_PRICE.put(16L, BigDecimal.valueOf(0L));
-    PALCOS_SEAT_PRICE.put(19L, BigDecimal.valueOf(0L));
-    PALCOS_SEAT_PRICE.put(20L, BigDecimal.valueOf(0L));
-    PALCOS_SEAT_PRICE.put(23L, BigDecimal.valueOf(0L));
-    PALCOS_SEAT_PRICE.put(24L, BigDecimal.valueOf(0L));
-
-    //Esta fila es inventada intentando seguir mismas columnas que las demas para no tener repetido 4 veces el sector=PALCOS, fila=25, columna=1 (Mirar imagen theater_map.png)
-    PALCOS_SEAT_PRICE.put(25L, BigDecimal.valueOf(0L));
   }
 
   public static final Map<SeatSector, Map<Long, BigDecimal>> SEAT_PRICES = Map.of(
       SeatSector.PLATEA, PLATEA_SEAT_PRICE,
-      SeatSector.PULLMAN, PULLMAN_SEAT_PRICE,
-      SeatSector.PALCOS, PALCOS_SEAT_PRICE
+      SeatSector.PULLMAN, PULLMAN_SEAT_PRICE
   );
 }

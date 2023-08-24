@@ -100,10 +100,7 @@ public class SeatController {
 
     @PutMapping("/prices/sector")
     public ResponseEntity<Void> setupSeatPricesBySector(@RequestBody SeatPricesBySectorDto request) {
-        seatService.setSeatPricesBySector(
-            request.getPullmanSeatPrices(),
-            request.getPalcoSeatPrices(),
-            request.getPlateaSeatPrices());
+        seatService.setSeatPricesBySector(request.getPullmanSeatPrices(), request.getPlateaSeatPrices());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -3,9 +3,11 @@
 ### 2023.08.24
 - fix: Asientos faltantes en Platea
 - fix: Agregar response headers para CORS
-- feat: Add getAllSeats
-- feat: Add getSectorSeatsByRow
-- fix: Add logs
+- feat: Agregar getAllSeats
+- feat: Agregar getSectorSeatsByRow
+- fix: Agregar logger
+- fix: Recommendation arreglado + Sacar logs
+- refactor: Sacar PALCOS + Actualizar mejores asientos de PLATEA a row 14
 
 ### 2023.08.22
 - refactor: Se modifica validación de estado de Seat (a2d1c28)

@@ -67,7 +67,7 @@ public class SeatService {
         newSeat.setSector(sector);
         newSeat.setRow(row);
         newSeat.setColumn(column);
-        newSeat.setAuxiliarColumn(sector.equals(SeatSector.PALCOS) ? null : auxiliarColumn); //TODO: Check if PALCOS part should be included on recommendations logic
+        newSeat.setAuxiliarColumn(auxiliarColumn);
         newSeat.setStatus(status);
         newSeat.setBooking(null);
 
@@ -114,11 +114,11 @@ public class SeatService {
     private static Map<Long, Map<String, Object>> getBestComboByRow(Map<Long, List<Seat>> sectorSeats, int comboSize) {
         Map<Long, Map<String, Object>> bestComboByRow = new HashMap<>();
         for (Map.Entry<Long, List<Seat>> row : sectorSeats.entrySet()) {
-            List<Seat> sortedSeats = row.getValue().get(0).getSector().equals(SeatSector.PALCOS) ?
-                    row.getValue() :
-                    row.getValue().stream().sorted((r1, r2) -> r1.getAuxiliarColumn() - r2.getAuxiliarColumn()).collect(Collectors.toList());
+            List<Seat> sortedSeats = row.getValue()
+                    .stream()
+                    .sorted((r1, r2) -> r1.getAuxiliarColumn() - r2.getAuxiliarColumn())
+                    .collect(Collectors.toList());
             List<List<Seat>> combos = findCombosAvailable(sortedSeats, comboSize);
-            logger.info(String.format("CombosAvailable: %d at row: %d", combos.size(), row.getKey()));
             if (!combos.isEmpty()) {
                 Double maxScore = Double.valueOf(0);
                 List<Seat> selectedRowCombo = new ArrayList<>();
@@ -168,14 +168,9 @@ public class SeatService {
     * */
     private static boolean isConsecutive(List<Seat> seats) {
         for (int i = 1; i < seats.size(); i++) {
-            if (seats.get(0).getAuxiliarColumn() == null) return false; //TODO: Check if PALCOS part should be included on recommendations logic
-
-            logger.info(String.format("i: %d   -  i-1: %d", seats.get(i).getAuxiliarColumn(), seats.get(i - 1).getAuxiliarColumn()));
-
             Integer result = seats.get(i).getAuxiliarColumn() - seats.get(i - 1).getAuxiliarColumn();
             if (result.intValue() != 1) return false;
         }
-        logger.info(String.format("isConsecutive: true"));
         return true;
     }
 
@@ -226,17 +221,15 @@ public class SeatService {
 
     /** This method sets the seat prices by sector. It receives as arguments the prices of each sector.
      * @param pullmanSeatPrices The price for 'PULLMAN' sector
-     * @param palcoSeatPrices The price for 'PALCO' sector
      * @param plateaSeatPrices The price for 'PLATEA' sector
      * */
-    public void setSeatPricesBySector(BigDecimal pullmanSeatPrices, BigDecimal palcoSeatPrices, BigDecimal plateaSeatPrices){
+    public void setSeatPricesBySector(BigDecimal pullmanSeatPrices, BigDecimal plateaSeatPrices){
         List<Seat> seats = seatRepository.findAll();
 
         for (Seat seat : seats){
             if(seat.getPrice() == null){
                 switch (seat.getSector()) {
                     case PULLMAN -> seat.setPrice(pullmanSeatPrices);
-                    case PALCOS -> seat.setPrice(palcoSeatPrices);
                     case PLATEA -> seat.setPrice(plateaSeatPrices);
                 }
                 seatRepository.save(seat);
