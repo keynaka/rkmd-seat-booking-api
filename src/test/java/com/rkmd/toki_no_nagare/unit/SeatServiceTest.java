@@ -66,10 +66,10 @@ public class SeatServiceTest {
 
         Map<Long, Map<String, Object>> topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
 
-        Assertions.assertTrue(topCombosByRow.containsKey(10L));
-        Assertions.assertTrue(topCombosByRow.containsKey(11L));
-        Assertions.assertTrue(topCombosByRow.containsKey(Constants.PLATEA_BEST_ROW.longValue()));
+        Assertions.assertTrue(topCombosByRow.containsKey(12L));
         Assertions.assertTrue(topCombosByRow.containsKey(13L));
+        Assertions.assertTrue(topCombosByRow.containsKey(Constants.PLATEA_BEST_ROW.longValue()));
+        Assertions.assertTrue(topCombosByRow.containsKey(15L));
 
         Assertions.assertEquals(5, ((List) topCombosByRow.get(Constants.PLATEA_BEST_ROW.longValue()).get("combo")).size());
         Assertions.assertEquals(4, ((List<Seat>) topCombosByRow.get(Constants.PLATEA_BEST_ROW.longValue()).get("combo")).get(0).getColumn());
@@ -86,7 +86,7 @@ public class SeatServiceTest {
         int MAX_COLUMN_SIZE = 32;
         Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
 
-        for (SeatSector sector : List.of(SeatSector.PLATEA, SeatSector.PULLMAN, SeatSector.PALCOS)) {
+        for (SeatSector sector : List.of(SeatSector.PLATEA, SeatSector.PULLMAN)) {
             for (int i = 0 ; i < MAX_COLUMN_SIZE ; i++) {
                 Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(sector, SeatStatus.VACANT);
                 int comboSize = 1;
@@ -97,21 +97,19 @@ public class SeatServiceTest {
                     seatService.updateSeatStatus(((List<Seat>) bestRowCombo.get("combo")).get(0), SeatStatus.RESERVED);
                 }
 
-                if (!sector.equals(SeatSector.PALCOS)) {
-                    // First recommendations should be on the column 1L because they are in the middle
-                    if (i == 0) Assertions.assertTrue(((List<Seat>) topCombosByRow.get(1L).get("combo")).get(0).getColumn().equals(1L));
+                // First recommendations should be on the column 1L because they are in the middle
+                if (i == 0) Assertions.assertTrue(((List<Seat>) topCombosByRow.get(1L).get("combo")).get(0).getColumn().equals(1L));
 
-                    // On last iteration, the recommendations should be the columns 32
-                    if (i == 31 && sector.equals(SeatSector.PLATEA)) {
-                        Assertions.assertEquals(10, topCombosByRow.size());
-                        Assertions.assertTrue(((List<Seat>) topCombosByRow.get(5L).get("combo")).get(0).getColumn().equals(32L));
-                    }
+                // On last iteration, the recommendations should be the columns 32
+                if (i == 31 && sector.equals(SeatSector.PLATEA)) {
+                    Assertions.assertEquals(10, topCombosByRow.size());
+                    Assertions.assertTrue(((List<Seat>) topCombosByRow.get(5L).get("combo")).get(0).getColumn().equals(32L));
+                }
 
-                    // On penultimate iteration, the recommendations should be the columns 32 because on pullman the column 31 is missing
-                    if (i == 30 && sector.equals(SeatSector.PULLMAN)) {
-                        Assertions.assertEquals(8, topCombosByRow.size());
-                        Assertions.assertTrue(((List<Seat>) topCombosByRow.get(3L).get("combo")).get(0).getColumn().equals(32L));
-                    }
+                // On penultimate iteration, the recommendations should be the columns 32 because on pullman the column 31 is missing
+                if (i == 30 && sector.equals(SeatSector.PULLMAN)) {
+                    Assertions.assertEquals(8, topCombosByRow.size());
+                    Assertions.assertTrue(((List<Seat>) topCombosByRow.get(3L).get("combo")).get(0).getColumn().equals(32L));
                 }
             }
         }
@@ -124,7 +122,7 @@ public class SeatServiceTest {
     public void testTryingToReserveWith16ComboSizeShouldLeaveVacantSeats() {
         Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
 
-        for (SeatSector sector : List.of(SeatSector.PLATEA, SeatSector.PULLMAN, SeatSector.PALCOS)) {
+        for (SeatSector sector : List.of(SeatSector.PLATEA, SeatSector.PULLMAN)) {
             for (int i = 0 ; i < 2 ; i++) {
                 Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(sector, SeatStatus.VACANT);
                 int comboSize = 16;
@@ -137,10 +135,8 @@ public class SeatServiceTest {
                     }
                 }
 
-                if (!sector.equals(SeatSector.PALCOS)) {
-                    if (i == 1) {
-                        Assertions.assertTrue(topCombosByRow.isEmpty());
-                    }
+                if (i == 1) {
+                    Assertions.assertTrue(topCombosByRow.isEmpty());
                 }
             }
         }

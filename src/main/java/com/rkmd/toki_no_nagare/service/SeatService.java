@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.rkmd.toki_no_nagare.utils.Constants.THEATER_LAYOUT;
@@ -22,6 +23,7 @@ import static com.rkmd.toki_no_nagare.utils.SeatPrices.SEAT_PRICES;
 
 @Service
 public class SeatService {
+    private static final Logger logger = Logger.getLogger(SeatService.class.getName());
     private List<Seat> theaterSeats;
     public static final double BEST_COLUMN_POSITION = 1.0;
     @Autowired
@@ -32,6 +34,9 @@ public class SeatService {
         this.theaterSeats = new ArrayList<>();
     }
 
+    public List<Seat> getAllSeats() {
+        return seatRepository.findAll();
+    }
     public Optional<Seat> getSeat(Long row, Long column, SeatSector sector) {
         SeatId id = new SeatId(row, column, sector);
         return seatRepository.findById(id);
@@ -62,7 +67,7 @@ public class SeatService {
         newSeat.setSector(sector);
         newSeat.setRow(row);
         newSeat.setColumn(column);
-        newSeat.setAuxiliarColumn(sector.equals(SeatSector.PALCOS) ? null : auxiliarColumn); //TODO: Check if PALCOS part should be included on recommendations logic
+        newSeat.setAuxiliarColumn(auxiliarColumn);
         newSeat.setStatus(status);
         newSeat.setBooking(null);
 
@@ -109,7 +114,11 @@ public class SeatService {
     private static Map<Long, Map<String, Object>> getBestComboByRow(Map<Long, List<Seat>> sectorSeats, int comboSize) {
         Map<Long, Map<String, Object>> bestComboByRow = new HashMap<>();
         for (Map.Entry<Long, List<Seat>> row : sectorSeats.entrySet()) {
-            List<List<Seat>> combos = findCombosAvailable(row.getValue(), comboSize);
+            List<Seat> sortedSeats = row.getValue()
+                    .stream()
+                    .sorted((r1, r2) -> r1.getAuxiliarColumn() - r2.getAuxiliarColumn())
+                    .collect(Collectors.toList());
+            List<List<Seat>> combos = findCombosAvailable(sortedSeats, comboSize);
             if (!combos.isEmpty()) {
                 Double maxScore = Double.valueOf(0);
                 List<Seat> selectedRowCombo = new ArrayList<>();
@@ -159,11 +168,8 @@ public class SeatService {
     * */
     private static boolean isConsecutive(List<Seat> seats) {
         for (int i = 1; i < seats.size(); i++) {
-            if (seats.get(0).getAuxiliarColumn() == null) return false; //TODO: Check if PALCOS part should be included on recommendations logic
-
-            if (seats.get(i).getAuxiliarColumn() - seats.get(i - 1).getAuxiliarColumn() != 1) {
-                return false;
-            }
+            Integer result = seats.get(i).getAuxiliarColumn() - seats.get(i - 1).getAuxiliarColumn();
+            if (result.intValue() != 1) return false;
         }
         return true;
     }
@@ -215,17 +221,15 @@ public class SeatService {
 
     /** This method sets the seat prices by sector. It receives as arguments the prices of each sector.
      * @param pullmanSeatPrices The price for 'PULLMAN' sector
-     * @param palcoSeatPrices The price for 'PALCO' sector
      * @param plateaSeatPrices The price for 'PLATEA' sector
      * */
-    public void setSeatPricesBySector(BigDecimal pullmanSeatPrices, BigDecimal palcoSeatPrices, BigDecimal plateaSeatPrices){
+    public void setSeatPricesBySector(BigDecimal pullmanSeatPrices, BigDecimal plateaSeatPrices){
         List<Seat> seats = seatRepository.findAll();
 
         for (Seat seat : seats){
             if(seat.getPrice() == null){
                 switch (seat.getSector()) {
                     case PULLMAN -> seat.setPrice(pullmanSeatPrices);
-                    case PALCOS -> seat.setPrice(palcoSeatPrices);
                     case PLATEA -> seat.setPrice(plateaSeatPrices);
                 }
                 seatRepository.save(seat);

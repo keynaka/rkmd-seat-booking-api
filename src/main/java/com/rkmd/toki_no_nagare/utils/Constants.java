@@ -9,7 +9,7 @@ import java.util.Map;
 public class Constants {
     private static final Map<Long, List<Long>> PLATEA_LAYOUT = new HashMap<>();
     private static final Map<Long, List<Long>> PULLMAN_LAYOUT = new HashMap<>();
-    private static final Map<Long, List<Long>> PALCOS_LAYOUT = new HashMap<>();
+
     static {
         //Respetan el mismo orden que lo visto en la imagen theater_map.png visto de izquierda a derecha. Esto es util luego para la logica de recomendacion de asientos
         PLATEA_LAYOUT.put(1L, List.of(16L,14L,12L,10L,8L,6L,4L,2L,1L,3L,5L,7L,9L,11L,13L,15L));
@@ -49,28 +49,14 @@ public class Constants {
         PULLMAN_LAYOUT.put(10L, List.of(32L,30L,28L,26L,24L,22L,20L,18L,16L,14L,12L,10L,8L,6L,4L,2L,1L,3L,5L,7L,9L,11L,13L,15L,17L,19L,21L,23L,25L,27L,29L));
         PULLMAN_LAYOUT.put(11L, List.of(14L,12L,10L,8L,6L,4L,2L,1L,3L,5L,7L,9L,11L,13L,15L,17L,19L,21L,23L,25L));
 
-        PALCOS_LAYOUT.put(8L, List.of(12L,11L));
-        PALCOS_LAYOUT.put(9L, List.of(12L,11L));
-        PALCOS_LAYOUT.put(11L, List.of(10L,9L));
-        PALCOS_LAYOUT.put(12L, List.of(10L,9L));
-        PALCOS_LAYOUT.put(15L, List.of(8L,7L));
-        PALCOS_LAYOUT.put(16L, List.of(8L,7L));
-        PALCOS_LAYOUT.put(19L, List.of(6L,5L));
-        PALCOS_LAYOUT.put(20L, List.of(6L,5L));
-        PALCOS_LAYOUT.put(23L, List.of(6L,5L));
-        PALCOS_LAYOUT.put(24L, List.of(6L,5L));
-
-        //Esta fila es inventada intentando seguir mismas columnas que las demas para no tener repetido 4 veces el sector=PALCOS, fila=25, columna=1 (Mirar imagen theater_map.png)
-        PALCOS_LAYOUT.put(25L, List.of(22L,20L,18L,16L,10L,8L,6L,4L,3L,5L,7L,9L,15L,17L,19L,21L));
     }
 
     public static final Map<SeatSector, Map<Long, List<Long>>> THEATER_LAYOUT = Map.of(
         SeatSector.PLATEA, PLATEA_LAYOUT,
-        SeatSector.PULLMAN, PULLMAN_LAYOUT,
-        SeatSector.PALCOS, PALCOS_LAYOUT
+        SeatSector.PULLMAN, PULLMAN_LAYOUT
     );
 
-    public static final int TOTAL_SEATS = 1024;
-    public static final Double PLATEA_BEST_ROW = 12.0;
+    public static final int TOTAL_SEATS = 990;
+    public static final Double PLATEA_BEST_ROW = 14.0;
     public static final Double PULLMAN_BEST_ROW = 1.0;
 }

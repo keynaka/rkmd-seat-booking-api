@@ -26,12 +26,4 @@ public class SeatPricesBySectorDto {
   @NotNull(message = "El campo 'plateaSeatPrices' no puede ser nulo")
   public BigDecimal plateaSeatPrices;
 
-  @Schema(
-      name = "palcoSeatPrices",
-      description = "detail: Precio de las butacas del sector PALCO.",
-      example = "1000",
-      requiredMode = Schema.RequiredMode.REQUIRED)
-  @NotNull(message = "El campo 'palcoSeatPrices' no puede ser nulo")
-  public BigDecimal palcoSeatPrices;
-
 }
