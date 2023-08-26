@@ -1,5 +1,13 @@
 # Changelog
 
+### 2023.08.26
+- feat: Se agrega endpoint para envío de e-mails. (76920b3)
+- feat: Se implementa TransportMailSenderImpl para envío de e-mails utilizando dependencias del paquete jakarta.mail. (3d7c245)
+- feat: Se agrega a archivo pom.xml dependencia para envío de e-mails. (b5cd483)
+- feat: Se agrega a application.yaml y application-prod.yaml campos para envío de e-mails. (2410f15)
+- feat: Se crea interfaz IMailingService para envío de e-mails. (e893c18)
+- feat: Se crea la clase EmailDto para enviar e-mails. (d4f59b9)
+
 ### 2023.08.24
 - fix: Asientos faltantes en Platea
 - fix: Agregar response headers para CORS
