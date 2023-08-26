@@ -1,6 +1,7 @@
 # Changelog
 
 ### 2023.08.26
+- feat: Se implementa clase JavaMailSenderImpl para envío de e-mails simples con solo texto. (4dec238)
 - feat: Se agrega endpoint para envío de e-mails. (76920b3)
 - feat: Se implementa TransportMailSenderImpl para envío de e-mails utilizando dependencias del paquete jakarta.mail. (3d7c245)
 - feat: Se agrega a archivo pom.xml dependencia para envío de e-mails. (b5cd483)
