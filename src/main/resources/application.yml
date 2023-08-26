@@ -6,6 +6,17 @@ spring:
         globally_quoted_identifiers: true
         jdbc:
           time_zone: GMT-3
+  mail:
+    host: smtp.gmail.com
+    port: 58
+    username: A_COMPLETAR@A_COMPLETAR.com
+    password: A_COMPLETAR
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 spring-doc:
   swagger-ui:
     defaultModelsExpandDepth: -1 # Hide the model section
