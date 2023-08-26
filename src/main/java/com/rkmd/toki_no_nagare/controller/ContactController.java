@@ -4,6 +4,7 @@ import com.rkmd.toki_no_nagare.entities.contact.Contact;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentMethod;
 import com.rkmd.toki_no_nagare.service.ContactService;
 import com.rkmd.toki_no_nagare.service.mailing.IMailingService;
+import com.rkmd.toki_no_nagare.service.mailing.JavaMailSenderImpl;
 import com.rkmd.toki_no_nagare.service.mailing.TransportMailSenderImpl;
 import com.rkmd.toki_no_nagare.utils.ValidationUtils;
 import jakarta.validation.Valid;
@@ -19,6 +20,9 @@ import java.util.Optional;
 public class ContactController {
     @Autowired
     private ContactService contactService;
+
+    @Autowired
+    private JavaMailSenderImpl javaMailSenderImpl;
 
     @Autowired
     private TransportMailSenderImpl transportMailSenderImpl;
@@ -62,7 +66,7 @@ public class ContactController {
             enumPaymentMethod = PaymentMethod.CASH;
         }
 
-        IMailingService mailingService = transportMailSenderImpl;
+        IMailingService mailingService = javaMailSenderImpl;
 
         return ResponseEntity.ok(mailingService.notifyReservation(email, name, lastname, "asdf1231", enumPaymentMethod));
     }
