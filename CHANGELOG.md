@@ -8,6 +8,7 @@
 - feat: Se agrega a application.yaml y application-prod.yaml campos para envío de e-mails. (2410f15)
 - feat: Se crea interfaz IMailingService para envío de e-mails. (e893c18)
 - feat: Se crea la clase EmailDto para enviar e-mails. (d4f59b9)
+- fix: Se utiliza JavaMailSenderImpl para endpoint de test de envío de e-mails. (8254b1f)
 
 ### 2023.08.24
 - fix: Asientos faltantes en Platea
