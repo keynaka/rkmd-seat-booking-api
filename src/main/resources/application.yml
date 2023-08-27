@@ -20,6 +20,8 @@ spring:
 spring-doc:
   swagger-ui:
     defaultModelsExpandDepth: -1 # Hide the model section
+payment:
+  mercadoPagoAccount: ${PAYMENT_MP_ACCOUNT}
 paymentTimeLimitFor:
   mercadoPago: 1
   cash: 5
