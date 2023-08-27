@@ -1,6 +1,7 @@
 package com.rkmd.toki_no_nagare.service.mailing;
 
 import com.rkmd.toki_no_nagare.dto.email.EmailDto;
+import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentMethod;
 import jakarta.annotation.PostConstruct;
 import jakarta.mail.*;
@@ -9,10 +10,12 @@ import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Properties;
 
 @Service
-public class TransportMailSenderImpl implements IMailingService{
+public class TransportMailSenderImpl extends AbstractMailingService{
 
     @Value("${spring.mail.host}")
     private String host;
@@ -124,7 +127,9 @@ public class TransportMailSenderImpl implements IMailingService{
     }
 
     @Override
-    public String notifyReservation(String recipient, String name, String lastname, String bookingCode, PaymentMethod paymentMethod) {
+    public String notifyReservation(String recipient, String name, String lastname, String bookingCode,
+                                    PaymentMethod paymentMethod, ZonedDateTime expirationTime,
+                                    List<SeatDto> seats){
 
         String msgBody = RESERVATION_BODY_TEMPLATE;
         msgBody = msgBody.replace("{NAME}", name);

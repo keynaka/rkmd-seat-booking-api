@@ -1,15 +1,27 @@
 package com.rkmd.toki_no_nagare.service.mailing;
 
 import com.rkmd.toki_no_nagare.dto.email.EmailDto;
+import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentMethod;
+import com.rkmd.toki_no_nagare.utils.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Map;
+
 @Service
-public class JavaMailSenderImpl implements IMailingService{
+public class JavaMailSenderImpl extends AbstractMailingService{
+
+    /** Ruta al archivo que contiene el template para enviar un mail de reserva provisoria con pago en efectivo. */
+    public static final String RESERVATION_CASH_TEMPLATE_PATH = "/mailing/templates/text/reservation-cash-template.txt";
+
+    /** Ruta al archivo que contiene el template para enviar un mail de reserva provisoria con pago por Mercado Pago. */
+    public static final String RESERVATION_MP_TEMPLATE_PATH = "/mailing/templates/text/reservation-mp-template.txt";
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -17,22 +29,14 @@ public class JavaMailSenderImpl implements IMailingService{
     @Value("${spring.mail.username}")
     private String sender;
 
-    private String RESERVATION_SUBJECT = "Toki no Nagare - Tenés una reserva pendiente de pago.";
+    private String RESERVATION_CASH_BODY_TEMPLATE = null;
 
-    private String RESERVATION_BODY_TEMPLATE =
-            "Hola {NAME} {LASTNAME}! \n" +
-                    "\n" +
-                    "Te agradecemos por haber realizado una reserva para nuestro show. \n" +
-                    "\n" +
-                    "Tu número de reserva es: {BOOKING_CODE}\n" +
-                    "\n" +
-                    "{PAYMENT_METHOD_TEXT}" +
-                    "\n" +
-                    "¡Muchas gracias por confiar en nosotros!";
+    private String RESERVATION_MP_BODY_TEMPLATE = null;
 
-    private String RESERVATION_PAYMENT_METHOD_MERCADO_PAGO_TEXT = "Nuestra cuenta de Mercado Pago es pepito1234NoSeSiSonNumerosOLetras.\n" +
-            "Una vez realizado el pago, te pedimos que nos respondas a este mail con el comprobante de pago.\n";
-    private String RESERVATION_PAYMENT_METHOD_CASH_TEXT = "Matsuridaiko se contactará con vos para coordinar el pago y entrega de entradas.";
+    public JavaMailSenderImpl(){
+        RESERVATION_CASH_BODY_TEMPLATE = super.readMailTemplate(RESERVATION_CASH_TEMPLATE_PATH);
+        RESERVATION_MP_BODY_TEMPLATE = super.readMailTemplate(RESERVATION_MP_TEMPLATE_PATH);
+    }
 
     /** Envía un email solo con texto. */
     public String sendSimpleMail(EmailDto details)
@@ -62,23 +66,29 @@ public class JavaMailSenderImpl implements IMailingService{
         }
     }
 
-    public String notifyReservation(String recipient, String name, String lastname, String bookingCode, PaymentMethod paymentMethod){
+    public String notifyReservation(String recipient, String name, String lastname, String bookingCode,
+                                    PaymentMethod paymentMethod, ZonedDateTime expirationTime,
+                                    List<SeatDto> seats){
 
-        String msgBody = RESERVATION_BODY_TEMPLATE;
-        msgBody = msgBody.replace("{NAME}", name);
-        msgBody = msgBody.replace("{LASTNAME}", lastname);
-        msgBody = msgBody.replace("{BOOKING_CODE}", bookingCode);
-
-        // Agregar
-
-        String paymentMethodText = "";
+        String msgBody = null;
 
         switch (paymentMethod){
-            case MERCADO_PAGO -> paymentMethodText = RESERVATION_PAYMENT_METHOD_MERCADO_PAGO_TEXT;
-            default -> paymentMethodText = RESERVATION_PAYMENT_METHOD_CASH_TEXT;
+            case MERCADO_PAGO -> {
+                msgBody = RESERVATION_MP_BODY_TEMPLATE;
+                msgBody = msgBody.replace("${MP_ACCOUNT}", super.getMercadoPagoAccount());
+            }
+            default -> msgBody = RESERVATION_CASH_BODY_TEMPLATE;
         }
 
-        msgBody = msgBody.replace("{PAYMENT_METHOD_TEXT}", paymentMethodText);
+        msgBody = msgBody.replace("${NAME}", name);
+        msgBody = msgBody.replace("${LASTNAME}", lastname);
+        msgBody = msgBody.replace("${BOOKING_CODE}", bookingCode);
+        msgBody = msgBody.replace("${RESERVATION_EXPIRATION}", Tools.formatArgentinianDate(expirationTime));
+
+        Map<String, String> reservationData = getReservationData(seats);
+        msgBody = msgBody.replace("${RESERVED_SEATS}", reservationData.get("seats"));
+        msgBody = msgBody.replace("${TOTAL_AMOUNT}", "$" + reservationData.get("totalAmount"));
+
 
         return sendSimpleMail(new EmailDto(recipient, msgBody, RESERVATION_SUBJECT));
     }
