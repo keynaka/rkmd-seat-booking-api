@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,18 @@ public abstract class AbstractMailingService {
     @Value("${payment.mercadoPagoAccount}")
     @Getter
     private String mercadoPagoAccount;
+
+    @Value("${event.address}")
+    protected String eventAddress;
+
+    @Value("${event.dateTime}")
+    protected String eventDateTime;
+
+    @Value("${event.name}")
+    protected String eventName;
+
+    @Value("${event.place}")
+    protected String eventPlace;
 
     /** Asunto a utilizar en el e-mail de reserva provisoria. */
     public static final String RESERVATION_SUBJECT = "Toki no Nagare - Tenés una reserva pendiente de pago.";
@@ -74,6 +87,19 @@ public abstract class AbstractMailingService {
         reservationData.put("totalAmount", totalAmount.toString());
 
         return reservationData;
+    }
+
+    protected String buildSeatsList(String seats){
+        String seatHtmlList = "<ul style='color: #555555;'>";
+
+        List<String> seatsList = Arrays.stream(seats.split("\n")).toList();
+
+        for (String s: Arrays.stream(seats.split("\n")).toList()) {
+            s = s.replaceFirst("-", "");
+            seatHtmlList = seatHtmlList.concat("<li>" + s + "</li>");
+        }
+
+        return seatHtmlList.concat("</ul>");
     }
 
 }
