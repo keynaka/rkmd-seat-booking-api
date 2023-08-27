@@ -1,5 +1,11 @@
 # Changelog
 
+### 2023.08.27
+- fix: Se agrega a ContactController el envío a demanda de e-mails para testing. (0d194c1)
+- fix: Se agrega a deployment-prod.yaml env PAYMENT_MP_ACCOUNT para informar por e-mail la cuenta de Mercado Pago. (fbd7d18)
+- fix: Se realizan mejoras en la notificación por e-mail de reservas provisorias. (5b91714)
+- fix: Se elimina IMailingService y se reemplaza por AbstractMailingService. (a342300)
+
 ### 2023.08.26
 - feat: Se implementa clase JavaMailSenderImpl para envío de e-mails simples con solo texto. (4dec238)
 - feat: Se agrega endpoint para envío de e-mails. (76920b3)
