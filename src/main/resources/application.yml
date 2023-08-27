@@ -1,3 +1,8 @@
+event:
+  address: ${EVENT_ADDRESS}
+  dateTime: ${EVENT_DATE_TIME}
+  name: ${EVENT_NAME}
+  place: ${EVENT_PLACE}
 spring:
   jpa:
     open-in-view: false

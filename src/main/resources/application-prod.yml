@@ -1,6 +1,11 @@
+event:
+  address: ${EVENT_ADDRESS}
+  dateTime: ${EVENT_DATE_TIME}
+  name: ${EVENT_NAME}
+  place: ${EVENT_PLACE}
+
 server:
   port: ${APP_PORT}
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
