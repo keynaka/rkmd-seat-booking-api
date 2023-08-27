@@ -1,0 +1,16 @@
+Hola ${NAME} ${LASTNAME}!
+
+Te agradecemos por haber realizado una reserva para nuestro show.
+
+Estos son los detalles de tu reserva:
+Código de reserva: ${BOOKING_CODE}.
+Detalle:
+${RESERVED_SEATS}
+Total a abonar: ${TOTAL_AMOUNT}
+
+Nuestra cuenta de Mercado Pago es ${MP_ACCOUNT}.
+Una vez realizado el pago, te pedimos que nos respondas a este mail con el comprobante de pago así podemos coordinar la entrega de entradas.
+
+Recordá que tenés hasta la fecha ${RESERVATION_EXPIRATION} para confirmar el pago. Pasado este tiempo, deberemos cancelar tu reserva.
+
+¡Muchas gracias por confiar en nosotros!
