@@ -3,7 +3,6 @@ event:
   dateTime: ${EVENT_DATE_TIME}
   name: ${EVENT_NAME}
   place: ${EVENT_PLACE}
-
 server:
   port: ${APP_PORT}
 spring:

@@ -72,7 +72,7 @@ public class ContactController {
             enumPaymentMethod = PaymentMethod.CASH;
         }
 
-        AbstractMailingService mailingService = javaMailSenderImpl;
+        AbstractMailingService mailingService = transportMailSenderImpl;
 
         List<SeatDto> seats = new ArrayList<>();
         SeatDto seat1 = new SeatDto();
