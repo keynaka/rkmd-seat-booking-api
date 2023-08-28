@@ -13,6 +13,7 @@
 - fix: Se agrega uso de envs con datos del evento en AbstractMailingService. (7afe00a)
 - fix: Se agregan envs EVENT_ADDRESS, EVENT_DATE_TIME, EVENT_NAME y EVENT_PLACE para cargar los datos del evento. (3a40929)
 - feat: Se agregan templates para envío de emails en formato texto. (a4b8cdd)
+- fix: Se agrega uso de envs MAIL_USERNAME y MAIL_PASSWORD. (b738613)
 
 ### 2023.08.26
 - feat: Se implementa clase JavaMailSenderImpl para envío de e-mails simples con solo texto. (4dec238)
