@@ -17,7 +17,7 @@ public class EmailDto {
 
     /** Cuerpo del mensaje en formato html */
     @Setter
-    private String htmlContent;
+    private String htmlBody;
 
     /** Archivo adjunto */
     private String attachment;
@@ -26,6 +26,12 @@ public class EmailDto {
     public EmailDto(String recipient, String msgBody, String subject){
         this.recipient = recipient;
         this.msgBody = msgBody;
+        this.subject = subject;
+    }
+
+    public EmailDto(String recipient, String htmlBody, String subject, String msgBody){
+        this.recipient = recipient;
+        this.htmlBody = htmlBody;
         this.subject = subject;
     }
 }
