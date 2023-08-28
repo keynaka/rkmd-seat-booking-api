@@ -5,6 +5,14 @@
 - fix: Se agrega a deployment-prod.yaml env PAYMENT_MP_ACCOUNT para informar por e-mail la cuenta de Mercado Pago. (fbd7d18)
 - fix: Se realizan mejoras en la notificación por e-mail de reservas provisorias. (5b91714)
 - fix: Se elimina IMailingService y se reemplaza por AbstractMailingService. (a342300)
+- fix: Se modificaa clase ContactController para el test de envío a demanda de e-mails con formato html. (95e4782)
+- feat: Se agregan templaes html para emails de reserva provisoria. (360f939)
+- fix: Se agregan test unitarios para obtención de templates html para emails de reserva provisoria. (b6cca74)
+- fix: se mejora el cuerpo html del email de reserva provisoria. (71848fa)
+- docs: Se modifica la descripción de atributos en la clase JavaMailSenderImpl. (8bd59c5)
+- fix: Se agrega uso de envs con datos del evento en AbstractMailingService. (7afe00a)
+- fix: Se agregan envs EVENT_ADDRESS, EVENT_DATE_TIME, EVENT_NAME y EVENT_PLACE para cargar los datos del evento. (3a40929)
+- feat: Se agregan templates para envío de emails en formato texto. (a4b8cdd)
 
 ### 2023.08.26
 - feat: Se implementa clase JavaMailSenderImpl para envío de e-mails simples con solo texto. (4dec238)
