@@ -17,10 +17,10 @@ import java.util.Map;
 @Service
 public class JavaMailSenderImpl extends AbstractMailingService{
 
-    /** Ruta al archivo que contiene el template para enviar un mail de reserva provisoria con pago en efectivo. */
+    /** Ruta al archivo que contiene el template para enviar un mail de reserva provisoria con pago en efectivo en formate texto. */
     public static final String RESERVATION_CASH_TEMPLATE_PATH = "/mailing/templates/text/reservation-cash-template.txt";
 
-    /** Ruta al archivo que contiene el template para enviar un mail de reserva provisoria con pago por Mercado Pago. */
+    /** Ruta al archivo que contiene el template para enviar un mail de reserva provisoria con pago por Mercado Pago en formate texto. */
     public static final String RESERVATION_MP_TEMPLATE_PATH = "/mailing/templates/text/reservation-mp-template.txt";
 
     @Autowired
