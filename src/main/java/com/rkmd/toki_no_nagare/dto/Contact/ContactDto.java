@@ -1,6 +1,5 @@
 package com.rkmd.toki_no_nagare.dto.Contact;
 
-import com.rkmd.toki_no_nagare.entities.contact.PhoneType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,10 +38,5 @@ public class ContactDto {
       description = "detail: Número de telefono fijo o celular",
       example = "1132533689")
   private String phone;
-
-  @Schema(
-      name = "phoneType",
-      description = "detail: Tipo de telefono: fijo o celular")
-  private PhoneType phoneType;
 
 }
