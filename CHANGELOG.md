@@ -1,5 +1,8 @@
 # Changelog
 
+### 2023.08.28
+- refactor: Se elimina el enum PhoneType de la entidad Contact (f11ba11)
+
 ### 2023.08.24
 - fix: Asientos faltantes en Platea
 - fix: Agregar response headers para CORS
