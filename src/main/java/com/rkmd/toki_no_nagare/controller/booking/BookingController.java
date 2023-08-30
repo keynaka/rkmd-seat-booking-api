@@ -33,17 +33,4 @@ public class BookingController implements BookingControllerResources{
     public CreateBookingResponseDto createBooking(CreateBookingRequestDto request) {
         return bookingService.createBooking(request);
     }
-
-    @PutMapping("/v1/bookings/{code_id}")
-    public ResponseEntity<BookingResponseDto> updateBookingStatus(@PathVariable("code_id") String codeId,
-                                                                  @RequestParam(name = "status") String status) {
-        ValidationUtils.checkParam(
-                Arrays.stream(BookingStatus.values()).map(bookingStatus -> bookingStatus.name()).collect(Collectors.toList()).contains(status.toUpperCase()),
-                "invalid_booking_status", "The booking status not exists");
-        BookingStatus newStatus = BookingStatus.valueOf(status.toUpperCase());
-
-        BookingResponseDto updatedBooking = bookingService.updateBooking(codeId, newStatus);
-
-        return ResponseEntity.ok().body(updatedBooking);
-    }
 }

@@ -150,33 +150,6 @@ public class BookingService {
 
     }
 
-    /** This method updates a booking
-     * @return updatedBooking
-     */
-    @Transactional
-    public BookingResponseDto updateBooking(String code, BookingStatus newStatus){
-        List<Booking> allBookings = bookingRepository.findAll();
-
-        Booking reservedBooking = null;
-
-        for(Booking booking : allBookings){
-            if(booking.getHashedBookingCode().equals(code)) {
-                reservedBooking = booking;
-            }
-        }
-
-        if(reservedBooking == null){
-            throw new NotFoundException("booking_code_not_found", "The booking code does not exist");
-        }
-
-        reservedBooking.setStatus(newStatus);
-
-        Booking updatedBooking = bookingRepository.saveAndFlush(reservedBooking);
-
-        return createBookingResponseDto(updatedBooking);
-    }
-
-
     /** This method creates the user response according to the booking data passed as parameters.
      * @param booking Booking data
      * @param bookingCode Booking code

@@ -2,7 +2,6 @@
 
 ### 2023.08.30
 - feat: Agrego endpoint de GET /v1/report/booking/{code_id}
-- feat: Agrego endpoint de PUT /v1/booking/{code_id}?status={new_status} para modificar estado del booking
 - refactor: Limpio un par de endpoints y metodos legacy
 
 ### 2023.08.29
