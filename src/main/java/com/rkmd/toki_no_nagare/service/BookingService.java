@@ -7,6 +7,7 @@ import com.rkmd.toki_no_nagare.dto.booking.CreateBookingResponseDto;
 import com.rkmd.toki_no_nagare.dto.payment.PaymentDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
+import com.rkmd.toki_no_nagare.entities.booking.BookingStatus;
 import com.rkmd.toki_no_nagare.entities.contact.Contact;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
@@ -52,19 +53,27 @@ public class BookingService {
         return bookingRepository.findById(id);
     }
 
-    public Booking save(Map<String, Object> json) {
-        Booking newBooking = new Booking();
+    public BookingResponseDto getBookingByCode(String code){
+        List<Booking> allBookings = bookingRepository.findAll();
 
-        //TODO: CONTINUE HERE...
-        /*newBooking.setName((String) json.get("name"));
-        newBooking.setLastName((String) json.get("last_name"));
-        newBooking.setPasswordHash((String) json.get("password"));*/
+        Booking reservedBooking = null;
 
-        try {
-            return bookingRepository.save(newBooking);
-        } catch (Exception e) {
-            throw new BadRequestException("bad_request", e.getMessage());
+        for(Booking booking : allBookings){
+            if(booking.getHashedBookingCode().equals(code)) {
+                reservedBooking = booking;
+            }
         }
+
+        if(reservedBooking == null){
+            throw new NotFoundException("booking_code_not_found", "The booking code does not exist");
+        }
+
+        BookingResponseDto response = modelMapper.map(reservedBooking, BookingResponseDto.class);
+
+        // This step is necessary because the "Contact" attribute of the "Booking" class was defined with the name client
+        response.setContact(modelMapper.map(reservedBooking.getClient(), ContactDto.class));
+
+        return response;
     }
 
 
@@ -150,6 +159,37 @@ public class BookingService {
             throw new ApiException("booking_error", "The booking could not be processed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    /** This method updates a booking
+     * @return updatedBooking
+     */
+    @Transactional
+    public BookingResponseDto updateBooking(String code, BookingStatus newStatus){
+        List<Booking> allBookings = bookingRepository.findAll();
+
+        Booking reservedBooking = null;
+
+        for(Booking booking : allBookings){
+            if(booking.getHashedBookingCode().equals(code)) {
+                reservedBooking = booking;
+            }
+        }
+
+        if(reservedBooking == null){
+            throw new NotFoundException("booking_code_not_found", "The booking code does not exist");
+        }
+
+        reservedBooking.setStatus(newStatus);
+
+        Booking updatedBooking = bookingRepository.saveAndFlush(reservedBooking);
+
+        BookingResponseDto response = modelMapper.map(updatedBooking, BookingResponseDto.class);
+
+        // This step is necessary because the "Contact" attribute of the "Booking" class was defined with the name client
+        response.setContact(modelMapper.map(reservedBooking.getClient(), ContactDto.class));
+
+        return response;
     }
 
 

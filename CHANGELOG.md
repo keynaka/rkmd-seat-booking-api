@@ -1,5 +1,10 @@
 # Changelog
 
+### 2023.08.30
+- feat: Agrego endpoint de GET /v1/report/booking/{code_id}
+- feat: Agrego endpoint de PUT /v1/booking/{code_id}?status={new_status} para modificar estado del booking
+- refactor: Limpio un par de endpoints y metodos legacy
+
 ### 2023.08.29
 - refactor: Se agrega try-catch para controlar las excepciones de duplicidad de códigos de reserva (82927b4)
 - refactor: Se agrega unique-constraint en la entidad Booking. Sobre el atributo 'hashedBookingCode' y también una 

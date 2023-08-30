@@ -23,9 +23,6 @@ public interface BookingControllerResources {
   @Operation(hidden = true)
   public ResponseEntity<Booking> getBooking(@PathVariable("booking_id") Long id) throws Exception;
 
-  @Operation(hidden = true)
-  public ResponseEntity<Booking> save(@RequestBody @Valid Map<String, Object> json);
-
   @Operation(
       summary = "Obtiene una reserva según el código y el dni.",
       description = "Endpoint para la web de RKMD",
