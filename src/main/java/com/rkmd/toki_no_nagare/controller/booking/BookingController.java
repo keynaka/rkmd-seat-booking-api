@@ -33,4 +33,11 @@ public class BookingController implements BookingControllerResources{
     public CreateBookingResponseDto createBooking(CreateBookingRequestDto request) {
         return bookingService.createBooking(request);
     }
+
+    @GetMapping("/v3/bookings/{code_id}")
+    public ResponseEntity<BookingStatus> getBookingStatus(@PathVariable("code_id") String codeId) {
+        BookingResponseDto booking = bookingService.getBookingByCode(codeId);
+
+        return ResponseEntity.ok().body(booking.getStatus());
+    }
 }

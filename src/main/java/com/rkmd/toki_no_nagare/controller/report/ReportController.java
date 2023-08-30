@@ -18,7 +18,7 @@ public class ReportController {
     private BookingService bookingService;
 
     @GetMapping("/v1/reports/bookings/{code_id}")
-    public ResponseEntity<BookingResponseDto> getBookingReport(@PathVariable("code_id") String codeId) throws Exception {
+    public ResponseEntity<BookingResponseDto> getBookingReport(@PathVariable("code_id") String codeId) {
         BookingResponseDto booking = bookingService.getBookingByCode(codeId);
 
         return ResponseEntity.ok().body(booking);

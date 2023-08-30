@@ -12,18 +12,10 @@ public class ChangePaymentRequestDto {
   @Schema(
       name = "bookingCode",
       description = "detail: Código de reserva",
-      example = "e61g5er234#$524",
+      example = "e61g5er2",
       requiredMode = Schema.RequiredMode.REQUIRED)
   @NotNull(message = "El campo 'bookingCode' no puede ser nulo")
   private String bookingCode;
-
-  @Schema(
-      name = "contactDni",
-      description = "detail: Número de DNI con el que se registró la reserva",
-      example = "11111111",
-      requiredMode = Schema.RequiredMode.REQUIRED)
-  @NotNull(message = "El campo 'contactDni' no puede ser nulo")
-  private Long contactDni;
 
   @Schema(
       name = "paymentStatus",

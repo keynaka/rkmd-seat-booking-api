@@ -16,11 +16,7 @@ public class PaymentController implements PaymentControllerResources{
   @PutMapping(value = "/v1/payments", produces = "application/json")
   @ResponseStatus(value = HttpStatus.OK)
   public ChangePaymentResponseDto changePaymentStatus(ChangePaymentRequestDto request) {
-    return paymentService.changePaymentStatus(
-        request.getBookingCode(),
-        request.getContactDni(),
-        request.getPaymentStatus()
-    );
+    return paymentService.changePaymentStatus(request.getBookingCode(), request.getPaymentStatus());
   }
 
   @GetMapping(value = "/v1/payments", produces = "application/json")
@@ -28,6 +24,4 @@ public class PaymentController implements PaymentControllerResources{
   public PaymentResponseDto getAllPayment() {
     return paymentService.getAllPayments();
   }
-
-
 }
