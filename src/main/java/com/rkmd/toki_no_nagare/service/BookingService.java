@@ -68,14 +68,8 @@ public class BookingService {
             throw new NotFoundException("booking_code_not_found", "The booking code does not exist");
         }
 
-        BookingResponseDto response = modelMapper.map(reservedBooking, BookingResponseDto.class);
-
-        // This step is necessary because the "Contact" attribute of the "Booking" class was defined with the name client
-        response.setContact(modelMapper.map(reservedBooking.getClient(), ContactDto.class));
-
-        return response;
+        return createBookingResponseDto(reservedBooking);
     }
-
 
     /** This method checks if a booking exists according to the 'dni' and 'bookingCode' passed as parameters.
      * If exists, returns the booking data. If it doesn't exist or 'bookingCode' is invalid, it throws an exception.
@@ -106,12 +100,7 @@ public class BookingService {
             throw new BadRequestException("booking_code_invalid", "The booking code is invalid.");
         }
 
-        BookingResponseDto response = modelMapper.map(reservedBooking, BookingResponseDto.class);
-
-        // This step is necessary because the "Contact" attribute of the "Booking" class was defined with the name client
-        response.setContact(modelMapper.map(reservedBooking.getClient(), ContactDto.class));
-
-        return response;
+        return createBookingResponseDto(reservedBooking);
     }
 
 
@@ -184,12 +173,7 @@ public class BookingService {
 
         Booking updatedBooking = bookingRepository.saveAndFlush(reservedBooking);
 
-        BookingResponseDto response = modelMapper.map(updatedBooking, BookingResponseDto.class);
-
-        // This step is necessary because the "Contact" attribute of the "Booking" class was defined with the name client
-        response.setContact(modelMapper.map(reservedBooking.getClient(), ContactDto.class));
-
-        return response;
+        return createBookingResponseDto(updatedBooking);
     }
 
 
@@ -239,6 +223,14 @@ public class BookingService {
         boolean isRepeated = bookings.stream().anyMatch(b -> b.getHashedBookingCode().equals(newBookingCode));
         if(isRepeated) log.info("Booking code generated is repeated: {}", newBookingCode);
         return isRepeated;
+    }
+
+    private BookingResponseDto createBookingResponseDto(Booking reservedBooking) {
+        BookingResponseDto response = modelMapper.map(reservedBooking, BookingResponseDto.class);
+
+        // This step is necessary because the "Contact" attribute of the "Booking" class was defined with the name client
+        response.setContact(modelMapper.map(reservedBooking.getClient(), ContactDto.class));
+        return response;
     }
 
 }
