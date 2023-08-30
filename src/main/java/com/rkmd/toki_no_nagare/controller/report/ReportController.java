@@ -17,7 +17,7 @@ public class ReportController {
     @Autowired
     private BookingService bookingService;
 
-    @GetMapping("/v1/report/booking/{code_id}")
+    @GetMapping("/v1/reports/bookings/{code_id}")
     public ResponseEntity<BookingResponseDto> getBookingReport(@PathVariable("code_id") String codeId) throws Exception {
         BookingResponseDto booking = bookingService.getBookingByCode(codeId);
 

@@ -19,17 +19,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("")
 public class BookingController implements BookingControllerResources{
-
     @Autowired
     private BookingService bookingService;
-
-    @GetMapping("/v1/booking/{booking_id}")
-    public ResponseEntity<Booking> getBooking(@PathVariable("booking_id") Long id) throws Exception {
-        Optional<Booking> booking = bookingService.get(id);
-        if (!booking.isPresent())
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok().body(booking.get());
-    }
 
     @GetMapping(value = "/v2/bookings/{bookingCode}/contacts/{dni}", produces = "application/json")
     @ResponseStatus(value = HttpStatus.OK)
@@ -43,7 +34,7 @@ public class BookingController implements BookingControllerResources{
         return bookingService.createBooking(request);
     }
 
-    @PutMapping("/v1/booking/{code_id}")
+    @PutMapping("/v1/bookings/{code_id}")
     public ResponseEntity<BookingResponseDto> updateBookingStatus(@PathVariable("code_id") String codeId,
                                                                   @RequestParam(name = "status") String status) {
         ValidationUtils.checkParam(
