@@ -185,6 +185,43 @@ public class TransportMailSenderImpl extends AbstractMailingService{
         return sendHtmlEmail(new EmailDto(recipient, htmlBody, RESERVATION_SUBJECT, imagesData));
     }
 
+    /** Utiliza el template html de e-mail de confirmación de reserva y formatea el template con los datos específicos de la reserva. */
+    public String notifyConfirmation(String recipient, String name, String lastname, String bookingCode,
+                                     PaymentMethod paymentMethod, ZonedDateTime expirationTime,
+                                     List<SeatDto> seats){
 
+        // Agrego las imágenes
+        Map<String, ImagesDto> imagesData = new HashMap<>();
+        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", "./src/main/resources/mailing/images/toki-no-nagare-header-mail-2x.png"));
+
+        String htmlBody = null;
+
+        switch (paymentMethod){
+            case MERCADO_PAGO -> {
+                htmlBody = CONFIRMATION_MP_BODY_TEMPLATE;
+                htmlBody = htmlBody.replace("${MP_ACCOUNT}", super.getMercadoPagoAccount());
+            }
+            default -> htmlBody = CONFIRMATION_CASH_BODY_TEMPLATE;
+        }
+
+        // Agrego imagen
+        htmlBody = htmlBody.replace("${HEADER_IMAGE_CODE}", imagesData.get("${HEADER_IMAGE_CODE}").getHeaderValue());
+
+        htmlBody = htmlBody.replace("${NAME}", name);
+        htmlBody = htmlBody.replace("${LASTNAME}", lastname);
+        htmlBody = htmlBody.replace("${EVENT_NAME}", eventName);
+        htmlBody = htmlBody.replace("${EVENT_DATE}", eventDate);
+        htmlBody = htmlBody.replace("${EVENT_TIME}", eventTime);
+        htmlBody = htmlBody.replace("${EVENT_EVENT_PLACE}", eventPlace);
+        htmlBody = htmlBody.replace("${EVENT_ADDRESS}", eventAddress);
+        htmlBody = htmlBody.replace("${BOOKING_CODE}", bookingCode);
+        htmlBody = htmlBody.replace("${RESERVATION_EXPIRATION}", Tools.formatArgentinianDate(expirationTime));
+
+        Map<String, String> reservationData = getReservationData(seats);
+        htmlBody = htmlBody.replace("${RESERVED_SEATS}", buildSeatsList(reservationData.get("seats")));
+        htmlBody = htmlBody.replace("${TOTAL_AMOUNT}", "$" + reservationData.get("totalAmount"));
+
+        return sendHtmlEmail(new EmailDto(recipient, htmlBody, CONFIRMATION_SUBJECT, imagesData));
+    }
 
 }
