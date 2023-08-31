@@ -57,6 +57,16 @@ public class SeatService {
         return result;
     }
 
+    public Map<Long, List<Seat>> filterPrereservedSeats(Map<Long, List<Seat>> vacantSeatsByRow) {
+        Map<Long, List<Seat>> result = new HashMap<>();
+
+        for (Map.Entry<Long, List<Seat>> row : vacantSeatsByRow.entrySet()) {
+            result.put(row.getKey(), row.getValue().stream().collect(Collectors.toList())); //TODO: Falta el filter por el lastUpdated
+        }
+
+        return result;
+    }
+
     public Seat createSeat(SeatSector sector, Long row, Long column, SeatStatus status, Integer auxiliarColumn) {
         SeatId seatId = new SeatId(row, column, sector);
 
