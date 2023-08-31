@@ -1,5 +1,7 @@
-package com.rkmd.toki_no_nagare.controller;
+package com.rkmd.toki_no_nagare.controller.seat;
 
+import com.rkmd.toki_no_nagare.dto.seat.PrereserveInputDto;
+import com.rkmd.toki_no_nagare.dto.seat.PrereserveSeatDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatPricesBySectorDto;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
@@ -7,6 +9,7 @@ import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.service.SeatService;
 import com.rkmd.toki_no_nagare.utils.ValidationUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +50,16 @@ public class SeatController {
         return ResponseEntity.ok().body(seats);
     }
 
+    @PutMapping("/prereserve")
+    public ResponseEntity<Boolean> prereserveSeat(@Valid @RequestBody PrereserveInputDto prereserveInputDto) {
+        List<Seat> prereservedSeats = new ArrayList<>();
+        for (PrereserveSeatDto seat : prereserveInputDto.getSeats()) {
+            prereservedSeats.add(getUpdatedSeat(seat.getSector(), seat.getRow(), seat.getColumn(), null));
+        }
+
+        return ResponseEntity.ok().body(prereservedSeats.size() == prereserveInputDto.getSeats().size());
+    }
+
     @PutMapping("/{sector}/{row}/{column}/{status}")
     public ResponseEntity<Seat> updateSeat(@PathVariable("sector") String sector,
                                            @PathVariable("row") Long row,
@@ -61,12 +74,18 @@ public class SeatController {
             throw new BadRequestException("Invalid_sector_value", "Invalid sector or status");
         }
 
-        Optional<Seat> seat = seatService.getSeat(row, column, seatSector);
-        ValidationUtils.checkFound(seat.isPresent(), "seat_not_found", "Seat not found");
-
-        Seat updatedSeat = seatService.updateSeatStatus(seat.get(), newSeatStatus);
+        Seat updatedSeat = getUpdatedSeat(seatSector, row, column, newSeatStatus);
 
         return ResponseEntity.ok().body(updatedSeat);
+    }
+
+    private Seat getUpdatedSeat(SeatSector sector, Long row, Long column, SeatStatus status) {
+        Optional<Seat> seat = seatService.getSeat(row, column, sector);
+        ValidationUtils.checkFound(seat.isPresent(), "seat_not_found", "Seat not found");
+
+        Seat updatedSeat = seatService.updateSeatStatus(seat.get(), status);
+
+        return updatedSeat;
     }
 
     /*

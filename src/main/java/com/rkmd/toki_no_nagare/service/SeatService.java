@@ -83,7 +83,9 @@ public class SeatService {
     }
 
     public Seat updateSeatStatus(Seat seat, SeatStatus updatedStatus) {
-        seat.setStatus(updatedStatus);
+        if (updatedStatus != null)
+            seat.setStatus(updatedStatus);
+
         try {
             return seatRepository.save(seat);
         } catch (Exception e) {
@@ -290,16 +292,6 @@ public class SeatService {
      * */
     public BigDecimal getTotalPaymentAmount(List<Seat> seats){
         return seats.stream().map(Seat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    /** Updates the status of a seat to reserved
-     * @param seats Seats requested by the user
-     * */
-    public void updateSeatStatus(List<Seat> seats){
-        for(Seat seat : seats){
-            seat.setStatus(SeatStatus.RESERVED);
-            seatRepository.save(seat);
-        }
     }
 
 
