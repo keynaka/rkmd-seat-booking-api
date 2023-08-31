@@ -27,8 +27,11 @@ public abstract class AbstractMailingService {
     @Value("${event.address}")
     protected String eventAddress;
 
-    @Value("${event.dateTime}")
-    protected String eventDateTime;
+    @Value("${event.date}")
+    protected String eventDate;
+
+    @Value("${event.time}")
+    protected String eventTime;
 
     @Value("${event.name}")
     protected String eventName;
@@ -39,8 +42,16 @@ public abstract class AbstractMailingService {
     /** Asunto a utilizar en el e-mail de reserva provisoria. */
     public static final String RESERVATION_SUBJECT = "Toki no Nagare - Tenés una reserva pendiente de pago.";
 
+    /** Asunto a utilizar en el e-mail de reserva provisoria. */
+    public static final String CONFIRMATION_SUBJECT = "Toki no Nagare - Pago confirmado.";
+
     /** Notifica por e-mail la reserva provisoria de entradas. */
     public abstract String notifyReservation(String recipient, String name, String lastname, String bookingCode,
+                                             PaymentMethod paymentMethod, ZonedDateTime expirationTime,
+                                             List<SeatDto> seats);
+
+    /** Notifica por e-mail la venta de entradas. */
+    public abstract String notifyConfirmation(String recipient, String name, String lastname, String bookingCode,
                                              PaymentMethod paymentMethod, ZonedDateTime expirationTime,
                                              List<SeatDto> seats);
 
