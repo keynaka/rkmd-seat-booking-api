@@ -69,7 +69,6 @@ public class ContactService {
         contact.setLastName(request.getLastName());
         contact.setEmail(request.getEmail());
         contact.setPhone(request.getPhone());
-        contact.setPhoneType(request.getPhoneType());
 
         return contactRepository.saveAndFlush(contact);
     }

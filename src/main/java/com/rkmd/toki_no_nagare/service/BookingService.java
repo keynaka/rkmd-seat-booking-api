@@ -11,13 +11,17 @@ import com.rkmd.toki_no_nagare.entities.contact.Contact;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
+import com.rkmd.toki_no_nagare.exception.ApiException;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
 import com.rkmd.toki_no_nagare.repositories.BookingRepository;
 import com.rkmd.toki_no_nagare.utils.Tools;
 import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,6 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@Log4j2
 public class BookingService {
 
     @Autowired
@@ -109,34 +114,42 @@ public class BookingService {
      */
     @Transactional
     public CreateBookingResponseDto createBooking(CreateBookingRequestDto request){
+        try{
+            // Step 1: Search in the database for the seats requested by the user
+            List<Seat> seats = seatService.getSeatsRequestedByUser(request.getSeats());
 
-        // Step 1: Search in the database for the seats requested by the user
-        List<Seat> seats = seatService.getSeatsRequestedByUser(request.getSeats());
+            // Step 2: Verify if the 'SEAT STATUS' is 'VACANT'
+            seatService.validateSeatsStatus(seats, SeatStatus.VACANT);
 
-        // Step 2: Verify if the 'SEAT STATUS' is 'VACANT'
-        seatService.validateSeatsStatus(seats, SeatStatus.VACANT);
+            // Step 3: Create the contact if not exist or update if exist
+            Contact contact = contactService.createOrUpdate(request.getContact());
 
-        // Step 3: Create the contact if not exist or update if exist
-        Contact contact = contactService.createOrUpdate(request.getContact());
+            // Step 4: Calculate the total price to pay for the booking
+            BigDecimal paymentAmount = seatService.getTotalPaymentAmount(seats);
 
-        // Step 4: Calculate the total price to pay for the booking
-        BigDecimal paymentAmount = seatService.getTotalPaymentAmount(seats);
+            // Step 5: Creates the payment and then persists it in the database
+            Payment payment = paymentService.createPayment(request.getPaymentMethod(), paymentAmount);
 
-        // Step 5: Creates the payment and then persists it in the database
-        Payment payment = paymentService.createPayment(request.getPaymentMethod(), paymentAmount);
+            // Step 6: Generates a random booking code and generates a booking hash code to persists in the database
+            String bookingCode = generateBookingCode();
 
-        // Step 6: Generates a random booking code and generates a booking hash code to persists in the database
-        String bookingCode = Tools.generateRandomHash();
-        String hashedBookingCode = Tools.generateHashCode(request.getContact().getDni(), bookingCode);
+            // Step 7: Creates a booking with the data requested by the user and persists it in the database
+            Booking booking = bookingRepository.saveAndFlush(new Booking(contact, payment, bookingCode));
 
-        // Step 7: Creates a booking with the data requested by the user and persists it in the database
-        Booking booking = bookingRepository.saveAndFlush(new Booking(contact, payment, hashedBookingCode));
+            // Step 8: Associate the seat data with the booking, changes the seat's status and persists it in the database
+            seatService.updateSeatData(seats, booking);
 
-        // Step 8: Associate the seat data with the booking, changes the seat's status and persists it in the database
-        seatService.updateSeatData(seats, booking);
+            // Step 9: Create the response for the user // TODO: This response should be sent to the user via email
+            return createResponse(booking, bookingCode, seats);
 
-        // Step 9: Create the response for the user // TODO: This response should be sent to the user via email
-        return createResponse(booking, bookingCode, seats);
+        } catch (DataIntegrityViolationException e){
+            log.warn("booking_unique_key_constraint_violation: " + e.getMessage());
+            throw new ApiException("booking_error", "The booking could not be processed", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e){
+            log.warn("booking_internal_server_error: " + e.getMessage());
+            throw new ApiException("booking_error", "The booking could not be processed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
 
@@ -161,4 +174,31 @@ public class BookingService {
 
         return response;
     }
+
+
+    /** This method creates a new booking code.
+     * @return String
+     * */
+    public String generateBookingCode(){
+        List<Booking> allBookings = bookingRepository.findAll();
+        String newBookingCode = null;
+        do {
+            newBookingCode = Tools.generateRandomHash();
+        } while (existsInDatabase(allBookings, newBookingCode));
+        return newBookingCode;
+    }
+
+
+    /** This method validate if the new booking code generated exist on database. If exist returns true otherwise
+     * return false.
+     * @param bookings List of bookings
+     * @param newBookingCode New booking code
+     * @return boolean
+     * */
+    public boolean existsInDatabase(List<Booking> bookings, String newBookingCode){
+        boolean isRepeated = bookings.stream().anyMatch(b -> b.getHashedBookingCode().equals(newBookingCode));
+        if(isRepeated) log.info("Booking code generated is repeated: {}", newBookingCode);
+        return isRepeated;
+    }
+
 }

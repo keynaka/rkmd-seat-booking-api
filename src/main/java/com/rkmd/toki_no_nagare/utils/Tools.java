@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Tools {
 
-  static int hashLength = 6;
+  static int hashLength = 8;
   static String hashCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@$%&*_+";
 
   public static ZonedDateTime getCurrentDate(){

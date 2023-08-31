@@ -13,7 +13,12 @@ import java.util.List;
 
 @NoArgsConstructor
 @Entity
-@Table(name="booking")
+@Table(
+    name="booking",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "hashedBookingCode", name = "UK_HashedBookingCode"),
+        @UniqueConstraint(columnNames = {"hashedBookingCode", "client_id"}, name = "UK_HashedBookingCode_ClientId")
+})
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

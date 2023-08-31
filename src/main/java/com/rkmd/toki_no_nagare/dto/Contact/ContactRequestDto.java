@@ -1,6 +1,5 @@
 package com.rkmd.toki_no_nagare.dto.Contact;
 
-import com.rkmd.toki_no_nagare.entities.contact.PhoneType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,11 +45,5 @@ public class ContactRequestDto {
       example = "1132533689",
       requiredMode = Schema.RequiredMode.REQUIRED)
   private String phone;
-
-  @Schema(
-      name = "phoneType",
-      description = "detail: Tipo de telefono: fijo o celular",
-      requiredMode = Schema.RequiredMode.REQUIRED)
-  private PhoneType phoneType;
 
 }

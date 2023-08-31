@@ -1,6 +1,14 @@
 # Changelog
 
+### 2023.08.29
+- refactor: Se agrega try-catch para controlar las excepciones de duplicidad de códigos de reserva (82927b4)
+- refactor: Se agrega unique-constraint en la entidad Booking. Sobre el atributo 'hashedBookingCode' y también una
+unique-constraint compuesta sobre los atributos 'hashedBookingCode' y 'clientId'. Para que no existan códigos de reserva
+duplicados y a su vez, no existan códigos de reserva duplicados para un mismo usuario. (354f238)
+- refactor: Se modifica la implementación para generar códigos de reserva (aeb9055)
+
 ### 2023.08.28
+- refactor: Se elimina el enum PhoneType de la entidad Contact (f11ba11)
 - fix: Se separa env eventDateTime en dos envs eventDate y eventTime. (e1a1884)
 - feat: Se agrega a AbstractMailingService constante CONFIRMATION_SUBJECT. (e1a1884)
 - fix: Se agrega a application*.yaml envs EVENT_DATE y EVENT_TIME. (21a6ab3)
