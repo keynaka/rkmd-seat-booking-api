@@ -69,36 +69,31 @@ public class PaymentService {
    * If exists, updates the payment status passed as a parameter and change the booking status. If it doesn't exist,
    * it throws an exception.
    * @param bookingCode Booking code
-   * @param dni User identity number
    * @param paymentStatus Payment status
    * @throws BadRequestException Throw BadRequestException is booking not exists
    * @return ChangePaymentResponseDto
    */
   @Transactional
-  public ChangePaymentResponseDto changePaymentStatus(String bookingCode, Long dni, PaymentStatus paymentStatus){
+  public ChangePaymentResponseDto changePaymentStatus(String bookingCode, PaymentStatus paymentStatus){
+    // Step 1: Get the payment corresponding to the booking code
+    Payment payment = getPaymentByBookingCode(bookingCode);
 
-    // Step 1: Get all the user's payments
-    List<Payment> userPayments = getUserPayments(dni);
-
-    // Step 2: Get the payment corresponding to the booking code and dni
-    Payment payment = getPaymentByBookingCodeAndDni(dni, bookingCode, userPayments);
-
-    // Step 3: update the booking status based on the payment status
+    // Step 2: update the booking status based on the payment status
     Booking booking = payment.getBooking();
     updateBookingStatus(booking, paymentStatus);
 
-    // Step 4: update the seat status based on the payment status
+    // Step 3: update the seat status based on the payment status
     List<Seat> seats = payment.getBooking().getSeats();
     updateSeatStatus(seats, paymentStatus);
 
-    // Step 5: update the payment status
+    // Step 4: update the payment status
     payment.setPaymentStatus(paymentStatus);
     payment.setLastUpdated(Tools.getCurrentDate());
 
-    // Step 6: save the payment data
+    // Step 5: save the payment data
     paymentRepository.saveAndFlush(payment);
 
-    // Step 7: Create the response for the user  // TODO: This response should be sent to the user via email
+    // Step 6: Create the response for the user  // TODO: This response should be sent to the user via email
     return createResponse(booking, bookingCode, seats);
   }
 
@@ -183,14 +178,14 @@ public class PaymentService {
 
 
   /** This method filters the user payment by the DNI and booking code passed as parameters
-   * @param dni User identity number
    * @param bookingCode Booking code
-   * @param userPayments Lists of user payments
    * @throws NotFoundException If booking is invalid
    * */
-  public Payment getPaymentByBookingCodeAndDni(Long dni, String bookingCode, List<Payment> userPayments){
-    Optional<Payment> paymentOptional = userPayments.stream()
-        .filter(p -> Tools.validateBookingCode(dni, bookingCode, p.getBooking().getHashedBookingCode()))
+  public Payment getPaymentByBookingCode(String bookingCode){
+    List<Payment> allPayments = paymentRepository.findAll();
+
+    Optional<Payment> paymentOptional = allPayments.stream()
+        .filter(p -> p.getBooking().getHashedBookingCode().equals(bookingCode))
         .findFirst();
 
     if(paymentOptional.isEmpty()){

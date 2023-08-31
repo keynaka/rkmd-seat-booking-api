@@ -1,5 +1,11 @@
 # Changelog
 
+### 2023.08.30
+- feat: Agrego endpoint de GET /v1/report/booking/{code_id} que devuelve todo lo relacionado al booking para los admin
+- feat: Agrego endpoint de GET /v3/bookings/{code_id} que devuelve solo el status
+- refactor: Limpio un par de endpoints y metodos legacy
+- refactor: Modifico PUT /v1/payments para que solo necesite el bookingCode y el paymentStatus para poder actualizarlo
+
 ### 2023.08.29
 - refactor: Se agrega try-catch para controlar las excepciones de duplicidad de códigos de reserva (82927b4)
 - refactor: Se agrega unique-constraint en la entidad Booking. Sobre el atributo 'hashedBookingCode' y también una 
