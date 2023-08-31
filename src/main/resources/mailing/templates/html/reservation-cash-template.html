@@ -1,45 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Venta de Entradas</title>
+    <title>Reserva de Entradas</title>
 </head>
 <body style='font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px;'>
 
-<table style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);'>
+<table style='color: #333333; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);'>
     <tr>
         <td style="padding: 20px;">
-            <h1 style='color: #333333;'>Hola ${NAME} ${LASTNAME}!</h1>
-            <p style='color: #555555;'>Te agradecemos por haber realizado una reserva para nuestro show.</p>
-            <p style='color: #555555;'>Estos son los detalles de tu reserva:</p>
+            <h1>Hola ${NAME} ${LASTNAME}!</h1>
+            <p>Te agradecemos por haber realizado una reserva para nuestro show.</p>
+            <p>Estos son los detalles de tu reserva:</p>
 
             <div style="border: 1px solid #dddddd; padding: 10px; border-radius: 5px; background-color: #f9f9f9;">
-                <h3 style="color: #333333;">${EVENT_NAME}</h3>
-                <p style='color: #555555;'>Fecha: ${EVENT_DATE_TIME}</p>
-                <p style='color: #555555;'>Teatro: ${EVENT_EVENT_PLACE}</p>
-                <p style='color: #555555;'>Dirección: ${EVENT_ADDRESS}</p>
-                <p style='color: #555555;'>Cód. de reserva: ${BOOKING_CODE}</p>
-                <p style='color: #555555;'>Detalle: </p>
+                <img align='center' src='cid:${HEADER_IMAGE_CODE}' width='600' alt='header'/>
+                <h3>${EVENT_NAME}</h3>
+                <p><span style='font-weight: bold;'>Fecha:</span> ${EVENT_DATE}</p>
+                <p><span style='font-weight: bold;'>Hora:</span> ${EVENT_TIME}</p>
+                <p><span style='font-weight: bold;'>Teatro:</span> ${EVENT_EVENT_PLACE}</p>
+                <p><span style='font-weight: bold;'>Dirección:</span> ${EVENT_ADDRESS}</p>
+                <p><span style='font-weight: bold; font-size: 16px;'>Cód. de reserva:</span> ${BOOKING_CODE}</p>
+                <p>Detalle: </p>
                 ${RESERVED_SEATS}
-                <p style='color: #555555;'>Total a abonar: ${TOTAL_AMOUNT}</p>
+                <p style='font-size: 16px;'>Total a abonar: <span style='font-weight: bold;'>${TOTAL_AMOUNT}</span></p>
             </div>
 
-            <p style='color: #555555; margin-top: 20px;'>
-                Matsuridaiko se contactará con vos para coordinar el pago y entrega de entradas.
+            <p style='margin-top: 20px;'>
+                Ryukyukoku Matsuridaiko se contactará con vos para coordinar el pago y entrega de entradas.
             </p>
 
-            <p style='color: #555555; margin-top: 20px;'>
+            <p style='margin-top: 20px;'>
                 Recordá que tenés hasta la fecha <span style='font-weight: bold;'>${RESERVATION_EXPIRATION}</span> para realizar el pago.
                 Pasado este tiempo, deberemos cancelar tu reserva.
             </p>
 
-            <p style='color: #555555; margin-top: 20px;'>
+            <p style='margin-top: 20px;'>
                 ¡Muchas gracias por confiar en nosotros!
             </p>
         </td>
     </tr>
 </table>
 
-<p style='text-align: center; color: #888888; margin-top: 20px;'>© 2023 Ryukyukoku Matsuridaiko | https://matsuridaiko.com.ar/</p>
+<p style='text-align: center; color: #888888; margin-top: 20px;'>© 2023 Ryukyukoku Matsuridaiko | https://matsuridaiko.com.ar</p>
 
 </body>
 </html>
