@@ -1,5 +1,17 @@
 # Changelog
 
+### 2023.08.28
+- fix: Se separa env eventDateTime en dos envs eventDate y eventTime. (e1a1884)
+- feat: Se agrega a AbstractMailingService constante CONFIRMATION_SUBJECT. (e1a1884)
+- fix: Se agrega a application*.yaml envs EVENT_DATE y EVENT_TIME. (21a6ab3)
+- feat: Se agrega a EmailDto el uso de mapa para carga de imagenes al template html. (47e4bbc)
+- feat: Se implementa carga de imagenes al template html. (36f1e06)
+- feat: Se implementa en TransportMailSenderImpl método abstracto notifyConfirmation para envío de e-mails de confirmación de pago. (57c3511)
+- fix: Se formatean templates html para reserva provisoria. (c6cc12b)
+- feat: Se agregan templates html para confirmación de pago. (200500f)
+- fix: Se agrega imagen .png para ser enviado como header en los e-mails de reserva y confirmación de pago. (7a10217)
+- fix: Se agrega endpoint para testing de e-mails de confirmación de pago. (3771b96)
+
 ### 2023.08.27
 - fix: Se agrega a ContactController el envío a demanda de e-mails para testing. (0d194c1)
 - fix: Se agrega a deployment-prod.yaml env PAYMENT_MP_ACCOUNT para informar por e-mail la cuenta de Mercado Pago. (fbd7d18)
