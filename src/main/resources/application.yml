@@ -1,6 +1,7 @@
 event:
   address: ${EVENT_ADDRESS}
-  dateTime: ${EVENT_DATE_TIME}
+  date: ${EVENT_DATE}
+  time: ${EVENT_TIME}
   name: ${EVENT_NAME}
   place: ${EVENT_PLACE}
 spring:
