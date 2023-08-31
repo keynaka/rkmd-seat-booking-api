@@ -93,4 +93,9 @@ public class JavaMailSenderImpl extends AbstractMailingService{
         return sendSimpleMail(new EmailDto(recipient, msgBody, RESERVATION_SUBJECT));
     }
 
+    @Override
+    public String notifyConfirmation(String recipient, String name, String lastname, String bookingCode, PaymentMethod paymentMethod, ZonedDateTime expirationTime, List<SeatDto> seats) {
+        return null;
+    }
+
 }
