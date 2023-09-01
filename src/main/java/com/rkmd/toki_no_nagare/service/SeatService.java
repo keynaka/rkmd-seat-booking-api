@@ -324,8 +324,8 @@ public class SeatService {
             if(!seat.getStatus().equals(SeatStatus.VACANT)){
                 throw new BadRequestException("invalid_seat",
                         String.format(
-                                "The seat row: %s - column: %s - sector: %s is not %s anymore",
-                                seat.getRow(), seat.getColumn(), seat.getSector(),
+                                "The seat row: %d - column: %d - sector: %s is not %s anymore",
+                                seat.getRow(), seat.getColumn(), seat.getSector().name(),
                                 SeatStatus.VACANT.name()
                         )
                 );
@@ -333,8 +333,8 @@ public class SeatService {
             if (!isPrereserved(seat)) {
                 throw new RequestTimeoutException("seat_booking_timeout",
                         String.format(
-                                "The seat row: %s - column: %s - sector: %s is not %s prereserved",
-                                seat.getRow(), seat.getColumn(), seat.getSector()
+                                "The seat row: %d - column: %d - sector: %s is not prereserved",
+                                seat.getRow(), seat.getColumn(), seat.getSector().name()
                         )
                 );
             }

@@ -13,6 +13,7 @@ import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.exception.ApiException;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
+import com.rkmd.toki_no_nagare.exception.RequestTimeoutException;
 import com.rkmd.toki_no_nagare.repositories.BookingRepository;
 import com.rkmd.toki_no_nagare.utils.Tools;
 import jakarta.transaction.Transactional;
@@ -140,6 +141,8 @@ public class BookingService {
         } catch (DataIntegrityViolationException e){
             log.warn("booking_unique_key_constraint_violation: " + e.getMessage());
             throw new ApiException("booking_error", "The booking could not be processed", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (BadRequestException | RequestTimeoutException e){
+            throw e;
         } catch (Exception e){
             log.warn("booking_internal_server_error: " + e.getMessage());
             throw new ApiException("booking_error", "The booking could not be processed", HttpStatus.INTERNAL_SERVER_ERROR);
