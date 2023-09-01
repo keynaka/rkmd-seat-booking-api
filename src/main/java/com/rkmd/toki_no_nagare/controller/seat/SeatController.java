@@ -52,10 +52,7 @@ public class SeatController {
 
     @PutMapping("/prereserve")
     public ResponseEntity<Boolean> prereserveSeat(@Valid @RequestBody PrereserveInputDto prereserveInputDto) {
-        List<Seat> prereservedSeats = new ArrayList<>();
-        for (PrereserveSeatDto seat : prereserveInputDto.getSeats()) {
-            prereservedSeats.add(getUpdatedSeat(seat.getSector(), seat.getRow(), seat.getColumn(), null));
-        }
+        List<Seat> prereservedSeats = seatService.prereserveSeats(prereserveInputDto);
 
         return ResponseEntity.ok().body(prereservedSeats.size() == prereserveInputDto.getSeats().size());
     }
@@ -74,18 +71,12 @@ public class SeatController {
             throw new BadRequestException("Invalid_sector_value", "Invalid sector or status");
         }
 
-        Seat updatedSeat = getUpdatedSeat(seatSector, row, column, newSeatStatus);
-
-        return ResponseEntity.ok().body(updatedSeat);
-    }
-
-    private Seat getUpdatedSeat(SeatSector sector, Long row, Long column, SeatStatus status) {
-        Optional<Seat> seat = seatService.getSeat(row, column, sector);
+        Optional<Seat> seat = seatService.getSeat(row, column, seatSector);
         ValidationUtils.checkFound(seat.isPresent(), "seat_not_found", "Seat not found");
 
-        Seat updatedSeat = seatService.updateSeatStatus(seat.get(), status);
+        Seat updatedSeat = seatService.updateSeatStatus(seat.get(), newSeatStatus);
 
-        return updatedSeat;
+        return ResponseEntity.ok().body(updatedSeat);
     }
 
     /*
@@ -109,7 +100,7 @@ public class SeatController {
             throw new BadRequestException("Invalid_sector_value", "Invalid sector or status");
         }
 
-        Map<Long, List<Seat>> seats = seatService.getSectorSeatsByRow(seatSector, SeatStatus.VACANT);
+        Map<Long, List<Seat>> seats = seatService.filterPrereservedSeats(seatService.getSectorSeatsByRow(seatSector, SeatStatus.VACANT));
         ValidationUtils.checkFound(!seats.isEmpty(), "seats_not_found", "There are no seats at the selected sector and row");
 
         Map<Long, Map<String, Object>> bestCombosByRow = seatService.searchTopCombosByRow(seats, comboSize, comboCount);

@@ -1,6 +1,8 @@
 package com.rkmd.toki_no_nagare.service;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.rkmd.toki_no_nagare.dto.seat.PrereserveInputDto;
+import com.rkmd.toki_no_nagare.dto.seat.PrereserveSeatDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatRequestDto;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
@@ -10,6 +12,8 @@ import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.repositories.SeatRepository;
 import com.rkmd.toki_no_nagare.utils.Constants;
+import com.rkmd.toki_no_nagare.utils.Tools;
+import com.rkmd.toki_no_nagare.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,9 +63,8 @@ public class SeatService {
 
     public Map<Long, List<Seat>> filterPrereservedSeats(Map<Long, List<Seat>> vacantSeatsByRow) {
         Map<Long, List<Seat>> result = new HashMap<>();
-
         for (Map.Entry<Long, List<Seat>> row : vacantSeatsByRow.entrySet()) {
-            result.put(row.getKey(), row.getValue().stream().collect(Collectors.toList())); //TODO: Falta el filter por el lastUpdated
+            result.put(row.getKey(), row.getValue().stream().filter(seat -> !isPrereserved(seat)).collect(Collectors.toList()));
         }
 
         return result;
@@ -96,6 +99,32 @@ public class SeatService {
         if (updatedStatus != null)
             seat.setStatus(updatedStatus);
 
+        try {
+            return seatRepository.save(seat);
+        } catch (Exception e) {
+            throw new BadRequestException("bad_request", e.getMessage());
+        }
+    }
+
+    private boolean isPrereserved(Seat seat){
+        return seat.getStatus().equals(SeatStatus.VACANT) && Tools.getCurrentDate().isBefore(seat.getLastUpdated().plusMinutes(5));
+    }
+
+    public List<Seat> prereserveSeats(PrereserveInputDto prereserveInputDto) {
+        List<Seat> prereservedSeats = new ArrayList<>();
+        for (PrereserveSeatDto seat : prereserveInputDto.getSeats()) {
+            prereservedSeats.add(prereserveSeat(seat.getSector(), seat.getRow(), seat.getColumn()));
+        }
+
+        return prereservedSeats;
+    }
+
+    private Seat prereserveSeat(SeatSector sector, Long row, Long column) {
+        Optional<Seat> optionalSeat = getSeat(row, column, sector);
+        ValidationUtils.checkFound(optionalSeat.isPresent(), "seat_not_found", "Seat not found");
+
+        Seat seat = optionalSeat.get();
+        seat.setLastUpdated(Tools.getCurrentDate());
         try {
             return seatRepository.save(seat);
         } catch (Exception e) {
