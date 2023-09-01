@@ -1,5 +1,10 @@
 # Changelog
 
+### 2023.08.31
+- fix: Se agrega endpoint para testing de e-mails de expiración de reserva. (c9e97b8)
+- feat: Se agrega método para notificar expiración de reserva por e-mail. (fe6e6aa)
+- feat: Se agrega template html para envío de e-mail de expiración de reserva. (9e089e3)
+
 ### 2023.08.29
 - refactor: Se agrega try-catch para controlar las excepciones de duplicidad de códigos de reserva (82927b4)
 - refactor: Se agrega unique-constraint en la entidad Booking. Sobre el atributo 'hashedBookingCode' y también una
