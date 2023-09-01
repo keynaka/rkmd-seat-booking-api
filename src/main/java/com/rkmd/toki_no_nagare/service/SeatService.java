@@ -107,7 +107,8 @@ public class SeatService {
     }
 
     private boolean isPrereserved(Seat seat){
-        return seat.getStatus().equals(SeatStatus.VACANT) && Tools.getCurrentDate().isBefore(seat.getLastUpdated().plusMinutes(5));
+        //Added 5 seconds just to prevent front call delay
+        return seat.getStatus().equals(SeatStatus.VACANT) && Tools.getCurrentDate().isBefore(seat.getLastUpdated().plusMinutes(Constants.PRERESERVED_DURATION).plusSeconds(5));
     }
 
     public List<Seat> prereserveSeats(PrereserveInputDto prereserveInputDto) {
