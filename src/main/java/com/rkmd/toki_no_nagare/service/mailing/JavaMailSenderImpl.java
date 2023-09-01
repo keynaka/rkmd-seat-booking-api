@@ -98,4 +98,9 @@ public class JavaMailSenderImpl extends AbstractMailingService{
         return null;
     }
 
+    @Override
+    public String notifyExpiration(String recipient, String name, String lastname, String bookingCode, ZonedDateTime expirationTime) {
+        return null;
+    }
+
 }

@@ -33,6 +33,9 @@ public class TransportMailSenderImpl extends AbstractMailingService{
     /** Ruta al archivo que contiene el template para enviar un e-mail de confirmación de pago por Mercado Pago en formato html. */
     public static final String CONFIRMATION_MP_TEMPLATE_PATH = "/mailing/templates/html/confirmation-mp-template.html";
 
+    /** Ruta al archivo que contiene el template para enviar un e-mail de expiración de reserva provisoria en formato html. */
+    public static final String EXPIRATION_TEMPLATE_PATH = "/mailing/templates/html/expiration-template.html";
+
     private String RESERVATION_CASH_BODY_TEMPLATE = null;
 
     private String RESERVATION_MP_BODY_TEMPLATE = null;
@@ -40,6 +43,8 @@ public class TransportMailSenderImpl extends AbstractMailingService{
     private String CONFIRMATION_CASH_BODY_TEMPLATE = null;
 
     private String CONFIRMATION_MP_BODY_TEMPLATE = null;
+
+    private String EXPIRATION_BODY_TEMPLATE = null;
 
     @Value("${spring.mail.host}")
     private String host;
@@ -61,6 +66,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
         RESERVATION_MP_BODY_TEMPLATE = super.readMailTemplate(RESERVATION_MP_TEMPLATE_PATH);
         CONFIRMATION_CASH_BODY_TEMPLATE = super.readMailTemplate(CONFIRMATION_CASH_TEMPLATE_PATH);
         CONFIRMATION_MP_BODY_TEMPLATE = super.readMailTemplate(CONFIRMATION_MP_TEMPLATE_PATH);
+        EXPIRATION_BODY_TEMPLATE = super.readMailTemplate(EXPIRATION_TEMPLATE_PATH);
     }
 
     @PostConstruct
@@ -224,4 +230,24 @@ public class TransportMailSenderImpl extends AbstractMailingService{
         return sendHtmlEmail(new EmailDto(recipient, htmlBody, CONFIRMATION_SUBJECT, imagesData));
     }
 
+    @Override
+    public String notifyExpiration(String recipient, String name, String lastname, String bookingCode, ZonedDateTime expirationTime) {
+        // Agrego las imágenes
+        Map<String, ImagesDto> imagesData = new HashMap<>();
+        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", "./src/main/resources/mailing/images/toki-no-nagare-header-mail-2x.png"));
+
+        String htmlBody = EXPIRATION_BODY_TEMPLATE;
+
+        // Agrego imagen
+        htmlBody = htmlBody.replace("${HEADER_IMAGE_CODE}", imagesData.get("${HEADER_IMAGE_CODE}").getHeaderValue());
+
+        htmlBody = htmlBody.replace("${NAME}", name);
+        htmlBody = htmlBody.replace("${LASTNAME}", lastname);
+        htmlBody = htmlBody.replace("${EVENT_NAME}", eventName);
+        htmlBody = htmlBody.replace("${BOOKING_CODE}", bookingCode);
+        htmlBody = htmlBody.replace("${RESERVATION_EXPIRATION}", Tools.formatArgentinianDate(expirationTime));
+
+
+        return sendHtmlEmail(new EmailDto(recipient, htmlBody, EXPIRATION_SUBJECT, imagesData));
+    }
 }

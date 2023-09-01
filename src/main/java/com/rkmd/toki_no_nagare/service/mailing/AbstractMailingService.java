@@ -45,6 +45,9 @@ public abstract class AbstractMailingService {
     /** Asunto a utilizar en el e-mail de reserva provisoria. */
     public static final String CONFIRMATION_SUBJECT = "Toki no Nagare - Pago confirmado.";
 
+    /** Asunto a utilizar en el e-mail de expiración de reserva. */
+    public static final String EXPIRATION_SUBJECT = "Toki no Nagare - Reserva expirada.";
+
     /** Notifica por e-mail la reserva provisoria de entradas. */
     public abstract String notifyReservation(String recipient, String name, String lastname, String bookingCode,
                                              PaymentMethod paymentMethod, ZonedDateTime expirationTime,
@@ -54,6 +57,10 @@ public abstract class AbstractMailingService {
     public abstract String notifyConfirmation(String recipient, String name, String lastname, String bookingCode,
                                              PaymentMethod paymentMethod, ZonedDateTime expirationTime,
                                              List<SeatDto> seats);
+
+    /** Notifica por e-mail la expiración de la reserva provisoria. */
+    public abstract String notifyExpiration(String recipient, String name, String lastname, String bookingCode,
+                                            ZonedDateTime expirationTime);
 
     public String readMailTemplate(String filePath){
 
