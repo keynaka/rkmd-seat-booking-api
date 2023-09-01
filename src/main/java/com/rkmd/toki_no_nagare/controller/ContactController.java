@@ -146,4 +146,17 @@ public class ContactController {
                 enumPaymentMethod, ZonedDateTime.now().plusDays(2),
                 seats) + LocalDateTime.now().toString());
     }
+
+    /** Uso provisorio. Eliminar este endpoint al finalizar los tests de envío de e-mails. */
+    @Deprecated
+    @GetMapping("/test/notifications/expirations/{email}/{name}/{lastname}")
+    public ResponseEntity<String> testSendExpirationMail(@PathVariable("email") String email,
+                                                           @PathVariable("name") String name,
+                                                           @PathVariable("lastname") String lastname){
+
+        AbstractMailingService mailingService = transportMailSenderImpl;
+
+        return ResponseEntity.ok(mailingService.notifyExpiration(email, name, lastname, "asdf1231",
+                ZonedDateTime.now().plusDays(2)) + LocalDateTime.now().toString());
+    }
 }
