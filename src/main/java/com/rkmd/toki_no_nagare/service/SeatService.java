@@ -96,8 +96,7 @@ public class SeatService {
     }
 
     public Seat updateSeatStatus(Seat seat, SeatStatus updatedStatus) {
-        if (updatedStatus != null)
-            seat.setStatus(updatedStatus);
+        seat.setStatus(updatedStatus);
 
         try {
             return seatRepository.save(seat);
