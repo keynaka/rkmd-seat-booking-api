@@ -1,7 +1,6 @@
 package com.rkmd.toki_no_nagare.controller.seat;
 
 import com.rkmd.toki_no_nagare.dto.seat.PrereserveInputDto;
-import com.rkmd.toki_no_nagare.dto.seat.PrereserveSeatDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatPricesBySectorDto;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
@@ -100,7 +99,7 @@ public class SeatController {
             throw new BadRequestException("Invalid_sector_value", "Invalid sector or status");
         }
 
-        Map<Long, List<Seat>> seats = seatService.filterPrereservedSeats(seatService.getSectorSeatsByRow(seatSector, SeatStatus.VACANT));
+        Map<Long, List<Seat>> seats = seatService.filterAvailableSeatsForBooking(seatService.getSectorSeatsByRow(seatSector, SeatStatus.VACANT));
         ValidationUtils.checkFound(!seats.isEmpty(), "seats_not_found", "There are no seats at the selected sector and row");
 
         Map<Long, Map<String, Object>> bestCombosByRow = seatService.searchTopCombosByRow(seats, comboSize, comboCount);

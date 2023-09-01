@@ -62,7 +62,7 @@ public class SeatService {
         return result;
     }
 
-    public Map<Long, List<Seat>> filterPrereservedSeats(Map<Long, List<Seat>> vacantSeatsByRow) {
+    public Map<Long, List<Seat>> filterAvailableSeatsForBooking(Map<Long, List<Seat>> vacantSeatsByRow) {
         Map<Long, List<Seat>> result = new HashMap<>();
         for (Map.Entry<Long, List<Seat>> row : vacantSeatsByRow.entrySet()) {
             result.put(row.getKey(), row.getValue().stream().filter(seat -> !isPrereserved(seat)).collect(Collectors.toList()));
