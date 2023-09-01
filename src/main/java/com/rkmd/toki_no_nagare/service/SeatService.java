@@ -10,6 +10,7 @@ import com.rkmd.toki_no_nagare.entities.seat.SeatId;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
 import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
+import com.rkmd.toki_no_nagare.exception.RequestTimeoutException;
 import com.rkmd.toki_no_nagare.repositories.SeatRepository;
 import com.rkmd.toki_no_nagare.utils.Constants;
 import com.rkmd.toki_no_nagare.utils.Tools;
@@ -312,14 +313,29 @@ public class SeatService {
         return seats;
     }
 
-    /** Validates the seat status
+    /** Validates if the seat is VACANT and if is still prereserved
      * @param seats Seats requested by the user
-     * @throws BadRequestException When the seat is not equals to seat status requested
+     * @throws BadRequestException When the seat is not VACANT
+     * @throws RequestTimeoutException When the seat is not prereserved
      * */
-    public void validateSeatsStatus(List<Seat> seats, SeatStatus seatStatus){
+    public void validateAvailableSeatForBooking(List<Seat> seats){
         for(Seat seat : seats){
-            if(!seat.getStatus().equals(seatStatus)){
-                throw new BadRequestException("invalid_seat", String.format("The seats are not %s", seatStatus.name()));
+            if(!seat.getStatus().equals(SeatStatus.VACANT)){
+                throw new BadRequestException("invalid_seat",
+                        String.format(
+                                "The seat row: %s - column: %s - sector: %s is not %s anymore",
+                                seat.getRow(), seat.getColumn(), seat.getSector(),
+                                SeatStatus.VACANT.name()
+                        )
+                );
+            }
+            if (!isPrereserved(seat)) {
+                throw new RequestTimeoutException("seat_booking_timeout",
+                        String.format(
+                                "The seat row: %s - column: %s - sector: %s is not %s prereserved",
+                                seat.getRow(), seat.getColumn(), seat.getSector()
+                        )
+                );
             }
         }
     }
