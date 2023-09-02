@@ -101,6 +101,11 @@ public class PaymentService {
     return new PaymentResponseDto(payments);
   }
 
+  public PaymentResponseDto getPaymentsByStatus(PaymentStatus status){
+    List<Payment> payments = paymentRepository.findAllByPaymentStatus(status);
+    return new PaymentResponseDto(payments);
+  }
+
 
   /** This method updates the booking status based on the payment status
    * @param booking Booking data
