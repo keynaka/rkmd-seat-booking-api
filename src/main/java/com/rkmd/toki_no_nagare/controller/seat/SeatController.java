@@ -1,5 +1,6 @@
-package com.rkmd.toki_no_nagare.controller;
+package com.rkmd.toki_no_nagare.controller.seat;
 
+import com.rkmd.toki_no_nagare.dto.seat.PrereserveInputDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatPricesBySectorDto;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
@@ -7,6 +8,7 @@ import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.service.SeatService;
 import com.rkmd.toki_no_nagare.utils.ValidationUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +47,13 @@ public class SeatController {
         Map<Long, List<Seat>> seats = seatService.getSectorSeatsByRow(seatSector, seatStatus);
 
         return ResponseEntity.ok().body(seats);
+    }
+
+    @PutMapping("/prereserve")
+    public ResponseEntity<Boolean> prereserveSeat(@Valid @RequestBody PrereserveInputDto prereserveInputDto) {
+        List<Seat> prereservedSeats = seatService.prereserveSeats(prereserveInputDto);
+
+        return ResponseEntity.ok().body(prereservedSeats.size() == prereserveInputDto.getSeats().size());
     }
 
     @PutMapping("/{sector}/{row}/{column}/{status}")
@@ -90,7 +99,7 @@ public class SeatController {
             throw new BadRequestException("Invalid_sector_value", "Invalid sector or status");
         }
 
-        Map<Long, List<Seat>> seats = seatService.getSectorSeatsByRow(seatSector, SeatStatus.VACANT);
+        Map<Long, List<Seat>> seats = seatService.filterAvailableSeatsForBooking(seatService.getSectorSeatsByRow(seatSector, SeatStatus.VACANT));
         ValidationUtils.checkFound(!seats.isEmpty(), "seats_not_found", "There are no seats at the selected sector and row");
 
         Map<Long, Map<String, Object>> bestCombosByRow = seatService.searchTopCombosByRow(seats, comboSize, comboCount);

@@ -59,4 +59,5 @@ public class Constants {
     public static final int TOTAL_SEATS = 990;
     public static final Double PLATEA_BEST_ROW = 14.0;
     public static final Double PULLMAN_BEST_ROW = 1.0;
+    public static final int PRERESERVED_DURATION = 5;
 }

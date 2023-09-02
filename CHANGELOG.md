@@ -1,5 +1,10 @@
 # Changelog
 
+### 2023.08.31
+- feat: Agrego endpoint de PUT /prereserve
+- refactor: Modifico endpoint de POST /v2/bookings para que valide no solo que sea vacante sino tambien que este prereservado.
+- feat: Implementacion de toda la logica de prereserve de 5 minutos
+
 ### 2023.08.30
 - feat: Agrego endpoint de GET /v1/report/booking/{code_id} que devuelve todo lo relacionado al booking para los admin
 - feat: Agrego endpoint de GET /v3/bookings/{code_id} que devuelve solo el status

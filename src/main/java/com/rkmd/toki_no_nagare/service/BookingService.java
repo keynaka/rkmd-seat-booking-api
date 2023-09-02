@@ -7,14 +7,13 @@ import com.rkmd.toki_no_nagare.dto.booking.CreateBookingResponseDto;
 import com.rkmd.toki_no_nagare.dto.payment.PaymentDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
-import com.rkmd.toki_no_nagare.entities.booking.BookingStatus;
 import com.rkmd.toki_no_nagare.entities.contact.Contact;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
-import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.ApiException;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
+import com.rkmd.toki_no_nagare.exception.RequestTimeoutException;
 import com.rkmd.toki_no_nagare.repositories.BookingRepository;
 import com.rkmd.toki_no_nagare.utils.Tools;
 import jakarta.transaction.Transactional;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -116,8 +114,8 @@ public class BookingService {
             // Step 1: Search in the database for the seats requested by the user
             List<Seat> seats = seatService.getSeatsRequestedByUser(request.getSeats());
 
-            // Step 2: Verify if the 'SEAT STATUS' is 'VACANT'
-            seatService.validateSeatsStatus(seats, SeatStatus.VACANT);
+            // Step 2: Verify if the seat is still available for booking
+            seatService.validateAvailableSeatForBooking(seats);
 
             // Step 3: Create the contact if not exist or update if exist
             Contact contact = contactService.createOrUpdate(request.getContact());
@@ -143,6 +141,8 @@ public class BookingService {
         } catch (DataIntegrityViolationException e){
             log.warn("booking_unique_key_constraint_violation: " + e.getMessage());
             throw new ApiException("booking_error", "The booking could not be processed", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (BadRequestException | RequestTimeoutException e){
+            throw e;
         } catch (Exception e){
             log.warn("booking_internal_server_error: " + e.getMessage());
             throw new ApiException("booking_error", "The booking could not be processed", HttpStatus.INTERNAL_SERVER_ERROR);
