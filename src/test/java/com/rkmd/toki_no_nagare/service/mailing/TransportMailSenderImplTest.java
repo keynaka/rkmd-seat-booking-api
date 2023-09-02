@@ -32,10 +32,8 @@ class TransportMailSenderImplTest {
 
         // then - verify the output
         assertThat(resultEmailTemplate[0]).isNotNull();
-        assertThat(resultEmailTemplate[0]).contains("<p>\n" +
-                "    Matsuridaiko se contactará con vos para coordinar el pago y entrega de entradas.<br>\n" +
-                "    Recordá que tenés hasta la fecha ${RESERVATION_EXPIRATION} para realizar el pago. Pasado este tiempo, deberemos cancelar tu reserva.\n" +
-                "</p>");
+        assertThat(resultEmailTemplate[0]).contains("Te agradecemos por haber realizado una reserva para nuestro show.");
+        assertThat(resultEmailTemplate[0]).doesNotContain("Una vez realizado el pago, te pedimos que respondas este e-mail con el comprobante de pago así podemos coordinar la entrega de entradas.");
     }
 
     @Test
@@ -49,10 +47,8 @@ class TransportMailSenderImplTest {
 
         // then - verify the output
         assertThat(resultEmailTemplate[0]).isNotNull();
-        assertThat(resultEmailTemplate[0]).contains("<p>\n" +
-                "        Nuestra cuenta de Mercado Pago es ${MP_ACCOUNT}.<br>\n" +
-                "        Una vez realizado el pago, te pedimos que nos respondas a este mail con el comprobante de pago así podemos coordinar la entrega de entradas.\n" +
-                "    </p>");
+        assertThat(resultEmailTemplate[0]).contains("Te agradecemos por haber realizado una reserva para nuestro show.");
+        assertThat(resultEmailTemplate[0]).contains("Una vez realizado el pago, te pedimos que respondas este e-mail con el comprobante de pago así podemos coordinar la entrega de entradas.");
     }
 
     @Test
