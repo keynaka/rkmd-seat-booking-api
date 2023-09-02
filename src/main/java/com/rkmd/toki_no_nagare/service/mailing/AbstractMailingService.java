@@ -1,5 +1,6 @@
 package com.rkmd.toki_no_nagare.service.mailing;
 
+import com.rkmd.toki_no_nagare.dto.email.EmailDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentMethod;
 import lombok.Getter;
@@ -47,6 +48,9 @@ public abstract class AbstractMailingService {
 
     /** Asunto a utilizar en el e-mail de expiración de reserva. */
     public static final String EXPIRATION_SUBJECT = "Toki no Nagare - Reserva expirada.";
+
+    /** Envía un email en formato texto */
+    public abstract String sendSimpleMail(EmailDto details);
 
     /** Notifica por e-mail la reserva provisoria de entradas. */
     public abstract String notifyReservation(String recipient, String name, String lastname, String bookingCode,
