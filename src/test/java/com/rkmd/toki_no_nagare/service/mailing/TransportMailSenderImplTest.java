@@ -55,5 +55,33 @@ class TransportMailSenderImplTest {
                 "    </p>");
     }
 
+    @Test
+    void givenConfirmationCashTemplatePath_whenReadMailTemplate_thenThrowNoException(){
 
+        // given - preconditions or setup
+        String[] resultEmailTemplate = new String[1];
+
+        // when - action or behaviour that we are going to test
+        Assertions.assertDoesNotThrow( () -> resultEmailTemplate[0] = mailingService.readMailTemplate(mailingService.CONFIRMATION_CASH_TEMPLATE_PATH));
+
+        // then - verify the output
+        assertThat(resultEmailTemplate[0]).isNotNull();
+        assertThat(resultEmailTemplate[0]).contains("<p>Te agradecemos por haber concretado el pago.</p>");
+        assertThat(resultEmailTemplate[0]).doesNotContain("Ryukyukoku Matsuridaiko se contactará con vos para coordinar la entrega de entradas.");
+    }
+
+    @Test
+    void givenConfirmationMpTemplatePath_whenReadMailTemplate_thenThrowNoException(){
+
+        // given - preconditions or setup
+        String[] resultEmailTemplate = new String[1];
+
+        // when - action or behaviour that we are going to test
+        Assertions.assertDoesNotThrow( () -> resultEmailTemplate[0] = mailingService.readMailTemplate(mailingService.CONFIRMATION_MP_TEMPLATE_PATH));
+
+        // then - verify the output
+        assertThat(resultEmailTemplate[0]).isNotNull();
+        assertThat(resultEmailTemplate[0]).contains("¡Nos vemos pronto en el show!");
+        assertThat(resultEmailTemplate[0]).contains("Ryukyukoku Matsuridaiko se contactará con vos para coordinar la entrega de entradas.");
+    }
 }
