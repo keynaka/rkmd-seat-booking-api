@@ -8,9 +8,18 @@
 - fix: Se remueve implementacion JavaMailSenderImpl. (c5e1ae3)
 
 ### 2023.08.31
+- feat: Agrego endpoint de PUT /prereserve
+- refactor: Modifico endpoint de POST /v2/bookings para que valide no solo que sea vacante sino tambien que este prereservado.
+- feat: Implementacion de toda la logica de prereserve de 5 minutos
 - fix: Se agrega endpoint para testing de e-mails de expiración de reserva. (c9e97b8)
 - feat: Se agrega método para notificar expiración de reserva por e-mail. (fe6e6aa)
 - feat: Se agrega template html para envío de e-mail de expiración de reserva. (9e089e3)
+
+### 2023.08.30
+- feat: Agrego endpoint de GET /v1/report/booking/{code_id} que devuelve todo lo relacionado al booking para los admin
+- feat: Agrego endpoint de GET /v3/bookings/{code_id} que devuelve solo el status
+- refactor: Limpio un par de endpoints y metodos legacy
+- refactor: Modifico PUT /v1/payments para que solo necesite el bookingCode y el paymentStatus para poder actualizarlo
 
 ### 2023.08.29
 - refactor: Se agrega try-catch para controlar las excepciones de duplicidad de códigos de reserva (82927b4)

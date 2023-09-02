@@ -1,6 +1,8 @@
 package com.rkmd.toki_no_nagare.service;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.rkmd.toki_no_nagare.dto.seat.PrereserveInputDto;
+import com.rkmd.toki_no_nagare.dto.seat.PrereserveSeatDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatRequestDto;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
@@ -8,8 +10,11 @@ import com.rkmd.toki_no_nagare.entities.seat.SeatId;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
 import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
+import com.rkmd.toki_no_nagare.exception.RequestTimeoutException;
 import com.rkmd.toki_no_nagare.repositories.SeatRepository;
 import com.rkmd.toki_no_nagare.utils.Constants;
+import com.rkmd.toki_no_nagare.utils.Tools;
+import com.rkmd.toki_no_nagare.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +62,15 @@ public class SeatService {
         return result;
     }
 
+    public Map<Long, List<Seat>> filterAvailableSeatsForBooking(Map<Long, List<Seat>> vacantSeatsByRow) {
+        Map<Long, List<Seat>> result = new HashMap<>();
+        for (Map.Entry<Long, List<Seat>> row : vacantSeatsByRow.entrySet()) {
+            result.put(row.getKey(), row.getValue().stream().filter(seat -> !isPrereserved(seat)).collect(Collectors.toList()));
+        }
+
+        return result;
+    }
+
     public Seat createSeat(SeatSector sector, Long row, Long column, SeatStatus status, Integer auxiliarColumn) {
         SeatId seatId = new SeatId(row, column, sector);
 
@@ -84,6 +98,34 @@ public class SeatService {
 
     public Seat updateSeatStatus(Seat seat, SeatStatus updatedStatus) {
         seat.setStatus(updatedStatus);
+
+        try {
+            return seatRepository.save(seat);
+        } catch (Exception e) {
+            throw new BadRequestException("bad_request", e.getMessage());
+        }
+    }
+
+    private boolean isPrereserved(Seat seat){
+        //Added 5 seconds just to prevent front call delay
+        return seat.getStatus().equals(SeatStatus.VACANT) && Tools.getCurrentDate().isBefore(seat.getLastUpdated().plusMinutes(Constants.PRERESERVED_DURATION).plusSeconds(5));
+    }
+
+    public List<Seat> prereserveSeats(PrereserveInputDto prereserveInputDto) {
+        List<Seat> prereservedSeats = new ArrayList<>();
+        for (PrereserveSeatDto seat : prereserveInputDto.getSeats()) {
+            prereservedSeats.add(prereserveSeat(seat.getSector(), seat.getRow(), seat.getColumn()));
+        }
+
+        return prereservedSeats;
+    }
+
+    private Seat prereserveSeat(SeatSector sector, Long row, Long column) {
+        Optional<Seat> optionalSeat = getSeat(row, column, sector);
+        ValidationUtils.checkFound(optionalSeat.isPresent(), "seat_not_found", "Seat not found");
+
+        Seat seat = optionalSeat.get();
+        seat.setLastUpdated(Tools.getCurrentDate());
         try {
             return seatRepository.save(seat);
         } catch (Exception e) {
@@ -272,14 +314,29 @@ public class SeatService {
         return seats;
     }
 
-    /** Validates the seat status
+    /** Validates if the seat is VACANT and if is still prereserved
      * @param seats Seats requested by the user
-     * @throws BadRequestException When the seat is not equals to seat status requested
+     * @throws BadRequestException When the seat is not VACANT
+     * @throws RequestTimeoutException When the seat is not prereserved
      * */
-    public void validateSeatsStatus(List<Seat> seats, SeatStatus seatStatus){
+    public void validateAvailableSeatForBooking(List<Seat> seats){
         for(Seat seat : seats){
-            if(!seat.getStatus().equals(seatStatus)){
-                throw new BadRequestException("invalid_seat", String.format("The seats are not %s", seatStatus.name()));
+            if(!seat.getStatus().equals(SeatStatus.VACANT)){
+                throw new BadRequestException("invalid_seat",
+                        String.format(
+                                "The seat row: %d - column: %d - sector: %s is not %s anymore",
+                                seat.getRow(), seat.getColumn(), seat.getSector().name(),
+                                SeatStatus.VACANT.name()
+                        )
+                );
+            }
+            if (!isPrereserved(seat)) {
+                throw new RequestTimeoutException("seat_booking_timeout",
+                        String.format(
+                                "The seat row: %d - column: %d - sector: %s is not prereserved",
+                                seat.getRow(), seat.getColumn(), seat.getSector().name()
+                        )
+                );
             }
         }
     }
@@ -290,16 +347,6 @@ public class SeatService {
      * */
     public BigDecimal getTotalPaymentAmount(List<Seat> seats){
         return seats.stream().map(Seat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    /** Updates the status of a seat to reserved
-     * @param seats Seats requested by the user
-     * */
-    public void updateSeatStatus(List<Seat> seats){
-        for(Seat seat : seats){
-            seat.setStatus(SeatStatus.RESERVED);
-            seatRepository.save(seat);
-        }
     }
 
 

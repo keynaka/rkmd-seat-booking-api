@@ -10,10 +10,10 @@ import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.contact.Contact;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
-import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.ApiException;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
+import com.rkmd.toki_no_nagare.exception.RequestTimeoutException;
 import com.rkmd.toki_no_nagare.repositories.BookingRepository;
 import com.rkmd.toki_no_nagare.utils.Tools;
 import jakarta.transaction.Transactional;
@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -52,21 +51,23 @@ public class BookingService {
         return bookingRepository.findById(id);
     }
 
-    public Booking save(Map<String, Object> json) {
-        Booking newBooking = new Booking();
+    public BookingResponseDto getBookingByCode(String code){
+        List<Booking> allBookings = bookingRepository.findAll();
 
-        //TODO: CONTINUE HERE...
-        /*newBooking.setName((String) json.get("name"));
-        newBooking.setLastName((String) json.get("last_name"));
-        newBooking.setPasswordHash((String) json.get("password"));*/
+        Booking reservedBooking = null;
 
-        try {
-            return bookingRepository.save(newBooking);
-        } catch (Exception e) {
-            throw new BadRequestException("bad_request", e.getMessage());
+        for(Booking booking : allBookings){
+            if(booking.getHashedBookingCode().equals(code)) {
+                reservedBooking = booking;
+            }
         }
-    }
 
+        if(reservedBooking == null){
+            throw new NotFoundException("booking_code_not_found", "The booking code does not exist");
+        }
+
+        return createBookingResponseDto(reservedBooking);
+    }
 
     /** This method checks if a booking exists according to the 'dni' and 'bookingCode' passed as parameters.
      * If exists, returns the booking data. If it doesn't exist or 'bookingCode' is invalid, it throws an exception.
@@ -97,12 +98,7 @@ public class BookingService {
             throw new BadRequestException("booking_code_invalid", "The booking code is invalid.");
         }
 
-        BookingResponseDto response = modelMapper.map(reservedBooking, BookingResponseDto.class);
-
-        // This step is necessary because the "Contact" attribute of the "Booking" class was defined with the name client
-        response.setContact(modelMapper.map(reservedBooking.getClient(), ContactDto.class));
-
-        return response;
+        return createBookingResponseDto(reservedBooking);
     }
 
 
@@ -118,8 +114,8 @@ public class BookingService {
             // Step 1: Search in the database for the seats requested by the user
             List<Seat> seats = seatService.getSeatsRequestedByUser(request.getSeats());
 
-            // Step 2: Verify if the 'SEAT STATUS' is 'VACANT'
-            seatService.validateSeatsStatus(seats, SeatStatus.VACANT);
+            // Step 2: Verify if the seat is still available for booking
+            seatService.validateAvailableSeatForBooking(seats);
 
             // Step 3: Create the contact if not exist or update if exist
             Contact contact = contactService.createOrUpdate(request.getContact());
@@ -145,13 +141,14 @@ public class BookingService {
         } catch (DataIntegrityViolationException e){
             log.warn("booking_unique_key_constraint_violation: " + e.getMessage());
             throw new ApiException("booking_error", "The booking could not be processed", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (BadRequestException | RequestTimeoutException e){
+            throw e;
         } catch (Exception e){
             log.warn("booking_internal_server_error: " + e.getMessage());
             throw new ApiException("booking_error", "The booking could not be processed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
-
 
     /** This method creates the user response according to the booking data passed as parameters.
      * @param booking Booking data
@@ -199,6 +196,14 @@ public class BookingService {
         boolean isRepeated = bookings.stream().anyMatch(b -> b.getHashedBookingCode().equals(newBookingCode));
         if(isRepeated) log.info("Booking code generated is repeated: {}", newBookingCode);
         return isRepeated;
+    }
+
+    private BookingResponseDto createBookingResponseDto(Booking reservedBooking) {
+        BookingResponseDto response = modelMapper.map(reservedBooking, BookingResponseDto.class);
+
+        // This step is necessary because the "Contact" attribute of the "Booking" class was defined with the name client
+        response.setContact(modelMapper.map(reservedBooking.getClient(), ContactDto.class));
+        return response;
     }
 
 }

@@ -19,6 +19,8 @@ spring:
       hibernate:
         ddl-auto: ${DB_DDL_AUTO}
         naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+        jdbc:
+          time_zone: GMT-3
   mail:
     host: smtp.gmail.com
     port: 587
