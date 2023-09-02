@@ -1,4 +1,5 @@
 package com.rkmd.toki_no_nagare.service.expiration;
+import com.google.common.annotations.VisibleForTesting;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,10 @@ public class MercadoPagoExpirationService extends ExpirationService{
         ZonedDateTime fixedCreationDate = fixTargetTime(dateCreated);
 
         return fixedCreationDate.plusDays(expirationLimit);
+    }
+
+    @VisibleForTesting
+    public void setExpirationLimit(Long expirationLimit) {
+        this.expirationLimit = expirationLimit;
     }
 }
