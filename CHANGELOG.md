@@ -4,6 +4,8 @@
 - feat: Se agrega a AbstractMailingService método abstracto para enviar e-mail en formato texto. (a9446c2)
 - test: Se agregan test de carga de templates html para confirmacion y expiracion. (1dbad13)
 - fix: Se remueven templates de e-mails en formato .txt. (dd32310)
+- test: se corrigen test en TransportMailSenderImplTest. (b7ada32)
+- fix: Se remueve implementacion JavaMailSenderImpl. (c5e1ae3)
 
 ### 2023.08.31
 - fix: Se agrega endpoint para testing de e-mails de expiración de reserva. (c9e97b8)
