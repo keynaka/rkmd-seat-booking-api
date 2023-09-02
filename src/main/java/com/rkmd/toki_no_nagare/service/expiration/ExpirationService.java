@@ -19,9 +19,14 @@ public abstract class ExpirationService {
         return Tools.getCurrentDate().isAfter(date.plusDays(adminExpireExtraDays()));
     }
 
+    /**
+    * This method creates a new ZonedDateTime with the same date but the target time
+    * */
     protected ZonedDateTime fixTargetTime(ZonedDateTime date) {
+        // Uncomment for testing: To simulate the expiration date to 2 minutes later. Remember to edit the getExpirationDate() and adminExpireExtraDays() too
+        // LocalTime targetTime = LocalTime.of(Tools.getCurrentDate().getHour(), Tools.getCurrentDate().plusMinutes(2).getMinute());
         LocalTime targetTime = LocalTime.of(FIXED_LIMIT_HOUR, FIXED_LIMIT_MINUTE);
-        // Create a new ZonedDateTime with the same date but the target time
+
         return date.with(targetTime);
     }
 }
