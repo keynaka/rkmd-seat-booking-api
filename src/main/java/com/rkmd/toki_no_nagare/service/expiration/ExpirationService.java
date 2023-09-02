@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 
 public abstract class ExpirationService {
+    // These FIXED_LIMIT_HOUR AND FIXED_LIMIT_MINUTE must be set before the ExpirationJob's cron
     private static final int FIXED_LIMIT_HOUR = 23;
     private static final int FIXED_LIMIT_MINUTE = 50;
 
