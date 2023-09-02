@@ -8,6 +8,7 @@
 - fix: Se remueve implementacion JavaMailSenderImpl. (c5e1ae3)
 - feat: Agrego ExpirationServices + Factory
 - feat: Agrego ExpirationJob
+- test: Agrego tests para Cash y MP ExpirationServices
 
 
 ### 2023.08.31
