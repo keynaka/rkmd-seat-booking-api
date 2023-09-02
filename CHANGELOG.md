@@ -1,5 +1,8 @@
 # Changelog
 
+### 2023.09.01
+- feat: Agrego ExpirationServices + Factory
+
 ### 2023.08.31
 - feat: Agrego endpoint de PUT /prereserve
 - refactor: Modifico endpoint de POST /v2/bookings para que valide no solo que sea vacante sino tambien que este prereservado.
