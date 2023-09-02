@@ -1,6 +1,11 @@
+event:
+  address: ${EVENT_ADDRESS}
+  date: ${EVENT_DATE}
+  time: ${EVENT_TIME}
+  name: ${EVENT_NAME}
+  place: ${EVENT_PLACE}
 server:
   port: ${APP_PORT}
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,10 +21,22 @@ spring:
         naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
         jdbc:
           time_zone: GMT-3
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 spring-doc:
   swagger-ui:
     enabled: ${SWAGGER_ENABLE}
-
+payment:
+  mercadoPagoAccount: ${PAYMENT_MP_ACCOUNT}
 paymentTimeLimitFor:
   mercadoPago: ${RESERVATION_MERCADOPAGO_EXPIRATION_TIME}
   cash: ${RESERVATION_CASH_EXPIRATION_TIME}

@@ -1,12 +1,22 @@
 # Changelog
 
-### 2023.09.01
+### 2023.09.02
+- feat: Se agrega a AbstractMailingService método abstracto para enviar e-mail en formato texto. (a9446c2)
+- test: Se agregan test de carga de templates html para confirmacion y expiracion. (1dbad13)
+- fix: Se remueven templates de e-mails en formato .txt. (dd32310)
+- test: se corrigen test en TransportMailSenderImplTest. (b7ada32)
+- fix: Se remueve implementacion JavaMailSenderImpl. (c5e1ae3)
 - feat: Agrego ExpirationServices + Factory
+- feat: Agrego ExpirationJob
+
 
 ### 2023.08.31
 - feat: Agrego endpoint de PUT /prereserve
 - refactor: Modifico endpoint de POST /v2/bookings para que valide no solo que sea vacante sino tambien que este prereservado.
 - feat: Implementacion de toda la logica de prereserve de 5 minutos
+- fix: Se agrega endpoint para testing de e-mails de expiración de reserva. (c9e97b8)
+- feat: Se agrega método para notificar expiración de reserva por e-mail. (fe6e6aa)
+- feat: Se agrega template html para envío de e-mail de expiración de reserva. (9e089e3)
 
 ### 2023.08.30
 - feat: Agrego endpoint de GET /v1/report/booking/{code_id} que devuelve todo lo relacionado al booking para los admin
@@ -16,13 +26,48 @@
 
 ### 2023.08.29
 - refactor: Se agrega try-catch para controlar las excepciones de duplicidad de códigos de reserva (82927b4)
-- refactor: Se agrega unique-constraint en la entidad Booking. Sobre el atributo 'hashedBookingCode' y también una 
-unique-constraint compuesta sobre los atributos 'hashedBookingCode' y 'clientId'. Para que no existan códigos de reserva 
+- refactor: Se agrega unique-constraint en la entidad Booking. Sobre el atributo 'hashedBookingCode' y también una
+unique-constraint compuesta sobre los atributos 'hashedBookingCode' y 'clientId'. Para que no existan códigos de reserva
 duplicados y a su vez, no existan códigos de reserva duplicados para un mismo usuario. (354f238)
 - refactor: Se modifica la implementación para generar códigos de reserva (aeb9055)
 
 ### 2023.08.28
 - refactor: Se elimina el enum PhoneType de la entidad Contact (f11ba11)
+- fix: Se separa env eventDateTime en dos envs eventDate y eventTime. (e1a1884)
+- feat: Se agrega a AbstractMailingService constante CONFIRMATION_SUBJECT. (e1a1884)
+- fix: Se agrega a application*.yaml envs EVENT_DATE y EVENT_TIME. (21a6ab3)
+- feat: Se agrega a EmailDto el uso de mapa para carga de imagenes al template html. (47e4bbc)
+- feat: Se implementa carga de imagenes al template html. (36f1e06)
+- feat: Se implementa en TransportMailSenderImpl método abstracto notifyConfirmation para envío de e-mails de confirmación de pago. (57c3511)
+- fix: Se formatean templates html para reserva provisoria. (c6cc12b)
+- feat: Se agregan templates html para confirmación de pago. (200500f)
+- fix: Se agrega imagen .png para ser enviado como header en los e-mails de reserva y confirmación de pago. (7a10217)
+- fix: Se agrega endpoint para testing de e-mails de confirmación de pago. (3771b96)
+
+### 2023.08.27
+- fix: Se agrega a ContactController el envío a demanda de e-mails para testing. (0d194c1)
+- fix: Se agrega a deployment-prod.yaml env PAYMENT_MP_ACCOUNT para informar por e-mail la cuenta de Mercado Pago. (fbd7d18)
+- fix: Se realizan mejoras en la notificación por e-mail de reservas provisorias. (5b91714)
+- fix: Se elimina IMailingService y se reemplaza por AbstractMailingService. (a342300)
+- fix: Se modificaa clase ContactController para el test de envío a demanda de e-mails con formato html. (95e4782)
+- feat: Se agregan templaes html para emails de reserva provisoria. (360f939)
+- fix: Se agregan test unitarios para obtención de templates html para emails de reserva provisoria. (b6cca74)
+- fix: se mejora el cuerpo html del email de reserva provisoria. (71848fa)
+- docs: Se modifica la descripción de atributos en la clase JavaMailSenderImpl. (8bd59c5)
+- fix: Se agrega uso de envs con datos del evento en AbstractMailingService. (7afe00a)
+- fix: Se agregan envs EVENT_ADDRESS, EVENT_DATE_TIME, EVENT_NAME y EVENT_PLACE para cargar los datos del evento. (3a40929)
+- feat: Se agregan templates para envío de emails en formato texto. (a4b8cdd)
+- fix: Se agrega uso de envs MAIL_USERNAME y MAIL_PASSWORD. (b738613)
+
+### 2023.08.26
+- feat: Se implementa clase JavaMailSenderImpl para envío de e-mails simples con solo texto. (4dec238)
+- feat: Se agrega endpoint para envío de e-mails. (76920b3)
+- feat: Se implementa TransportMailSenderImpl para envío de e-mails utilizando dependencias del paquete jakarta.mail. (3d7c245)
+- feat: Se agrega a archivo pom.xml dependencia para envío de e-mails. (b5cd483)
+- feat: Se agrega a application.yaml y application-prod.yaml campos para envío de e-mails. (2410f15)
+- feat: Se crea interfaz IMailingService para envío de e-mails. (e893c18)
+- feat: Se crea la clase EmailDto para enviar e-mails. (d4f59b9)
+- fix: Se utiliza JavaMailSenderImpl para endpoint de test de envío de e-mails. (8254b1f)
 
 ### 2023.08.24
 - fix: Asientos faltantes en Platea

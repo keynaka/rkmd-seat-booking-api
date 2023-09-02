@@ -101,6 +101,9 @@ public class PaymentService {
     return new PaymentResponseDto(payments);
   }
 
+  /** This method returns all registered payments with some status
+   * @return PaymentResponseDto
+   * */
   public PaymentResponseDto getPaymentsByStatus(PaymentStatus status){
     List<Payment> payments = paymentRepository.findAllByPaymentStatus(status);
     return new PaymentResponseDto(payments);

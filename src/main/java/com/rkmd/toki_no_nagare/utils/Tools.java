@@ -5,6 +5,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.security.SecureRandom;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Tools {
 
@@ -36,6 +37,11 @@ public class Tools {
   public static boolean validateBookingCode(Long contactDni, String bookingCode, String hashedBookingCode){
     String key = contactDni + bookingCode;
     return BCrypt.checkpw(key, hashedBookingCode);
+  }
+
+  public static String formatArgentinianDate(ZonedDateTime zonedDateTime){
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    return zonedDateTime.format(formatter);
   }
 
 }

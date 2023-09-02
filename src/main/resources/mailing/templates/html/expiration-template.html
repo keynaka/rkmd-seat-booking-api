@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expiración de Reserva</title>
+</head>
+<body style='font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px;'>
+
+<table style='color: #333333; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);'>
+    <tr>
+        <td style="padding: 20px;">
+            <h1>Hola ${NAME} ${LASTNAME}.</h1>
+
+            <p>Lamentamos informarte que tu reserva <span style='font-weight: bold; font-size: 16px;'>HA EXPIRADO.</span></p>
+
+            <div style="border: 1px solid #dddddd; padding: 10px; border-radius: 5px; background-color: #f9f9f9;">
+                <img align='center' src='cid:${HEADER_IMAGE_CODE}' width='600' alt='header'/>
+                <h3>${EVENT_NAME}</h3>
+                <p>Detall:</p>
+                <p><span style='font-weight: bold; font-size: 16px;'>Fecha de expiración:</span> ${RESERVATION_EXPIRATION}</p>
+                <p><span style='font-weight: bold; font-size: 16px;'>Cód. de reserva:</span> ${BOOKING_CODE}</p>
+            </div>
+
+            <p>Esperamos que puedas realizar una nueva reserva.</p>
+
+            <p style='margin-top: 20px;'>
+                Te pedimos disculpas por las molestias ocasionadas.
+            </p>
+        </td>
+    </tr>
+</table>
+
+<p style='text-align: center; color: #888888; margin-top: 20px;'>© 2023 Ryukyukoku Matsuridaiko | https://matsuridaiko.com.ar</p>
+
+</body>
+</html>
+
+
+
+
+
+
