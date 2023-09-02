@@ -34,10 +34,10 @@ public class CashExpirationService extends ExpirationService{
     @Override
     public ZonedDateTime getExpirationDate(ZonedDateTime dateCreated) {
         ZonedDateTime fixedDate = fixTargetTime(dateCreated);
-        DayOfWeek diaActual = Tools.getCurrentDate().getDayOfWeek();
+        DayOfWeek currentDay = fixedDate.getDayOfWeek();
 
         ZonedDateTime expirationLimit = fixedDate.with(TemporalAdjusters.next(DayOfWeek.SATURDAY));
-        if (diaActual == DayOfWeek.WEDNESDAY || diaActual == DayOfWeek.THURSDAY || diaActual == DayOfWeek.FRIDAY)
+        if (currentDay == DayOfWeek.WEDNESDAY || currentDay == DayOfWeek.THURSDAY || currentDay == DayOfWeek.FRIDAY)
             expirationLimit = expirationLimit.plusWeeks(1);
 
         return expirationLimit;
