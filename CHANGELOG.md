@@ -6,6 +6,13 @@
 - fix: Se remueven templates de e-mails en formato .txt. (dd32310)
 - test: se corrigen test en TransportMailSenderImplTest. (b7ada32)
 - fix: Se remueve implementacion JavaMailSenderImpl. (c5e1ae3)
+- feat: Se agrega envío de e-mail al finalizar una reserva provisoria. (a6f1b97)
+- feat: Se agrega a TransportMailSenderImpl uso de perfiles para envío de e-mails. (11ee407)
+- fix: Se agrega constructor vacío a SeatDto. (4f31cce)
+- feat: Se agrega manejo de perfil en envío de e-mails para diferencias producción y testing. (59953a5)
+- fix: Se agrega app.profile a application-prod.yml para manejo de entorno. (93189bc)
+- fix: Se agrega archivo application-testing.yaml. (bab00f2)
+- fix: Se corrige archivo reservation-mp-template.html. (4a7eaa2)
 
 ### 2023.08.31
 - feat: Agrego endpoint de PUT /prereserve
