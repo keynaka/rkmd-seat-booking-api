@@ -139,7 +139,7 @@ public class BookingService {
             // Step 8: Associate the seat data with the booking, changes the seat's status and persists it in the database
             seatService.updateSeatData(seats, booking);
 
-            // Step 9: Notify reservation to the client.
+            // Step 6: notify reservation by sending an e-mail to the client
             mailingService.notifyReservation(contact.getEmail(),
                     contact.getName(), contact.getLastName(),
                     bookingCode, booking.getPayment().getPaymentMethod(),
