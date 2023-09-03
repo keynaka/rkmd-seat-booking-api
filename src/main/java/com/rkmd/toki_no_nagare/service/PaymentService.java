@@ -13,6 +13,7 @@ import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
 import com.rkmd.toki_no_nagare.repositories.PaymentRepository;
+import com.rkmd.toki_no_nagare.service.expiration.ExpirationServiceFactory;
 import com.rkmd.toki_no_nagare.service.mailing.AbstractMailingService;
 import com.rkmd.toki_no_nagare.utils.Tools;
 import jakarta.transaction.Transactional;
@@ -28,12 +29,8 @@ import java.util.Optional;
 
 @Service
 public class PaymentService {
-
-  @Value("${paymentTimeLimitFor.mercadoPago}")
-  private Long paymentTimeLimitForMercadoPago;
-
-  @Value("${paymentTimeLimitFor.cash}")
-  private Long paymentTimeLimitForCash;
+  @Autowired
+  private ExpirationServiceFactory expirationServiceFactory;
 
   @Autowired
   private ModelMapper modelMapper;
@@ -64,8 +61,7 @@ public class PaymentService {
    * @return ZonedDateTime
    */
   public ZonedDateTime expirationDateByPaymentMethod(PaymentMethod paymentMethod, ZonedDateTime dateCreated){
-    return (paymentMethod.equals(PaymentMethod.MERCADO_PAGO)) ?
-        dateCreated.plusDays(paymentTimeLimitForMercadoPago) : dateCreated.plusDays(paymentTimeLimitForCash);
+    return expirationServiceFactory.getExpirationService(paymentMethod).getExpirationDate(dateCreated);
   }
 
 
@@ -103,7 +99,7 @@ public class PaymentService {
             bookingCode, booking.getPayment().getPaymentMethod(),
             payment.getExpirationDate(), Tools.convertSeatToSeatDto(booking.getSeats()));
 
-    // Step 6: Create the response for the user  // TODO: This response should be sent to the user via email
+    // Step 7: Create the response for the user  // TODO: This response should be sent to the user via email
     return createResponse(booking, bookingCode, seats);
   }
 
@@ -113,6 +109,14 @@ public class PaymentService {
    * */
   public PaymentResponseDto getAllPayments(){
     List<Payment> payments = paymentRepository.findAll();
+    return new PaymentResponseDto(payments);
+  }
+
+  /** This method returns all registered payments with some status
+   * @return PaymentResponseDto
+   * */
+  public PaymentResponseDto getPaymentsByStatus(PaymentStatus status){
+    List<Payment> payments = paymentRepository.findAllByPaymentStatus(status);
     return new PaymentResponseDto(payments);
   }
 

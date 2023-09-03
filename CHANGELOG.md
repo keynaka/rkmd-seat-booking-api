@@ -6,6 +6,9 @@
 - fix: Se remueven templates de e-mails en formato .txt. (dd32310)
 - test: se corrigen test en TransportMailSenderImplTest. (b7ada32)
 - fix: Se remueve implementacion JavaMailSenderImpl. (c5e1ae3)
+- feat: Agrego ExpirationServices + Factory
+- feat: Agrego ExpirationJob
+- test: Agrego tests para Cash y MP ExpirationServices
 - feat: Se agrega envío de e-mail al finalizar una reserva provisoria. (a6f1b97)
 - feat: Se agrega a TransportMailSenderImpl uso de perfiles para envío de e-mails. (11ee407)
 - fix: Se agrega constructor vacío a SeatDto. (4f31cce)
