@@ -13,6 +13,7 @@
 - fix: Se agrega app.profile a application-prod.yml para manejo de entorno. (93189bc)
 - fix: Se agrega archivo application-testing.yaml. (bab00f2)
 - fix: Se corrige archivo reservation-mp-template.html. (4a7eaa2)
+- feat: Se implementa notificación por e-mail para confirmar un pago. (66a738b)
 
 ### 2023.08.31
 - feat: Agrego endpoint de PUT /prereserve
