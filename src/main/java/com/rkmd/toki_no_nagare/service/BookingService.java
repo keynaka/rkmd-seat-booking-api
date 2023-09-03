@@ -143,7 +143,7 @@ public class BookingService {
             mailingService.notifyReservation(contact.getEmail(),
                     contact.getName(), contact.getLastName(),
                     bookingCode, booking.getPayment().getPaymentMethod(),
-                    booking.getExpirationDate(), Tools.convertSeatToSeatDto(booking.getSeats()));
+                    booking.getExpirationDate(), Tools.convertSeatToSeatDto(seats));
 
             // Step 10: Create the response for the user // TODO: This response should be sent to the user via email
             return createResponse(booking, bookingCode, seats);
