@@ -21,12 +21,12 @@ public class MercadoPagoExpirationService extends ExpirationService{
     * This method calculates the expirationDate by setting the Hour and minute to a fixed TargetTime and then
     * adding expirationLimit days.
     * E.g.
-    *   Fixed hour = 22
-    *   Fixed minute = 45
+    *   Fixed hour = 23
+    *   Fixed minute = 50
     *   expirationLimit = 7
     *   dateCreated = 02/09/2023 - X hours and Y minutes  (X and Y does not matter)
     *   ----------------------
-    *   result = 09/09/2023 - 22:45
+    *   result = 09/09/2023 - 23:50
     * */
     @Override
     public ZonedDateTime getExpirationDate(ZonedDateTime dateCreated) {

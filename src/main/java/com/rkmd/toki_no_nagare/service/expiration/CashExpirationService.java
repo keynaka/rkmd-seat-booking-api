@@ -21,15 +21,15 @@ public class CashExpirationService extends ExpirationService{
      * friday then it will recommend the next saturday. Else it will recommend this saturday.
      * It will also set the hour and minute to a fixed targetTime
      * E.g.
-     *   Fixed hour = 22
-     *   Fixed minute = 45
+     *   Fixed hour = 23
+     *   Fixed minute = 50
      *   dateCreated = (Saturday) 02/09/2023 - X hours and Y minutes  (X and Y does not matter)
      *   ------------
-     *   result = (Saturday) 09/09/2023 - 22:45
+     *   result = (Saturday) 09/09/2023 - 23:50
      * E.g. 2
      *   dateCreated = (Wednesday) 06/09/2023 - X hours and Y minutes  (X and Y does not matter)
      *   ------------
-     *   result = (Saturday) 16/09/2023 - 22:45
+     *   result = (Saturday) 16/09/2023 - 23:50
      * */
     @Override
     public ZonedDateTime getExpirationDate(ZonedDateTime dateCreated) {

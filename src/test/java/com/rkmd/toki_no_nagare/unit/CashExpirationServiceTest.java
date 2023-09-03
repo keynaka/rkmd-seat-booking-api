@@ -16,13 +16,19 @@ public class CashExpirationServiceTest {
         ZonedDateTime dateCreated;
         ZonedDateTime expirationDate;
         // 02-09-2023 is Saturday
-        for (int i = 0 ; i < 4 ; i++) {
+        for (int i = 0 ; i < 5 ; i++) {
             dateCreated = ZonedDateTime.of(2023, 9, 2 + i, 12, 0, 0, 0, ZoneId.systemDefault());
 
             expirationDate = cashExpirationService.getExpirationDate(dateCreated);
 
-            ZonedDateTime expectedExpirationDate = ZonedDateTime.of(2023, 9, 9, ExpirationService.FIXED_LIMIT_HOUR, ExpirationService.FIXED_LIMIT_MINUTE, 0, 0, ZoneId.systemDefault());
-            Assertions.assertEquals(expectedExpirationDate, expirationDate);
+            if (i < 4) {
+                ZonedDateTime expectedExpirationDate = ZonedDateTime.of(2023, 9, 9, ExpirationService.FIXED_LIMIT_HOUR, ExpirationService.FIXED_LIMIT_MINUTE, 0, 0, ZoneId.systemDefault());
+                Assertions.assertEquals(expectedExpirationDate, expirationDate);
+            } else {
+                // This case is when it is 06-09-2023 (Wednesday)
+                ZonedDateTime expectedExpirationDate = ZonedDateTime.of(2023, 9, 16, ExpirationService.FIXED_LIMIT_HOUR, ExpirationService.FIXED_LIMIT_MINUTE, 0, 0, ZoneId.systemDefault());
+                Assertions.assertEquals(expectedExpirationDate, expirationDate);
+            }
         }
     }
 
