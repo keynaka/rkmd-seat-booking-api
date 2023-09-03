@@ -13,6 +13,7 @@ import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
 import com.rkmd.toki_no_nagare.repositories.PaymentRepository;
+import com.rkmd.toki_no_nagare.service.mailing.AbstractMailingService;
 import com.rkmd.toki_no_nagare.utils.Tools;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -39,6 +40,9 @@ public class PaymentService {
 
   @Autowired
   private PaymentRepository paymentRepository;
+
+  @Autowired
+  private AbstractMailingService mailingService;
 
   /** This method creates a payment and stores it in the database. The expiration date is calculated according to the
    * payment method.
@@ -92,6 +96,12 @@ public class PaymentService {
 
     // Step 5: save the payment data
     paymentRepository.saveAndFlush(payment);
+
+    // Step 6: notify confirmation by sending an e-mail to the client
+    mailingService.notifyConfirmation(booking.getClient().getEmail(),
+            booking.getClient().getName(), booking.getClient().getLastName(),
+            bookingCode, booking.getPayment().getPaymentMethod(),
+            payment.getExpirationDate(), Tools.convertSeatToSeatDto(booking.getSeats()));
 
     // Step 6: Create the response for the user  // TODO: This response should be sent to the user via email
     return createResponse(booking, bookingCode, seats);
