@@ -1,3 +1,5 @@
+app:
+  profile: PRODUCTION
 event:
   address: ${EVENT_ADDRESS}
   date: ${EVENT_DATE}
