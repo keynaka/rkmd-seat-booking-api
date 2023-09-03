@@ -17,6 +17,7 @@
 - fix: Se agrega archivo application-testing.yaml. (bab00f2)
 - fix: Se corrige archivo reservation-mp-template.html. (4a7eaa2)
 - feat: Se implementa notificación por e-mail para confirmar un pago. (66a738b)
+- fix: Se agrega env DB_CONNECTION_PARAMS para setear parámetros en el string de conexión a la db. (c75ff4d)
 
 ### 2023.08.31
 - feat: Agrego endpoint de PUT /prereserve
