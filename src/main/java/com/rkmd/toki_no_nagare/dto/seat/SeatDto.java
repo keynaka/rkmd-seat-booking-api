@@ -5,6 +5,7 @@ import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 @Getter
 @Schema(description = "Datos de la butaca")
 @AllArgsConstructor
+@NoArgsConstructor
 public class SeatDto {
 
   @Schema(
