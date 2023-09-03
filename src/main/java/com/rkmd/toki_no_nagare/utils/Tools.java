@@ -1,11 +1,15 @@
 package com.rkmd.toki_no_nagare.utils;
 
+import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
+import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.security.SecureRandom;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Tools {
 
@@ -44,4 +48,12 @@ public class Tools {
     return zonedDateTime.format(formatter);
   }
 
+  /** Converts a list of Seat into a list of SeatDto */
+  public static List<SeatDto> convertSeatToSeatDto(List<Seat> seats){
+    return seats.stream().map(seat -> {
+      SeatDto seatDto = new SeatDto(seat.getRow(), seat.getColumn(), seat.getPrice(), seat.getSector(), seat.getStatus());
+      return seatDto;
+    })
+            .collect(Collectors.toList());
+  }
 }

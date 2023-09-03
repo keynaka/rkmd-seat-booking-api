@@ -1,5 +1,5 @@
 app:
-  profile: PRODUCTION
+  profile: TESTING
 event:
   address: ${EVENT_ADDRESS}
   date: ${EVENT_DATE}

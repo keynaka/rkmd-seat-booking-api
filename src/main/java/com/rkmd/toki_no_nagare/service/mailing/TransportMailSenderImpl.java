@@ -188,7 +188,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
         htmlBody = htmlBody.replace("${RESERVED_SEATS}", buildSeatsList(reservationData.get("seats")));
         htmlBody = htmlBody.replace("${TOTAL_AMOUNT}", "$" + reservationData.get("totalAmount"));
 
-        return sendHtmlEmail(new EmailDto(recipient, htmlBody, RESERVATION_SUBJECT, imagesData));
+        return sendHtmlEmail(new EmailDto(recipient, htmlBody, getReservationSubject(), imagesData));
     }
 
     /** Utiliza el template html de e-mail de confirmación de reserva y formatea el template con los datos específicos de la reserva. */
@@ -227,7 +227,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
         htmlBody = htmlBody.replace("${RESERVED_SEATS}", buildSeatsList(reservationData.get("seats")));
         htmlBody = htmlBody.replace("${TOTAL_AMOUNT}", "$" + reservationData.get("totalAmount"));
 
-        return sendHtmlEmail(new EmailDto(recipient, htmlBody, CONFIRMATION_SUBJECT, imagesData));
+        return sendHtmlEmail(new EmailDto(recipient, htmlBody, getConfirmationSubject(), imagesData));
     }
 
     @Override
@@ -248,6 +248,6 @@ public class TransportMailSenderImpl extends AbstractMailingService{
         htmlBody = htmlBody.replace("${RESERVATION_EXPIRATION}", Tools.formatArgentinianDate(expirationTime));
 
 
-        return sendHtmlEmail(new EmailDto(recipient, htmlBody, EXPIRATION_SUBJECT, imagesData));
+        return sendHtmlEmail(new EmailDto(recipient, htmlBody, getExpirationSubject(), imagesData));
     }
 }

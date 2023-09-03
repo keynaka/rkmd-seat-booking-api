@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -79,5 +80,98 @@ class TransportMailSenderImplTest {
         assertThat(resultEmailTemplate[0]).isNotNull();
         assertThat(resultEmailTemplate[0]).contains("¡Nos vemos pronto en el show!");
         assertThat(resultEmailTemplate[0]).contains("Ryukyukoku Matsuridaiko se contactará con vos para coordinar la entrega de entradas.");
+    }
+
+    @Test
+    void givenProductionAppProfile_whenGetReservationSubject_thenReturnReservationSubject(){
+
+        // given - preconditions or setup
+        ReflectionTestUtils.setField(mailingService, "appProfile", "PRODUCTION");
+        String subject = (String) ReflectionTestUtils.getField(mailingService,"reservationSubject");
+
+        // when - action or behaviour that we are going to test
+        String resultSubject = mailingService.getReservationSubject();
+
+        // then - verify the output
+        assertThat(resultSubject).doesNotContain("PRODUCTION");
+        assertThat(resultSubject).doesNotContain("(TESTING) ");
+        assertThat(resultSubject).contains(subject);
+    }
+
+    @Test
+    void givenTestingAppProfile_whenGetReservationSubject_thenReturnReservationSubjectWithProfile(){
+
+        // given - preconditions or setup
+        ReflectionTestUtils.setField(mailingService, "appProfile", "TESTING");
+        String subject = (String) ReflectionTestUtils.getField(mailingService,"reservationSubject");
+
+        // when - action or behaviour that we are going to test
+        String resultSubject = mailingService.getReservationSubject();
+
+        // then - verify the output
+        assertThat(resultSubject).doesNotContain("PRODUCTION");
+        assertThat(resultSubject).contains("(TESTING) " + subject);
+    }
+
+    @Test
+    void givenProductionAppProfile_whenGetConfirmationSubject_thenReturnConfirmationSubject(){
+
+        // given - preconditions or setup
+        ReflectionTestUtils.setField(mailingService, "appProfile", "PRODUCTION");
+        String subject = (String) ReflectionTestUtils.getField(mailingService,"confirmationSubject");
+
+        // when - action or behaviour that we are going to test
+        String resultSubject = mailingService.getConfirmationSubject();
+
+        // then - verify the output
+        assertThat(resultSubject).doesNotContain("PRODUCTION");
+        assertThat(resultSubject).doesNotContain("(TESTING) ");
+        assertThat(resultSubject).contains(subject);
+    }
+
+    @Test
+    void givenTestingAppProfile_whenGetConfirmationSubject_thenReturnConfirmationSubjectWithProfile(){
+
+        // given - preconditions or setup
+        ReflectionTestUtils.setField(mailingService, "appProfile", "TESTING");
+        String subject = (String) ReflectionTestUtils.getField(mailingService,"confirmationSubject");
+
+        // when - action or behaviour that we are going to test
+        String resultSubject = mailingService.getConfirmationSubject();
+
+        // then - verify the output
+        assertThat(resultSubject).doesNotContain("PRODUCTION");
+        assertThat(resultSubject).contains("(TESTING) " + subject);
+    }
+
+    @Test
+    void givenProductionAppProfile_whenGetExpirationSubject_thenReturnExpirationSubject(){
+
+        // given - preconditions or setup
+        ReflectionTestUtils.setField(mailingService, "appProfile", "PRODUCTION");
+        String subject = (String) ReflectionTestUtils.getField(mailingService,"expirationSubject");
+
+        // when - action or behaviour that we are going to test
+        String resultSubject = mailingService.getExpirationSubject();
+
+        // then - verify the output
+        assertThat(resultSubject).doesNotContain("PRODUCTION");
+        assertThat(resultSubject).doesNotContain("(TESTING) ");
+        assertThat(resultSubject).contains(subject);
+    }
+
+    @Test
+    void givenTestingAppProfile_whenGetExpirationSubject_thenReturnExpirationSubjectWithProfile(){
+
+        // given - preconditions or setup
+        ReflectionTestUtils.setField(mailingService, "appProfile", "TESTING");
+        String subject = (String) ReflectionTestUtils.getField(mailingService,"expirationSubject");
+
+        // when - action or behaviour that we are going to test
+        String resultSubject = mailingService.getExpirationSubject();
+
+        // then - verify the output
+        assertThat(resultSubject).doesNotContain("PRODUCTION");
+        assertThat(resultSubject).contains("(TESTING) " + subject);
     }
 }

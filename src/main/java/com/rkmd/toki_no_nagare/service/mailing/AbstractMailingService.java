@@ -25,6 +25,9 @@ public abstract class AbstractMailingService {
     @Getter
     private String mercadoPagoAccount;
 
+    @Value("${app.profile}")
+    protected String appProfile;
+
     @Value("${event.address}")
     protected String eventAddress;
 
@@ -41,13 +44,31 @@ public abstract class AbstractMailingService {
     protected String eventPlace;
 
     /** Asunto a utilizar en el e-mail de reserva provisoria. */
-    public static final String RESERVATION_SUBJECT = "Toki no Nagare - Tenés una reserva pendiente de pago.";
+    private String reservationSubject = "Toki no Nagare - Tenés una reserva pendiente de pago.";
 
-    /** Asunto a utilizar en el e-mail de reserva provisoria. */
-    public static final String CONFIRMATION_SUBJECT = "Toki no Nagare - Pago confirmado.";
+    /** Asunto a utilizar en el e-mail de confirmación de reserva. */
+    private String confirmationSubject = "Toki no Nagare - Pago confirmado.";
 
     /** Asunto a utilizar en el e-mail de expiración de reserva. */
-    public static final String EXPIRATION_SUBJECT = "Toki no Nagare - Reserva expirada.";
+    private String expirationSubject = "Toki no Nagare - Reserva expirada.";
+
+    /** Returns e-mail reservation subject.
+     * If environment is not PRODUCTION, adds the envirnoment name as a subject prefix. */
+    public String getReservationSubject(){
+        return appProfile.toUpperCase().equals("PRODUCTION") ? reservationSubject : "(" + appProfile + ") " + reservationSubject;
+    }
+
+    /** Returns e-mail confirmation subject.
+     * If environment is not PRODUCTION, adds the envirnoment name as a subject prefix. */
+    public String getConfirmationSubject(){
+        return appProfile.toUpperCase().equals("PRODUCTION") ? confirmationSubject : "(" + appProfile + ") " + confirmationSubject;
+    }
+
+    /** Returns e-mail confirmation subject.
+     * If environment is not PRODUCTION, adds the envirnoment name as a subject prefix. */
+    public String getExpirationSubject(){
+        return appProfile.toUpperCase().equals("PRODUCTION") ? expirationSubject : "(" + appProfile + ") " + expirationSubject;
+    }
 
     /** Envía un email en formato texto */
     public abstract String sendSimpleMail(EmailDto details);
