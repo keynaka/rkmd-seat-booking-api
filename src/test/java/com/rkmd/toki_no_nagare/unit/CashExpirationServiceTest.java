@@ -12,24 +12,53 @@ public class CashExpirationServiceTest {
     private CashExpirationService cashExpirationService = new CashExpirationService();
 
     @Test
-    public void testGetExpirationDateOnSaturday() {
-        //This is a Saturday
-        ZonedDateTime dateCreated = ZonedDateTime.of(2023, 9, 2, 12, 0, 0, 0, ZoneId.systemDefault());
+    public void testGetExpirationDateOnSaturdaySundayMondayTuesday() {
+        ZonedDateTime dateCreated;
+        ZonedDateTime expirationDate;
+        // 02-09-2023 is Saturday
+        for (int i = 0 ; i < 4 ; i++) {
+            dateCreated = ZonedDateTime.of(2023, 9, 2 + i, 12, 0, 0, 0, ZoneId.systemDefault());
 
-        ZonedDateTime expirationDate = cashExpirationService.getExpirationDate(dateCreated);
+            expirationDate = cashExpirationService.getExpirationDate(dateCreated);
 
-        ZonedDateTime expectedExpirationDate = ZonedDateTime.of(2023, 9, 9, ExpirationService.FIXED_LIMIT_HOUR, ExpirationService.FIXED_LIMIT_MINUTE, 0, 0, ZoneId.systemDefault());
-        Assertions.assertEquals(expectedExpirationDate, expirationDate);
+            ZonedDateTime expectedExpirationDate = ZonedDateTime.of(2023, 9, 9, ExpirationService.FIXED_LIMIT_HOUR, ExpirationService.FIXED_LIMIT_MINUTE, 0, 0, ZoneId.systemDefault());
+            Assertions.assertEquals(expectedExpirationDate, expirationDate);
+        }
     }
 
     @Test
-    public void testGetExpirationDateOnWednesday() {
-        //This is a Wednesday
-        ZonedDateTime dateCreated = ZonedDateTime.of(2023, 9, 6, 12, 0, 0, 0, ZoneId.systemDefault());
+    public void testGetExpirationDateOnWednesdayThursdayFriday() {
+        ZonedDateTime dateCreated;
+        ZonedDateTime expirationDate;
+        // 06-09-2023 is Wednesday
+        for (int i = 0 ; i < 5 ; i++) {
+            dateCreated = ZonedDateTime.of(2023, 9, 6 + i, 12, 0, 0, 0, ZoneId.systemDefault());
 
-        ZonedDateTime expirationDate = cashExpirationService.getExpirationDate(dateCreated);
+            expirationDate = cashExpirationService.getExpirationDate(dateCreated);
 
-        ZonedDateTime expectedExpirationDate = ZonedDateTime.of(2023, 9, 16, ExpirationService.FIXED_LIMIT_HOUR, ExpirationService.FIXED_LIMIT_MINUTE, 0, 0, ZoneId.systemDefault());
-        Assertions.assertEquals(expectedExpirationDate, expirationDate);
+            ZonedDateTime expectedExpirationDate = ZonedDateTime.of(2023, 9, 16, ExpirationService.FIXED_LIMIT_HOUR, ExpirationService.FIXED_LIMIT_MINUTE, 0, 0, ZoneId.systemDefault());
+            Assertions.assertEquals(expectedExpirationDate, expirationDate);
+        }
+    }
+
+    @Test
+    public void testGetExpirationDateShouldBeSameDayFromWednesdayToNextWeekFriday() {
+        ZonedDateTime dateCreated;
+        ZonedDateTime expirationDate;
+        // 06-09-2023 is Wednesday
+        for (int i = 0 ; i < 8 ; i++) {
+            dateCreated = ZonedDateTime.of(2023, 9, 6 + i, 12, 0, 0, 0, ZoneId.systemDefault());
+
+            expirationDate = cashExpirationService.getExpirationDate(dateCreated);
+
+            if (i < 7) {
+                ZonedDateTime expectedExpirationDate = ZonedDateTime.of(2023, 9, 16, ExpirationService.FIXED_LIMIT_HOUR, ExpirationService.FIXED_LIMIT_MINUTE, 0, 0, ZoneId.systemDefault());
+                Assertions.assertEquals(expectedExpirationDate, expirationDate);
+            } else {
+                // This case is when it is 13-09-2023 (Saturday)
+                ZonedDateTime expectedExpirationDate = ZonedDateTime.of(2023, 9, 23, ExpirationService.FIXED_LIMIT_HOUR, ExpirationService.FIXED_LIMIT_MINUTE, 0, 0, ZoneId.systemDefault());
+                Assertions.assertEquals(expectedExpirationDate, expirationDate);
+            }
+        }
     }
 }
