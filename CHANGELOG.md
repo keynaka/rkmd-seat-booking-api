@@ -6,6 +6,10 @@
 - fix: Se remueven templates de e-mails en formato .txt. (dd32310)
 - test: se corrigen test en TransportMailSenderImplTest. (b7ada32)
 - fix: Se remueve implementacion JavaMailSenderImpl. (c5e1ae3)
+- feat: Agrego ExpirationServices + Factory
+- feat: Agrego ExpirationJob
+- test: Agrego tests para Cash y MP ExpirationServices
+
 
 ### 2023.08.31
 - feat: Agrego endpoint de PUT /prereserve

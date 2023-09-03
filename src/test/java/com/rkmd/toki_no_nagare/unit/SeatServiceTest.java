@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,16 @@ import java.util.Optional;
 import static com.rkmd.toki_no_nagare.utils.Constants.TOTAL_SEATS;
 
 @SpringBootTest
+@TestPropertySource(properties = {
+        "PAYMENT_MP_ACCOUNT=test",
+        "EVENT_ADDRESS=test",
+        "EVENT_DATE=test",
+        "EVENT_TIME=test",
+        "EVENT_NAME=test",
+        "EVENT_PLACE=test",
+        "MAIL_USERNAME=test",
+        "MAIL_PASSWORD=test",
+})
 public class SeatServiceTest {
     @Autowired
     private SeatService seatService;
