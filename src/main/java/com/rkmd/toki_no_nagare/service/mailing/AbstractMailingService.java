@@ -43,6 +43,9 @@ public abstract class AbstractMailingService {
     @Value("${event.place}")
     protected String eventPlace;
 
+    @Value("${mail.headerImageCanonicalPath}")
+    protected String imageHeaderPath;
+
     /** Asunto a utilizar en el e-mail de reserva provisoria. */
     private String reservationSubject = "Toki no Nagare - Tenés una reserva pendiente de pago.";
 
