@@ -5,6 +5,7 @@ import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,11 +14,12 @@ import java.util.stream.Collectors;
 
 public class Tools {
 
+  public static final String ZONED_ID = "America/Argentina/Buenos_Aires";
   static int hashLength = 8;
   static String hashCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@$%&*_+";
 
   public static ZonedDateTime getCurrentDate(){
-    ZoneId zoneIdArgentina = ZoneId.of("America/Argentina/Buenos_Aires");
+    ZoneId zoneIdArgentina = ZoneId.of(ZONED_ID);
     return ZonedDateTime.now(zoneIdArgentina);
   }
 
@@ -46,6 +48,18 @@ public class Tools {
   public static String formatArgentinianDate(ZonedDateTime zonedDateTime){
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     return zonedDateTime.format(formatter);
+  }
+
+  public static ZonedDateTime formatDateStringToZonedDateTime(String dateString){
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    LocalDate localDate = LocalDate.parse(dateString, formatter);
+
+    ZoneId zoneId = ZoneId.of(ZONED_ID);
+
+    // Create a ZonedDateTime using the LocalDate and ZoneId
+    ZonedDateTime zonedDateTime = localDate.atStartOfDay(zoneId);
+
+    return zonedDateTime;
   }
 
   /** Converts a list of Seat into a list of SeatDto */
