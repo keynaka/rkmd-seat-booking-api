@@ -1,5 +1,8 @@
 # Changelog
 
+### 2023.09.05
+- fix: Se agrega env para referenciar ubicación del archivo .png para el header el e-mail. (8233291)
+
 ### 2023.09.02
 - feat: Se agrega a AbstractMailingService método abstracto para enviar e-mail en formato texto. (a9446c2)
 - test: Se agregan test de carga de templates html para confirmacion y expiracion. (1dbad13)
