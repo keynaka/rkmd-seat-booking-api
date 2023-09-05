@@ -1,0 +1,47 @@
+<configuration>
+
+  <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+
+    <!-- Logback configuration to generate custom JSON of incoming HTTP requests to be logged by the service -->
+    <encoder class="net.logstash.logback.encoder.AccessEventCompositeJsonEncoder">
+      <providers>
+        <timestamp>
+          <fieldName>date_time</fieldName>
+          <timeZone>America/Argentina/Buenos_Aires</timeZone>
+        </timestamp>
+        <threadName>
+          <fieldName>thread</fieldName>
+        </threadName>
+        <nestedField>
+          <fieldName>http_request</fieldName>
+          <providers>
+            <remoteHost/>
+            <method/>
+            <requestedUri/>
+            <statusCode/>
+            <elapsedTime/>
+          </providers>
+        </nestedField>
+        <pattern>
+          <omitEmptyFields>true</omitEmptyFields>
+        </pattern>
+      </providers>
+    </encoder>
+
+    <!-- Filter that prevents logging for the /actuator endpoint -->
+    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      <evaluator class="ch.qos.logback.access.net.URLEvaluator">
+        <URL>/favicon.ico</URL>
+        <URL>/actuator</URL>
+      </evaluator>
+      <OnMatch>DENY</OnMatch>
+      <OnMismatch>NEUTRAL</OnMismatch>
+    </filter>
+
+  </appender>
+
+  <springProfile name="!local">
+    <appender-ref ref="JSON"/>
+  </springProfile>
+
+</configuration>
