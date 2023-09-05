@@ -110,7 +110,17 @@
             <version>3.1.2</version>
         </dependency>
 
-
+        <!-- Dependency for logging service. -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>7.4</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.akkinoc.spring.boot</groupId>
+            <artifactId>logback-access-spring-boot-starter</artifactId>
+            <version>4.0.0</version>
+        </dependency>
 
     </dependencies>
 

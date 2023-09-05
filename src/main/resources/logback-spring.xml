@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <!-- Logback configuration to generate a custom JSON with application events to be logged by the service -->
+  <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <timestamp>
+          <fieldName>date_time</fieldName>
+          <timeZone>America/Argentina/Buenos_Aires</timeZone>
+        </timestamp>
+        <logLevel>
+          <fieldName>level</fieldName>
+        </logLevel>
+        <message/>
+        <loggerName/>
+        <threadName/>
+        <context/>
+        <stackTrace>
+          <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+            <maxDepthPerThrowable>200</maxDepthPerThrowable>
+            <maxLength>8048</maxLength>
+            <shortenedClassNameLength>40</shortenedClassNameLength>
+            <rootCauseFirst>true</rootCauseFirst>
+            <inlineHash>false</inlineHash>
+            <exclude>\$\$FastClassByCGLIB\$\$</exclude>
+            <exclude>\$\$EnhancerBySpringCGLIB\$\$</exclude>
+            <exclude>^sun\.reflect\..*\.invoke</exclude>
+            <exclude>^com\.sun\.</exclude>
+            <exclude>^sun\.net\.</exclude>
+            <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
+            <exclude>^org\.springframework\.cglib\.</exclude>
+            <exclude>^org\.springframework\.transaction\.</exclude>
+            <exclude>^org\.springframework\.validation\.</exclude>
+            <exclude>^org\.springframework\.app\.</exclude>
+            <exclude>^org\.springframework\.aop\.</exclude>
+            <exclude>^java\.lang\.reflect\.Method\.invoke</exclude>
+            <exclude>^org\.springframework\.ws\..*\.invoke</exclude>
+            <exclude>^org\.springframework\.ws\.transport\.</exclude>
+            <exclude>^org\.springframework\.ws\.soap\.saaj\.SaajSoapMessage\.</exclude>
+            <exclude>^org\.springframework\.ws\.client\.core\.WebServiceTemplate\.</exclude>
+            <exclude>^org\.springframework\.web\.filter\.</exclude>
+            <exclude>^java\.lang\.Thread\.run$</exclude>
+          </throwableConverter>
+        </stackTrace>
+      </providers>
+    </encoder>
+  </appender>
+
+  <springProfile name="!local">
+    <root level="INFO">
+      <appender-ref ref="JSON"/>
+    </root>
+  </springProfile>
+
+  <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+</configuration>

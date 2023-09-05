@@ -49,6 +49,7 @@ public class Booking {
     
     private String hashedBookingCode;
 
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "paymentId")
     private Payment payment;
