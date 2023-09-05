@@ -1,5 +1,6 @@
 package com.rkmd.toki_no_nagare.entities.payment;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -48,6 +49,7 @@ public class Payment {
   @Version
   private int version;
 
+  @JsonManagedReference
   @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
   private Booking booking;
 
