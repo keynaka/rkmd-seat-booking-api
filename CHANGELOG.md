@@ -1,5 +1,9 @@
 # Changelog
 
+### 2023.09.05
+- feat: Se agrega configuración de logback para mejorar la visualización del log del servicio (7761ec5)
+- build: Se agrega dependencias de logback para mejorar el log del servicio (e7e73ae)
+
 ### 2023.09.04
 - fix: Infinite serialization for json
 
