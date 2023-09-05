@@ -1,5 +1,8 @@
 # Changelog
 
+### 2023.09.04
+- fix: Infinite serialization for json
+
 ### 2023.09.02
 - feat: Se agrega a AbstractMailingService método abstracto para enviar e-mail en formato texto. (a9446c2)
 - test: Se agregan test de carga de templates html para confirmacion y expiracion. (1dbad13)
