@@ -159,7 +159,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
 
         // Agrego las imágenes
         Map<String, ImagesDto> imagesData = new HashMap<>();
-        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", "./src/main/resources/mailing/images/toki-no-nagare-header-mail-2x.png"));
+        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", imageHeaderPath));
 
         String htmlBody = null;
 
@@ -198,7 +198,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
 
         // Agrego las imágenes
         Map<String, ImagesDto> imagesData = new HashMap<>();
-        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", "./src/main/resources/mailing/images/toki-no-nagare-header-mail-2x.png"));
+        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", imageHeaderPath));
 
         String htmlBody = null;
 
@@ -234,7 +234,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
     public String notifyExpiration(String recipient, String name, String lastname, String bookingCode, ZonedDateTime expirationTime) {
         // Agrego las imágenes
         Map<String, ImagesDto> imagesData = new HashMap<>();
-        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", "./src/main/resources/mailing/images/toki-no-nagare-header-mail-2x.png"));
+        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", imageHeaderPath));
 
         String htmlBody = EXPIRATION_BODY_TEMPLATE;
 
