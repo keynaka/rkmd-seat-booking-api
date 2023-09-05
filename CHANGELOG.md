@@ -6,6 +6,7 @@
 - feat: Se agrega configuración de logback para mejorar la visualización del log del servicio (7761ec5)
 - build: Se agrega dependencias de logback para mejorar el log del servicio (e7e73ae)
 - fix: Se agrega env para referenciar ubicación del archivo .png para el header el e-mail. (8233291)
+- fix: Agrego metodos de equals() y hashCode() para sacar warning de composite-id
 
 ### 2023.09.04
 - fix: Infinite serialization for json
