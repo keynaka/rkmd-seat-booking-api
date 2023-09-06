@@ -50,6 +50,9 @@ public class BookingService {
     @Autowired
     private AbstractMailingService mailingService;
 
+    @Autowired
+    private AdminAvailableDateService adminAvailableDateService;
+
     public Optional<Booking> get(Long id) {
         return bookingRepository.findById(id);
     }
@@ -169,6 +172,7 @@ public class BookingService {
             .stream()
             .map(seat -> modelMapper.map(seat, SeatDto.class))
             .toList());
+        response.setAdminAvailableDates(adminAvailableDateService.getAvailableDates(booking.getPayment().getExpirationDate()));
 
         return response;
     }
