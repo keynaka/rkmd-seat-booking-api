@@ -11,11 +11,11 @@ import lombok.Getter;
 public class CreateAdminAvailableDateRequestDto {
 
     @Valid
-    @NotNull(message = "El campo 'initDate' no puede ser nulo")
+    @NotNull(message = "El campo 'initDate' no puede ser nulo. Debe tener el siguiente formato: 2023-09-07T15:00:00-03:00")
     public String initDate;
 
     @Valid
-    @NotNull(message = "El campo 'initDate' no puede ser nulo")
+    @NotNull(message = "El campo 'endDate' no puede ser nulo. Debe tener el siguiente formato: 2023-09-07T18:00:00-03:00")
     public String endDate;
 
     @Valid
