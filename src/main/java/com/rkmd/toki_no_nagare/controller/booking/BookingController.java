@@ -16,12 +16,6 @@ public class BookingController implements BookingControllerResources{
     @Autowired
     private BookingService bookingService;
 
-    @GetMapping(value = "/v2/bookings/{bookingCode}/contacts/{dni}", produces = "application/json")
-    @ResponseStatus(value = HttpStatus.OK)
-    public BookingResponseDto getBookingByCodeAndDni(String bookingCode, Long dni) {
-        return bookingService.getBookingByCodeAndDni(bookingCode, dni);
-    }
-
     @PostMapping(value = "/v2/bookings", produces = "application/json")
     @ResponseStatus(value = HttpStatus.CREATED)
     public CreateBookingResponseDto createBooking(CreateBookingRequestDto request) {

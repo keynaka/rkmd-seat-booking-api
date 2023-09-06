@@ -82,26 +82,14 @@ public class BookingService {
      */
     public BookingResponseDto getBookingByCodeAndDni(String bookingCode, Long dni){
         List<Booking> allBookings = bookingRepository.findAll();
-        List<Booking> userBookings = allBookings.stream().filter(b -> b.getClient().getDni().equals(dni)).toList();
+        Optional<Booking> userBooking = allBookings.stream()
+            .filter(b -> b.getClient().getDni().equals(dni) && b.getHashedBookingCode().equals(bookingCode)).findFirst();
 
-        if(userBookings.isEmpty()){
-            throw new NotFoundException("booking_not_found", "The requested booking does not exist.");
+        if(userBooking.isEmpty()){
+            throw new NotFoundException("booking_not_found", "The requested booking not exist.");
         }
 
-        Booking reservedBooking = null;
-
-        for(Booking booking : userBookings){
-            boolean isValid = Tools.validateBookingCode(dni, bookingCode, booking.getHashedBookingCode());
-            if(isValid) {
-                reservedBooking = booking;
-            }
-        }
-
-        if(reservedBooking == null){
-            throw new BadRequestException("booking_code_invalid", "The booking code is invalid.");
-        }
-
-        return createBookingResponseDto(reservedBooking);
+        return createBookingResponseDto(userBooking.get());
     }
 
 

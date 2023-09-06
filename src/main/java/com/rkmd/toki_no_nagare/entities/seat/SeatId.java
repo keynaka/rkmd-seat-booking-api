@@ -31,3 +31,4 @@ public class SeatId implements Serializable {
         return Objects.hash(row, column, sector);
     }
 }
+

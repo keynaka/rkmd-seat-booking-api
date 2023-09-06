@@ -15,11 +15,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.logging.Logger;
 
 @Service
 public class TransportMailSenderImpl extends AbstractMailingService{
+
+    private static final Logger logger = Logger.getLogger(TransportMailSenderImpl.class.getName());
 
     /** Ruta al archivo que contiene el template para enviar un e-mail de reserva provisoria con pago en efectivo en formato html. */
     public static final String RESERVATION_CASH_TEMPLATE_PATH = "/mailing/templates/html/reservation-cash-template.html";
@@ -142,6 +148,23 @@ public class TransportMailSenderImpl extends AbstractMailingService{
 
             message.setContent(multipart);
 
+            //TODO: Take out just for profiling
+            MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
+            MemoryUsage heapMemoryUsage = memoryBean.getHeapMemoryUsage();
+            MemoryUsage nonHeapMemoryUsage = memoryBean.getNonHeapMemoryUsage();
+
+            logger.info("[COMPLETE MESSAGE] Heap Memory Usage: " +
+                    "Init: " + heapMemoryUsage.getInit() + " bytes, " +
+                    "Used: " + heapMemoryUsage.getUsed() + " bytes, " +
+                    "Committed: " + heapMemoryUsage.getCommitted() + " bytes, " +
+                    "Max: " + heapMemoryUsage.getMax() + " bytes");
+
+            logger.info("[COMPLETE MESSAGE] Non-Heap Memory Usage: " +
+                    "Init: " + nonHeapMemoryUsage.getInit() + " bytes, " +
+                    "Used: " + nonHeapMemoryUsage.getUsed() + " bytes, " +
+                    "Committed: " + nonHeapMemoryUsage.getCommitted() + " bytes, " +
+                    "Max: " + nonHeapMemoryUsage.getMax() + " bytes");
+
             Transport.send(message);
 
             return "Mail Sent Successfully...";
@@ -157,9 +180,26 @@ public class TransportMailSenderImpl extends AbstractMailingService{
                                     PaymentMethod paymentMethod, ZonedDateTime expirationTime,
                                     List<SeatDto> seats){
 
+        //TODO: Take out just for profiling
+        MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
+        MemoryUsage heapMemoryUsage = memoryBean.getHeapMemoryUsage();
+        MemoryUsage nonHeapMemoryUsage = memoryBean.getNonHeapMemoryUsage();
+
+        logger.info("[NOTIFICATION RESERVATION] Heap Memory Usage: " +
+                "Init: " + heapMemoryUsage.getInit() + " bytes, " +
+                "Used: " + heapMemoryUsage.getUsed() + " bytes, " +
+                "Committed: " + heapMemoryUsage.getCommitted() + " bytes, " +
+                "Max: " + heapMemoryUsage.getMax() + " bytes");
+
+        logger.info("[NOTIFICATION RESERVATION] Non-Heap Memory Usage: " +
+                "Init: " + nonHeapMemoryUsage.getInit() + " bytes, " +
+                "Used: " + nonHeapMemoryUsage.getUsed() + " bytes, " +
+                "Committed: " + nonHeapMemoryUsage.getCommitted() + " bytes, " +
+                "Max: " + nonHeapMemoryUsage.getMax() + " bytes");
+
         // Agrego las imágenes
         Map<String, ImagesDto> imagesData = new HashMap<>();
-        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", "./src/main/resources/mailing/images/toki-no-nagare-header-mail-2x.png"));
+        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", imageHeaderPath));
 
         String htmlBody = null;
 
@@ -198,7 +238,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
 
         // Agrego las imágenes
         Map<String, ImagesDto> imagesData = new HashMap<>();
-        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", "./src/main/resources/mailing/images/toki-no-nagare-header-mail-2x.png"));
+        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", imageHeaderPath));
 
         String htmlBody = null;
 
@@ -234,7 +274,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
     public String notifyExpiration(String recipient, String name, String lastname, String bookingCode, ZonedDateTime expirationTime) {
         // Agrego las imágenes
         Map<String, ImagesDto> imagesData = new HashMap<>();
-        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", "./src/main/resources/mailing/images/toki-no-nagare-header-mail-2x.png"));
+        imagesData.put("${HEADER_IMAGE_CODE}", new ImagesDto("AbcXyz123", imageHeaderPath));
 
         String htmlBody = EXPIRATION_BODY_TEMPLATE;
 
