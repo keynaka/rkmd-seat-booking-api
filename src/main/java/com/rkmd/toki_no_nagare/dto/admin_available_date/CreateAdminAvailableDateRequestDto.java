@@ -22,4 +22,8 @@ public class CreateAdminAvailableDateRequestDto {
     @NotNull(message = "El campo 'place' no puede ser nulo")
     public String place;
 
+    @Valid
+    @NotNull(message = "El campo 'link' no puede ser nulo")
+    public String link;
+
 }

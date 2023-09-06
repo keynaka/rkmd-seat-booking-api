@@ -21,6 +21,9 @@ public class AdminAvailableDate {
     @Column(name = "place")
     private String place;
 
+    @Column(name = "link")
+    private String link;
+
     @Column(name = "end_date")
     private ZonedDateTime endDate;
 }

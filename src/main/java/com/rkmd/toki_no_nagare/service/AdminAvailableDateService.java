@@ -24,9 +24,6 @@ public class AdminAvailableDateService {
     @Autowired
     private AdminAvailableDateRepository adminAvailableDateRepository;
 
-    @Autowired
-    private BookingService bookingService;
-
     public List<AdminAvailableDate> getAvailableDates(ZonedDateTime expirationDate) {
         List<AdminAvailableDate> availableDates = adminAvailableDateRepository.findAll();
         if(expirationDate == null) return availableDates;
@@ -37,6 +34,7 @@ public class AdminAvailableDateService {
                         adminAvailableDate.getInitDate().isAfter(Tools.getCurrentDate()) &&
                                 adminAvailableDate.getEndDate().isBefore(expirationDate)
                 )
+                .sorted((a, b) -> a.getInitDate().compareTo(b.getInitDate()))
                 .collect(Collectors.toList());
 
         return availableDatesForBooking;
@@ -56,6 +54,7 @@ public class AdminAvailableDateService {
         newAvailableDate.setInitDate(initDate);
         newAvailableDate.setEndDate(endDate);
         newAvailableDate.setPlace(request.getPlace());
+        newAvailableDate.setLink(request.getLink());
 
         try {
             return adminAvailableDateRepository.save(newAvailableDate);
