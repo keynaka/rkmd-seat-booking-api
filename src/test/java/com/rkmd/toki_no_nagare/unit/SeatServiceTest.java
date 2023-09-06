@@ -29,6 +29,12 @@ import static com.rkmd.toki_no_nagare.utils.Constants.TOTAL_SEATS;
         "EVENT_PLACE=test",
         "MAIL_USERNAME=test",
         "MAIL_PASSWORD=test",
+        "MAIL_HEADER_IMAGE_CANONICAL_PATH=test",
+        "SWAGGER_ENABLE=test",
+        "DB_PORT=3600",
+        "DB_HOST=test",
+        "DB_NAME=test",
+        "DB_CONNECTION_PARAMS=test",
 })
 public class SeatServiceTest {
     @Autowired

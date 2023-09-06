@@ -29,14 +29,12 @@ import static com.rkmd.toki_no_nagare.utils.SeatPrices.SEAT_PRICES;
 @Service
 public class SeatService {
     private static final Logger logger = Logger.getLogger(SeatService.class.getName());
-    private List<Seat> theaterSeats;
     public static final double BEST_COLUMN_POSITION = 1.0;
     @Autowired
     private SeatRepository seatRepository;
 
     public SeatService(SeatRepository seatRepository) {
         this.seatRepository = seatRepository;
-        this.theaterSeats = new ArrayList<>();
     }
 
     public List<Seat> getAllSeats() {
@@ -242,23 +240,23 @@ public class SeatService {
     }
 
     public int bootstrapTheaterSeats() {
+        int count = 0;
         for(SeatSector sector : THEATER_LAYOUT.keySet()) {
             for(Long row : THEATER_LAYOUT.get(sector).keySet()) {
                 Integer auxiliarColumn = 1;
                 for(Long column : THEATER_LAYOUT.get(sector).get(row)) {
-                    theaterSeats.add(createSeat(sector, row, column, SeatStatus.VACANT, auxiliarColumn));
+                    createSeat(sector, row, column, SeatStatus.VACANT, auxiliarColumn);
                     auxiliarColumn ++;
+                    count ++;
                 }
             }
         }
-
-        return this.theaterSeats.size();
+        return count;
     }
 
     @VisibleForTesting
     public void clearSeats() {
         seatRepository.deleteAll();
-        this.theaterSeats.clear();
     }
 
     /** This method sets the seat prices by sector. It receives as arguments the prices of each sector.
