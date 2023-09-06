@@ -54,6 +54,10 @@ public class BookingService {
         return bookingRepository.findById(id);
     }
 
+    public List<Booking> getAll() {
+        return bookingRepository.findAll();
+    }
+
     public BookingResponseDto getBookingByCode(String code){
         List<Booking> allBookings = bookingRepository.findAll();
 
@@ -201,6 +205,19 @@ public class BookingService {
         // This step is necessary because the "Contact" attribute of the "Booking" class was defined with the name client
         response.setContact(modelMapper.map(reservedBooking.getClient(), ContactDto.class));
         return response;
+    }
+
+    public String formatTitle(Booking booking) {
+        String sector = "";
+        Long row = 0l;
+        String seats = "";
+        for (Seat seat : booking.getSeats()) {
+            sector = seat.getSector().name();
+            row = seat.getRow();
+            seats = String.format("%s %s", seats, seat.getColumn().toString());
+        }
+
+        return String.format("Sector %s - Fila %s - Asiento %s - $ %s", sector, row, seats, booking.getPayment().getAmount().toString());
     }
 
 }
