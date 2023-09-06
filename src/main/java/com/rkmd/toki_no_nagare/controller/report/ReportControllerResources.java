@@ -9,11 +9,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.Map;
+
 public interface ReportControllerResources {
 
   @Operation(
       summary = "Obtiene una reserva según el código y el dni.",
-      description = "Endpoint para la web de RKMD",
+      description = "Endpoint para la web de RKMD - Solo ADMIN",
       responses = {
           @ApiResponse(
               responseCode = "200",
@@ -32,7 +34,7 @@ public interface ReportControllerResources {
 
   @Operation(
       summary = "Obtiene los datos de una reserva según el código.",
-      description = "Endpoint para la web de RKMD",
+      description = "Endpoint para la web de RKMD - Solo ADMIN",
       responses = {
           @ApiResponse(
               responseCode = "200",
@@ -49,4 +51,21 @@ public interface ReportControllerResources {
   ResponseEntity<BookingResponseDto> getBookingReport(@PathVariable("code_id") String codeId);
 
 
+  @Operation(
+      summary = "Obtiene el estado general de las reservas.",
+      description = "Endpoint para la web de RKMD - Solo ADMIN",
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "Ok",
+              useReturnTypeSchema = true),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Not Found",
+              content = @Content(schema = @Schema(implementation = ApiError.class))),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Internal server error",
+              content = @Content(schema = @Schema(implementation = ApiError.class)))})
+  Map<String, Map<String, String>> getGeneralStatus();
 }

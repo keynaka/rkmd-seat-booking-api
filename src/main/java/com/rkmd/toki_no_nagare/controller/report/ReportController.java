@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("")
@@ -27,5 +29,12 @@ public class ReportController implements ReportControllerResources{
     @ResponseStatus(value = HttpStatus.OK)
     public BookingResponseDto getBookingByCodeAndDni(String bookingCode, Long dni) {
         return bookingService.getBookingByCodeAndDni(bookingCode, dni);
+    }
+
+
+    @GetMapping(value = "/v1/reports/bookings", produces = "application/json")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Map<String, Map<String, String>> getGeneralStatus() {
+        return bookingService.getGeneralStatus();
     }
 }
