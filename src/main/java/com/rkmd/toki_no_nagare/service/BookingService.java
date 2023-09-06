@@ -54,6 +54,10 @@ public class BookingService {
         return bookingRepository.findById(id);
     }
 
+    public List<Booking> getAll() {
+        return bookingRepository.findAll();
+    }
+
     public BookingResponseDto getBookingByCode(String code){
         List<Booking> allBookings = bookingRepository.findAll();
 

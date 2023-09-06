@@ -1,11 +1,16 @@
 package com.rkmd.toki_no_nagare.controller.report;
 
+import com.rkmd.toki_no_nagare.dto.booking.BookingListResponseDto;
 import com.rkmd.toki_no_nagare.dto.booking.BookingResponseDto;
+import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -27,5 +32,17 @@ public class ReportController implements ReportControllerResources{
     @ResponseStatus(value = HttpStatus.OK)
     public BookingResponseDto getBookingByCodeAndDni(String bookingCode, Long dni) {
         return bookingService.getBookingByCodeAndDni(bookingCode, dni);
+    }
+
+    @GetMapping("/v1/reports/bookings")
+    public ResponseEntity<List<BookingListResponseDto>> getBookingList() {
+        List<Booking> bookings = bookingService.getAll();
+
+        List<BookingListResponseDto> result = new ArrayList<>();
+        for (Booking booking : bookings) {
+
+        }
+
+        return ResponseEntity.ok().body(result);
     }
 }
