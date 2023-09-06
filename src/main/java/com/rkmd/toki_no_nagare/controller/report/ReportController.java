@@ -40,7 +40,13 @@ public class ReportController implements ReportControllerResources{
 
         List<BookingListResponseDto> result = new ArrayList<>();
         for (Booking booking : bookings) {
+            BookingListResponseDto bookingDto = new BookingListResponseDto();
+            bookingDto.setBookingCode(booking.getHashedBookingCode());
+            bookingDto.setDni(booking.getClient().getDni());
+            bookingDto.setTitle(bookingService.formatTitle(booking));
+            bookingDto.setStatus(booking.getStatus().name());
 
+            result.add(bookingDto);
         }
 
         return ResponseEntity.ok().body(result);
