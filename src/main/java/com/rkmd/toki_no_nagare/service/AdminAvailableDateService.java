@@ -47,13 +47,16 @@ public class AdminAvailableDateService {
     public AdminAvailableDate createAvailableDate(CreateAdminAvailableDateRequestDto request) {
         ZonedDateTime initDate = Tools.formatDateStringToZonedDateTime(request.getInitDate());
         AdminAvailableDateId id = new AdminAvailableDateId(initDate, request.getPlace());
-
         if (adminAvailableDateRepository.findById(id).isPresent())
             throw new BadRequestException("date_plate_already_exists", "This init date and place is already created");
 
+        ZonedDateTime endDate = Tools.formatDateStringToZonedDateTime(request.getEndDate());
+        if (endDate.isBefore(initDate) || endDate.getDayOfYear() != initDate.getDayOfYear())
+            throw new BadRequestException("invalid_end_date", "The end date must be the same of the init and later");
+
         AdminAvailableDate newAvailableDate = new AdminAvailableDate();
         newAvailableDate.setInitDate(initDate);
-        newAvailableDate.setEndDate(Tools.formatDateStringToZonedDateTime(request.getEndDate()));
+        newAvailableDate.setEndDate(endDate);
         newAvailableDate.setPlace(request.getPlace());
 
         try {

@@ -1,5 +1,9 @@
 # Changelog
 
+### 2023.09.06
+- feat: Agrego flujo completo de AdminAvailableDate 
+- fix: update junit to 4.13.1
+
 ### 2023.09.05
 - refactor: Se remueve endpoint de consulta de reservas de BookingController a ReportController (176a3f4)
 - fix: Se quita validación de bookingCode con BCrypt cuando se consulta el estado de la reserva (2e42c1f)

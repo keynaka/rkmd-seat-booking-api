@@ -51,13 +51,9 @@ public class Tools {
   }
 
   public static ZonedDateTime formatDateStringToZonedDateTime(String dateString){
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    LocalDate localDate = LocalDate.parse(dateString, formatter);
-
     ZoneId zoneId = ZoneId.of(ZONED_ID);
-
-    // Create a ZonedDateTime using the LocalDate and ZoneId
-    ZonedDateTime zonedDateTime = localDate.atStartOfDay(zoneId);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mmXXX");
+    ZonedDateTime zonedDateTime = ZonedDateTime.parse(dateString, formatter).withZoneSameLocal(zoneId);
 
     return zonedDateTime;
   }
