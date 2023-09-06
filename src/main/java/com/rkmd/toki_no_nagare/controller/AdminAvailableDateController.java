@@ -3,12 +3,14 @@ package com.rkmd.toki_no_nagare.controller;
 import com.rkmd.toki_no_nagare.dto.admin_available_date.CreateAdminAvailableDateRequestDto;
 import com.rkmd.toki_no_nagare.entities.admin_available_date.AdminAvailableDate;
 import com.rkmd.toki_no_nagare.service.AdminAvailableDateService;
+import com.rkmd.toki_no_nagare.utils.Tools;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
@@ -18,8 +20,9 @@ public class AdminAvailableDateController {
     private AdminAvailableDateService adminAvailableDateService;
 
     @GetMapping("")
-    public ResponseEntity<List<AdminAvailableDate>> getAvailableDates(@RequestParam(value = "booking_code", required = false) String bookingCode) {
-        List<AdminAvailableDate> availableDates = adminAvailableDateService.getAvailableDates(bookingCode);
+    public ResponseEntity<List<AdminAvailableDate>> getAvailableDates(@RequestParam(value = "expirationDate", required = false) String expirationDate) {
+        ZonedDateTime expirationDateFormatted = expirationDate != null ? Tools.formatDateStringToZonedDateTime(expirationDate) : null;
+        List<AdminAvailableDate> availableDates = adminAvailableDateService.getAvailableDates(expirationDateFormatted);
         return ResponseEntity.ok().body(availableDates);
     }
 

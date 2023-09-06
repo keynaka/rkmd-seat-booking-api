@@ -52,7 +52,7 @@ public class Tools {
 
   public static ZonedDateTime formatDateStringToZonedDateTime(String dateString){
     ZoneId zoneId = ZoneId.of(ZONED_ID);
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mmXXX");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
     ZonedDateTime zonedDateTime = ZonedDateTime.parse(dateString, formatter).withZoneSameLocal(zoneId);
 
     return zonedDateTime;

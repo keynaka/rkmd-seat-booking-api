@@ -27,17 +27,15 @@ public class AdminAvailableDateService {
     @Autowired
     private BookingService bookingService;
 
-    public List<AdminAvailableDate> getAvailableDates(String bookingCode) {
+    public List<AdminAvailableDate> getAvailableDates(ZonedDateTime expirationDate) {
         List<AdminAvailableDate> availableDates = adminAvailableDateRepository.findAll();
-        if(bookingCode == null) return availableDates;
-
-        BookingResponseDto booking = bookingService.getBookingByCode(bookingCode);
+        if(expirationDate == null) return availableDates;
 
         List<AdminAvailableDate> availableDatesForBooking = availableDates
                 .stream()
                 .filter(adminAvailableDate ->
                         adminAvailableDate.getInitDate().isAfter(Tools.getCurrentDate()) &&
-                                adminAvailableDate.getEndDate().isBefore(booking.getExpirationDate())
+                                adminAvailableDate.getEndDate().isBefore(expirationDate)
                 )
                 .collect(Collectors.toList());
 
