@@ -4,6 +4,7 @@
 - feat: Agrego flujo completo de AdminAvailableDate 
 - fix: update junit to 4.13.1
 - feat: add link attribute  + add AdminAvailableDate to CreateBookingResponseDto
+- feat: Agrego BookingList 
 
 ### 2023.09.05
 - refactor: Se remueve endpoint de consulta de reservas de BookingController a ReportController (176a3f4)
