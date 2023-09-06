@@ -5,6 +5,7 @@
 - fix: update junit to 4.13.1
 - feat: add link attribute  + add AdminAvailableDate to CreateBookingResponseDto
 - feat: Agrego BookingList 
+- fix: small fixes + add paymentMethod to BookingListResponseDto
 
 ### 2023.09.05
 - refactor: Se remueve endpoint de consulta de reservas de BookingController a ReportController (176a3f4)

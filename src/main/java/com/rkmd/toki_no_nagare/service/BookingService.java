@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -215,7 +216,9 @@ public class BookingService {
         String sector = "";
         Long row = 0l;
         String seats = "";
-        for (Seat seat : booking.getSeats()) {
+
+        List<Seat> sortedSeats = booking.getSeats().stream().sorted((a, b) -> a.getColumn().compareTo(b.getColumn())).collect(Collectors.toList());
+        for (Seat seat : sortedSeats) {
             sector = seat.getSector().name();
             row = seat.getRow();
             seats = String.format("%s %s", seats, seat.getColumn().toString());

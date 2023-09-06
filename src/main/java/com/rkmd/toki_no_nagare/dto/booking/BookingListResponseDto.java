@@ -10,4 +10,5 @@ public class BookingListResponseDto {
     private Long dni;
     private String title;
     private String status;
+    private String paymentMethod;
 }
