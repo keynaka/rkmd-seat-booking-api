@@ -2,6 +2,7 @@ package com.rkmd.toki_no_nagare.controller.report;
 
 import com.rkmd.toki_no_nagare.dto.booking.BookingListResponseDto;
 import com.rkmd.toki_no_nagare.dto.booking.BookingResponseDto;
+import com.rkmd.toki_no_nagare.dto.report.BookingStatisticsDto;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -57,7 +57,7 @@ public class ReportController implements ReportControllerResources{
 
   @GetMapping(value = "/v1/reports/booking/statistics", produces = "application/json")
   @ResponseStatus(value = HttpStatus.OK)
-  public Map<String, Map<String, String>> getGeneralStatus() {
+  public BookingStatisticsDto getGeneralStatus() {
     return bookingService.getGeneralStatus();
   }
 }
