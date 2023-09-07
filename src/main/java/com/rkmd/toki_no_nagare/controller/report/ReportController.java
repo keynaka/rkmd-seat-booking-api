@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -52,4 +53,11 @@ public class ReportController implements ReportControllerResources{
 
         return ResponseEntity.ok().body(result);
     }
+
+
+  @GetMapping(value = "/v1/reports/booking/statistics", produces = "application/json")
+  @ResponseStatus(value = HttpStatus.OK)
+  public Map<String, Map<String, String>> getGeneralStatus() {
+    return bookingService.getGeneralStatus();
+  }
 }

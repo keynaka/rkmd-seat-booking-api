@@ -6,6 +6,10 @@
 - feat: add link attribute  + add AdminAvailableDate to CreateBookingResponseDto
 - feat: Agrego BookingList 
 - fix: small fixes + add paymentMethod to BookingListResponseDto
+- feat: Se agrega nuevo endpoint para generar reportes (3537850)
+- feat: Se agrega implementación para la generación de reportes en BookingService (2312d65)
+- feat: Se agregan nuevas constantes que se utilizaran para la generación de reportes (21035c1)
+- feat: Se agregan nuevas constantes que se utilizaran para la generación de reportes (919d0bc)
 
 ### 2023.09.05
 - refactor: Se remueve endpoint de consulta de reservas de BookingController a ReportController (176a3f4)

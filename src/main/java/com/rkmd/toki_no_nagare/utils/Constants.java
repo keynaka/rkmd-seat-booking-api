@@ -57,7 +57,20 @@ public class Constants {
     );
 
     public static final int TOTAL_SEATS = 990;
+    public static final int TOTAL_PULLMAN_SEATS = 306;
+    public static final int TOTAL_PLATEA_SEATS = 684;
     public static final Double PLATEA_BEST_ROW = 14.0;
     public static final Double PULLMAN_BEST_ROW = 1.0;
     public static final int PRERESERVED_DURATION = 5;
+
+
+    public static final String COLLECTED_FUNDS = "collected_funds.";
+    public static final String FUNDS_TO_BE_COLLECTED = "funds_to_be_collected";
+    public static final String CASH = "cash";
+    public static final String MERCADO_PAGO = "mercado_pago";
+    public static final String CAPACITY_PERCENTAGE = "capacity_percentage";
+    public static final String OCCUPIED_SEATS = "occupied_seats";
+    public static final String RESERVED_SEATS = "reserved_seats";
+    public static final String VACANT_SEATS = "vacant_seats";
+    public static final String DATE = "date";
 }
