@@ -1,12 +1,16 @@
 package com.rkmd.toki_no_nagare.controller.report;
 
+import com.rkmd.toki_no_nagare.dto.booking.BookingListResponseDto;
 import com.rkmd.toki_no_nagare.dto.booking.BookingResponseDto;
+import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -31,10 +35,29 @@ public class ReportController implements ReportControllerResources{
         return bookingService.getBookingByCodeAndDni(bookingCode, dni);
     }
 
+    @GetMapping("/v1/reports/bookings")
+    public ResponseEntity<List<BookingListResponseDto>> getBookingList() {
+        List<Booking> bookings = bookingService.getAll();
 
-    @GetMapping(value = "/v1/reports/bookings", produces = "application/json")
-    @ResponseStatus(value = HttpStatus.OK)
-    public Map<String, Map<String, String>> getGeneralStatus() {
-        return bookingService.getGeneralStatus();
+        List<BookingListResponseDto> result = new ArrayList<>();
+        for (Booking booking : bookings) {
+            BookingListResponseDto bookingDto = new BookingListResponseDto();
+            bookingDto.setBookingCode(booking.getHashedBookingCode());
+            bookingDto.setDni(booking.getClient().getDni());
+            bookingDto.setTitle(bookingService.formatTitle(booking));
+            bookingDto.setStatus(booking.getStatus().name());
+            bookingDto.setPaymentMethod(booking.getPayment().getPaymentMethod().name());
+
+            result.add(bookingDto);
+        }
+
+        return ResponseEntity.ok().body(result);
     }
+
+
+  @GetMapping(value = "/v1/reports/booking/statistics", produces = "application/json")
+  @ResponseStatus(value = HttpStatus.OK)
+  public Map<String, Map<String, String>> getGeneralStatus() {
+    return bookingService.getGeneralStatus();
+  }
 }

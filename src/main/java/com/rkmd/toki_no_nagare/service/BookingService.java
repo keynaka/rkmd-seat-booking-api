@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -56,8 +57,15 @@ public class BookingService {
     @Autowired
     private AbstractMailingService mailingService;
 
+    @Autowired
+    private AdminAvailableDateService adminAvailableDateService;
+
     public Optional<Booking> get(Long id) {
         return bookingRepository.findById(id);
+    }
+
+    public List<Booking> getAll() {
+        return bookingRepository.findAll();
     }
 
     public BookingResponseDto getBookingByCode(String code){
@@ -171,6 +179,7 @@ public class BookingService {
             .stream()
             .map(seat -> modelMapper.map(seat, SeatDto.class))
             .toList());
+        response.setAdminAvailableDates(adminAvailableDateService.getAvailableDates(booking.getPayment().getExpirationDate()));
 
         return response;
     }
@@ -209,96 +218,112 @@ public class BookingService {
         return response;
     }
 
+    public String formatTitle(Booking booking) {
+        String sector = "";
+        Long row = 0l;
+        String seats = "";
 
-    /** This method generates reports:
-     * <li> General booking reports
-     * <li> Pullman sector reports
-     * <li> Platea sector reports
-     * <li> Report of the last 20 sales
-     * @return Map<String, Map<String, String>>
-     * */
-    public Map<String, Map<String, String>> getGeneralStatus() {
-        List<Seat> seats = seatService.getAllSeats();
-        ZonedDateTime date = Tools.getCurrentDate();
-
-        Map<String, Map<String, String>> generalStatus = new HashMap<>();
-        generalStatus.put("general", getReportBySector(seats, null, date));
-        generalStatus.put("pullman", getReportBySector(seats, SeatSector.PULLMAN, date));
-        generalStatus.put("platea", getReportBySector(seats, SeatSector.PLATEA, date));
-        generalStatus.put("recent_sales", getLastSales());
-
-        return generalStatus;
-    }
-
-
-    /** This method generates a report of the bookings according to the requested sector.
-     * @param seats List of seats
-     * @param sector Seat sector
-     * @param date Current day
-     * @return Map<String, String>>
-     * */
-    public Map<String, String> getReportBySector(List<Seat> seats, SeatSector sector, ZonedDateTime date){
-
-        List<Seat> seatsBySector = seats;
-        int total_seats = Constants.TOTAL_SEATS;
-
-        if(sector != null) {
-            seatsBySector = seats.stream().filter(s -> sector.equals(s.getSector())).toList();
-            switch (sector){
-                case PULLMAN -> total_seats = Constants.TOTAL_PULLMAN_SEATS;
-                case PLATEA -> total_seats = Constants.TOTAL_PLATEA_SEATS;
-            }
+        List<Seat> sortedSeats = booking.getSeats().stream().sorted((a, b) -> a.getColumn().compareTo(b.getColumn())).collect(Collectors.toList());
+        for (Seat seat : sortedSeats) {
+            sector = seat.getSector().name();
+            row = seat.getRow();
+            seats = String.format("%s %s", seats, seat.getColumn().toString());
         }
 
-        Map<String, String> map = new HashMap<>();
-        map.put(Constants.COLLECTED_FUNDS, String.valueOf(seatsBySector.stream()
-            .filter(s -> SeatStatus.OCCUPIED.equals(s.getStatus()))
-            .map(Seat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add)));
-
-        map.put(Constants.FUNDS_TO_BE_COLLECTED, String.valueOf(seatsBySector.stream()
-            .filter(s -> s.getStatus() != SeatStatus.OCCUPIED)
-            .map(Seat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add)));
-
-        map.put(Constants.CASH, String.valueOf(seatsBySector.stream()
-            .filter(s -> SeatStatus.OCCUPIED.equals(s.getStatus()) && PaymentMethod.CASH.equals(s.getBooking().getPayment().getPaymentMethod()) )
-            .map(Seat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add)));
-
-        map.put(Constants.MERCADO_PAGO, String.valueOf(seatsBySector.stream()
-            .filter(s -> SeatStatus.OCCUPIED.equals(s.getStatus()) && PaymentMethod.MERCADO_PAGO.equals(s.getBooking().getPayment().getPaymentMethod()) )
-            .map(Seat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add)));
-
-        Long occupiedSeats = seatsBySector.stream().filter(v -> SeatStatus.OCCUPIED.equals(v.getStatus())).count();
-        map.put(Constants.CAPACITY_PERCENTAGE, String.valueOf(((double) occupiedSeats / total_seats) * 100));
-        map.put(Constants.OCCUPIED_SEATS, String.valueOf(occupiedSeats));
-        map.put(Constants.RESERVED_SEATS, String.valueOf(seatsBySector.stream().filter(v -> SeatStatus.RESERVED.equals(v.getStatus())).count()));
-        map.put(Constants.VACANT_SEATS, String.valueOf(seatsBySector.stream().filter(v -> SeatStatus.VACANT.equals(v.getStatus())).count()));
-
-        map.put(Constants.DATE, String.valueOf(date));
-
-        return map;
+        return String.format("Sector %s - Fila %s - Asiento %s - $ %s", sector, row, seats, booking.getPayment().getAmount().toString());
     }
 
 
-    /** This method get the last 20 bookings made. This method is used for booking generation. The map contains as key:
-     * the booking code and as value, a concatenated string of date, payment method, amount.
-     * @return Map<String, String>>
-     * */
-    public Map<String, String> getLastSales(){
-        List<Booking> bookings = bookingRepository.findAll();
-        List<Booking> lastBookings= bookings.stream().filter(b -> BookingStatus.PAID.equals(b.getStatus()))
-            .sorted(Comparator.comparing(Booking::getLastUpdated).reversed())
-            .limit(20).toList();
 
-        Map<String, String> map = new HashMap<>();
-        for (Booking booking : lastBookings){
-            map.put(booking.getHashedBookingCode(),
-                String.format("{date: %tF, paymentMethod: %s, amount: %s}",
-                    booking.getLastUpdated(),
-                    booking.getPayment().getPaymentMethod().name().toLowerCase(),
-                    booking.getPayment().getAmount()));
-        }
+  /** This method generates reports:
+   * <li> General booking reports
+   * <li> Pullman sector reports
+   * <li> Platea sector reports
+   * <li> Report of the last 20 sales
+   * @return Map<String, Map<String, String>>
+   * */
+  public Map<String, Map<String, String>> getGeneralStatus() {
+    List<Seat> seats = seatService.getAllSeats();
+    ZonedDateTime date = Tools.getCurrentDate();
 
-        return map;
+    Map<String, Map<String, String>> generalStatus = new HashMap<>();
+    generalStatus.put("general", getReportBySector(seats, null, date));
+    generalStatus.put("pullman", getReportBySector(seats, SeatSector.PULLMAN, date));
+    generalStatus.put("platea", getReportBySector(seats, SeatSector.PLATEA, date));
+    generalStatus.put("recent_sales", getLastSales());
+
+    return generalStatus;
+  }
+
+
+  /** This method generates a report of the bookings according to the requested sector.
+   * @param seats List of seats
+   * @param sector Seat sector
+   * @param date Current day
+   * @return Map<String, String>>
+   * */
+  public Map<String, String> getReportBySector(List<Seat> seats, SeatSector sector, ZonedDateTime date){
+
+    List<Seat> seatsBySector = seats;
+    int total_seats = Constants.TOTAL_SEATS;
+
+    if(sector != null) {
+      seatsBySector = seats.stream().filter(s -> sector.equals(s.getSector())).toList();
+      switch (sector){
+        case PULLMAN -> total_seats = Constants.TOTAL_PULLMAN_SEATS;
+        case PLATEA -> total_seats = Constants.TOTAL_PLATEA_SEATS;
+      }
     }
+
+    Map<String, String> map = new HashMap<>();
+    map.put(Constants.COLLECTED_FUNDS, String.valueOf(seatsBySector.stream()
+        .filter(s -> SeatStatus.OCCUPIED.equals(s.getStatus()))
+        .map(Seat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add)));
+
+    map.put(Constants.FUNDS_TO_BE_COLLECTED, String.valueOf(seatsBySector.stream()
+        .filter(s -> s.getStatus() != SeatStatus.OCCUPIED)
+        .map(Seat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add)));
+
+    map.put(Constants.CASH, String.valueOf(seatsBySector.stream()
+        .filter(s -> SeatStatus.OCCUPIED.equals(s.getStatus()) && PaymentMethod.CASH.equals(s.getBooking().getPayment().getPaymentMethod()) )
+        .map(Seat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add)));
+
+    map.put(Constants.MERCADO_PAGO, String.valueOf(seatsBySector.stream()
+        .filter(s -> SeatStatus.OCCUPIED.equals(s.getStatus()) && PaymentMethod.MERCADO_PAGO.equals(s.getBooking().getPayment().getPaymentMethod()) )
+        .map(Seat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add)));
+
+    Long occupiedSeats = seatsBySector.stream().filter(v -> SeatStatus.OCCUPIED.equals(v.getStatus())).count();
+    map.put(Constants.CAPACITY_PERCENTAGE, String.valueOf(((double) occupiedSeats / total_seats) * 100));
+    map.put(Constants.OCCUPIED_SEATS, String.valueOf(occupiedSeats));
+    map.put(Constants.RESERVED_SEATS, String.valueOf(seatsBySector.stream().filter(v -> SeatStatus.RESERVED.equals(v.getStatus())).count()));
+    map.put(Constants.VACANT_SEATS, String.valueOf(seatsBySector.stream().filter(v -> SeatStatus.VACANT.equals(v.getStatus())).count()));
+
+    map.put(Constants.DATE, String.valueOf(date));
+
+    return map;
+  }
+
+
+  /** This method get the last 20 bookings made. This method is used for booking generation. The map contains as key:
+   * the booking code and as value, a concatenated string of date, payment method, amount.
+   * @return Map<String, String>>
+   * */
+  public Map<String, String> getLastSales(){
+    List<Booking> bookings = bookingRepository.findAll();
+    List<Booking> lastBookings= bookings.stream().filter(b -> BookingStatus.PAID.equals(b.getStatus()))
+        .sorted(Comparator.comparing(Booking::getLastUpdated).reversed())
+        .limit(20).toList();
+
+    Map<String, String> map = new HashMap<>();
+    for (Booking booking : lastBookings){
+      map.put(booking.getHashedBookingCode(),
+          String.format("{date: %tF, paymentMethod: %s, amount: %s}",
+              booking.getLastUpdated(),
+              booking.getPayment().getPaymentMethod().name().toLowerCase(),
+              booking.getPayment().getAmount()));
+    }
+
+    return map;
+  }
 
 }

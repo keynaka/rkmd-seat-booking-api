@@ -3,6 +3,7 @@ package com.rkmd.toki_no_nagare.dto.booking;
 import com.rkmd.toki_no_nagare.dto.Contact.ContactDto;
 import com.rkmd.toki_no_nagare.dto.payment.PaymentDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
+import com.rkmd.toki_no_nagare.entities.admin_available_date.AdminAvailableDate;
 import com.rkmd.toki_no_nagare.entities.booking.BookingStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -52,5 +53,7 @@ public class CreateBookingResponseDto {
   private PaymentDto payment;
 
   private List<SeatDto> seats;
+
+  private List<AdminAvailableDate> adminAvailableDates;
 
 }
