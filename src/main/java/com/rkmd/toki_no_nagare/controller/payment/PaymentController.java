@@ -1,6 +1,7 @@
 package com.rkmd.toki_no_nagare.controller.payment;
 
 import com.rkmd.toki_no_nagare.dto.payment.*;
+import com.rkmd.toki_no_nagare.service.AuthorizationService;
 import com.rkmd.toki_no_nagare.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,9 @@ public class PaymentController implements PaymentControllerResources{
 
   @Autowired
   private PaymentService paymentService;
+
+  @Autowired
+  private AuthorizationService authorizationService;
 
   @PutMapping(value = "/v1/payments", produces = "application/json")
   @ResponseStatus(value = HttpStatus.OK)

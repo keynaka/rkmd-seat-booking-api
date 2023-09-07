@@ -2,7 +2,6 @@ package com.rkmd.toki_no_nagare.service;
 
 import com.rkmd.toki_no_nagare.dto.user.CreateUserResponseDto;
 import com.rkmd.toki_no_nagare.dto.user.GetUserResponseDto;
-import com.rkmd.toki_no_nagare.entities.user.RoleType;
 import com.rkmd.toki_no_nagare.entities.user.User;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
@@ -53,7 +52,6 @@ public class UserService {
 
         newUser.setUserName((String) json.get("username"));
         newUser.setPasswordHash(hashedPassword);
-        newUser.setRole(RoleType.valueOf(((String) json.get("role")).toUpperCase()));
 
         try {
             return userRepository.save(newUser);
@@ -62,18 +60,16 @@ public class UserService {
         }
     }
 
-    public CreateUserResponseDto createUser(String userName, String password, RoleType role){
+    public CreateUserResponseDto createUser(String userName, String password){
         isUserRegistered(userName);
         isValidPassword(password);
-        isValidRole(role);
 
         User newUser = new User();
         newUser.setUserName(userName);
         newUser.setPasswordHash(authorizationService.generatePasswordHash(password));
-        newUser.setRole(role);
         userRepository.saveAndFlush(newUser);
 
-        return new CreateUserResponseDto(newUser.getUserName(), newUser.getRole());
+        return new CreateUserResponseDto(newUser.getUserName());
     }
 
     public GetUserResponseDto getUserByNameV2(String username){
@@ -92,14 +88,6 @@ public class UserService {
     public void isValidPassword(String password){
         if (password == null)
             throw new BadRequestException("invalid_password", "Invalid Password");
-    }
-
-    public void isValidRole(RoleType role){
-        if (role == null)
-            throw new BadRequestException("invalid_role", "Invalid Role");
-
-        if(!role.equals(RoleType.ADMIN) && !role.equals(RoleType.VIEWER))
-            throw new BadRequestException("invalid_role", "Invalid Role");
     }
 
 }

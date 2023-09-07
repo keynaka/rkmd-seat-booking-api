@@ -1,5 +1,11 @@
 # Changelog
 
+### 2023.09.07
+- delete: RoleType 
+- delete: relation between User and Contact
+- add: /v1/login 
+- refactor: clean unused endpoints
+
 ### 2023.09.06
 - feat: Agrego flujo completo de AdminAvailableDate 
 - fix: update junit to 4.13.1

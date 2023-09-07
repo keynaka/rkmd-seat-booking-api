@@ -28,7 +28,7 @@ public interface UserControllerResources {
               responseCode = "500",
               description = "Internal server error",
               content = @Content(schema = @Schema(implementation = ApiError.class)))})
-  CreateUserResponseDto createUserV2(@RequestBody UserRequestDto request);
+  CreateUserResponseDto createUser(@RequestBody UserRequestDto request);
 
 
   @Operation(
@@ -43,6 +43,6 @@ public interface UserControllerResources {
               responseCode = "500",
               description = "Internal server error",
               content = @Content(schema = @Schema(implementation = ApiError.class)))})
-  GetUserResponseDto getUserByNameV2(@PathVariable("username") String username);
+  GetUserResponseDto getUserByName(@PathVariable("username") String username);
 
 }

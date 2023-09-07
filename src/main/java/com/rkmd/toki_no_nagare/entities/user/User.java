@@ -1,7 +1,5 @@
 package com.rkmd.toki_no_nagare.entities.user;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.rkmd.toki_no_nagare.entities.contact.Contact;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,14 +12,6 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
-    private RoleType role;
-
-    @JsonBackReference
-    @OneToOne
-    @JoinColumn(name = "contact_id")
-    private Contact contact;
 
     public String getUserName() {
         return userName;
@@ -37,21 +27,5 @@ public class User {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
-    }
-
-    public RoleType getRole() {
-        return role;
-    }
-
-    public void setRole(RoleType role) {
-        this.role = role;
-    }
-
-    public Contact getContact() {
-        return contact;
-    }
-
-    public void setContact(Contact contact) {
-        this.contact = contact;
     }
 }

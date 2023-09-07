@@ -3,7 +3,6 @@ package com.rkmd.toki_no_nagare.entities.contact;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
-import com.rkmd.toki_no_nagare.entities.user.User;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -29,10 +28,6 @@ public class Contact {
 
     @Column(name = "phone")
     private String phone;
-
-    @JsonManagedReference
-    @OneToOne(mappedBy = "contact", cascade = CascadeType.ALL)
-    private User user;
 
     @JsonManagedReference
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "client", cascade = CascadeType.ALL) //TODO: Change to LAZY if possible
@@ -88,14 +83,6 @@ public class Contact {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public List<Booking> getBookings() {
