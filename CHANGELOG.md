@@ -10,6 +10,7 @@
 - feat: Se agrega implementación para la generación de reportes en BookingService (2312d65)
 - feat: Se agregan nuevas constantes que se utilizaran para la generación de reportes (21035c1)
 - feat: Se agregan nuevas constantes que se utilizaran para la generación de reportes (919d0bc)
+- feat: Agrego endpoint /admin/available-dates/{paymentMethod}
 
 ### 2023.09.05
 - refactor: Se remueve endpoint de consulta de reservas de BookingController a ReportController (176a3f4)
