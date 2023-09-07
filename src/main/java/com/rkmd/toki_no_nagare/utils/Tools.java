@@ -5,7 +5,6 @@ import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.security.SecureRandom;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -66,4 +65,12 @@ public class Tools {
     })
             .collect(Collectors.toList());
   }
+
+  public static String getCurrentDateAsString(){
+    ZoneId zoneIdArgentina = ZoneId.of(ZONED_ID);
+    ZonedDateTime date = ZonedDateTime.now(zoneIdArgentina);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+    return date.format(formatter);
+  }
+
 }

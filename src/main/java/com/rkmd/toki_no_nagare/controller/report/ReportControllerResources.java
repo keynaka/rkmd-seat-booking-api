@@ -1,6 +1,7 @@
 package com.rkmd.toki_no_nagare.controller.report;
 
 import com.rkmd.toki_no_nagare.dto.booking.BookingResponseDto;
+import com.rkmd.toki_no_nagare.dto.report.BookingStatisticsDto;
 import com.rkmd.toki_no_nagare.exception.ApiError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -8,8 +9,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.Map;
 
 public interface ReportControllerResources {
 
@@ -67,5 +66,5 @@ public interface ReportControllerResources {
               responseCode = "500",
               description = "Internal server error",
               content = @Content(schema = @Schema(implementation = ApiError.class)))})
-  Map<String, Map<String, String>> getGeneralStatus();
+  BookingStatisticsDto getGeneralStatus();
 }

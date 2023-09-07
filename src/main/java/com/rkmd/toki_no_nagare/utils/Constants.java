@@ -64,13 +64,13 @@ public class Constants {
     public static final int PRERESERVED_DURATION = 5;
 
 
-    public static final String COLLECTED_FUNDS = "collected_funds.";
-    public static final String FUNDS_TO_BE_COLLECTED = "funds_to_be_collected";
+    public static final String COLLECTED_FUNDS = "collectedFunds";
+    public static final String FUNDS_TO_BE_COLLECTED = "fundsToBeCollected";
     public static final String CASH = "cash";
-    public static final String MERCADO_PAGO = "mercado_pago";
-    public static final String CAPACITY_PERCENTAGE = "capacity_percentage";
-    public static final String OCCUPIED_SEATS = "occupied_seats";
-    public static final String RESERVED_SEATS = "reserved_seats";
-    public static final String VACANT_SEATS = "vacant_seats";
+    public static final String MERCADO_PAGO = "mercadoPago";
+    public static final String CAPACITY_PERCENTAGE = "capacityPercentage";
+    public static final String OCCUPIED_SEATS = "occupiedSeats";
+    public static final String RESERVED_SEATS = "reservedSeats";
+    public static final String VACANT_SEATS = "vacantSeats";
     public static final String DATE = "date";
 }

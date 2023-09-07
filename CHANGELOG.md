@@ -5,6 +5,11 @@
 - delete: relation between User and Contact
 - add: /v1/login 
 - refactor: clean unused endpoints
+- refactor: Se modifica la implementación de los reportes estadisticos (0edd119)
+- refactor: Se modifica tipo de respuesta en el endpoint de reportes estadisticos (d8a691c)
+- refactor: Se agregan clases DTO para las respuestas de los endpoints de reporte (cae5aa5)
+- refactor: Se agrega método que obtiene la fecha y hora con un formato personalizado, distinto al formato por defecto de ZoneDateTime (e0668c3)
+- refactor: Se modifica valores de contantes a camel case (c4f8d16)
 
 ### 2023.09.06
 - feat: Agrego flujo completo de AdminAvailableDate 
