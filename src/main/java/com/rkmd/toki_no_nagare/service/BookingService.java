@@ -5,6 +5,8 @@ import com.rkmd.toki_no_nagare.dto.booking.BookingResponseDto;
 import com.rkmd.toki_no_nagare.dto.booking.CreateBookingRequestDto;
 import com.rkmd.toki_no_nagare.dto.booking.CreateBookingResponseDto;
 import com.rkmd.toki_no_nagare.dto.payment.PaymentDto;
+import com.rkmd.toki_no_nagare.dto.report.BookingStatisticsDto;
+import com.rkmd.toki_no_nagare.dto.report.RecentSalesDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.booking.BookingStatus;
@@ -31,7 +33,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -240,19 +242,19 @@ public class BookingService {
    * <li> Pullman sector reports
    * <li> Platea sector reports
    * <li> Report of the last 20 sales
-   * @return Map<String, Map<String, String>>
+   * @return BookingStatisticsDto
    * */
-  public Map<String, Map<String, String>> getGeneralStatus() {
+  public BookingStatisticsDto getGeneralStatus() {
     List<Seat> seats = seatService.getAllSeats();
-    ZonedDateTime date = Tools.getCurrentDate();
+    String date = Tools.getCurrentDateAsString();
 
-    Map<String, Map<String, String>> generalStatus = new HashMap<>();
-    generalStatus.put("general", getReportBySector(seats, null, date));
-    generalStatus.put("pullman", getReportBySector(seats, SeatSector.PULLMAN, date));
-    generalStatus.put("platea", getReportBySector(seats, SeatSector.PLATEA, date));
-    generalStatus.put("recent_sales", getLastSales());
+    BookingStatisticsDto statistics = new BookingStatisticsDto();
+    statistics.setGeneral(getReportBySector(seats, null, date));
+    statistics.setPullman(getReportBySector(seats, SeatSector.PULLMAN, date));
+    statistics.setPlatea(getReportBySector(seats, SeatSector.PLATEA, date));
+    statistics.setRecentSales(getLastSales());
 
-    return generalStatus;
+    return statistics;
   }
 
 
@@ -262,7 +264,7 @@ public class BookingService {
    * @param date Current day
    * @return Map<String, String>>
    * */
-  public Map<String, String> getReportBySector(List<Seat> seats, SeatSector sector, ZonedDateTime date){
+  public Map<String, String> getReportBySector(List<Seat> seats, SeatSector sector, String date){
 
     List<Seat> seatsBySector = seats;
     int total_seats = Constants.TOTAL_SEATS;
@@ -293,12 +295,13 @@ public class BookingService {
         .map(Seat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add)));
 
     Long occupiedSeats = seatsBySector.stream().filter(v -> SeatStatus.OCCUPIED.equals(v.getStatus())).count();
-    map.put(Constants.CAPACITY_PERCENTAGE, String.valueOf(((double) occupiedSeats / total_seats) * 100));
+    DecimalFormat df = new DecimalFormat("0.00");
+    map.put(Constants.CAPACITY_PERCENTAGE, String.valueOf( df.format(((double) occupiedSeats / total_seats) * 100)));
     map.put(Constants.OCCUPIED_SEATS, String.valueOf(occupiedSeats));
     map.put(Constants.RESERVED_SEATS, String.valueOf(seatsBySector.stream().filter(v -> SeatStatus.RESERVED.equals(v.getStatus())).count()));
     map.put(Constants.VACANT_SEATS, String.valueOf(seatsBySector.stream().filter(v -> SeatStatus.VACANT.equals(v.getStatus())).count()));
 
-    map.put(Constants.DATE, String.valueOf(date));
+    map.put(Constants.DATE, date);
 
     return map;
   }
@@ -306,24 +309,24 @@ public class BookingService {
 
   /** This method get the last 20 bookings made. This method is used for booking generation. The map contains as key:
    * the booking code and as value, a concatenated string of date, payment method, amount.
-   * @return Map<String, String>>
+   * @return List<RecentSales>
    * */
-  public Map<String, String> getLastSales(){
+  public List<RecentSalesDto> getLastSales(){
     List<Booking> bookings = bookingRepository.findAll();
     List<Booking> lastBookings= bookings.stream().filter(b -> BookingStatus.PAID.equals(b.getStatus()))
         .sorted(Comparator.comparing(Booking::getLastUpdated).reversed())
         .limit(20).toList();
 
-    Map<String, String> map = new HashMap<>();
+    List<RecentSalesDto> recentSales = new ArrayList<>();
     for (Booking booking : lastBookings){
-      map.put(booking.getHashedBookingCode(),
-          String.format("{date: %tF, paymentMethod: %s, amount: %s}",
-              booking.getLastUpdated(),
-              booking.getPayment().getPaymentMethod().name().toLowerCase(),
-              booking.getPayment().getAmount()));
+      recentSales.add(new RecentSalesDto(
+          booking.getHashedBookingCode(),
+          Tools.formatArgentinianDate(booking.getLastUpdated()),
+          booking.getPayment().getPaymentMethod().name().toLowerCase(),
+          booking.getPayment().getAmount().toString()));
     }
 
-    return map;
+    return recentSales;
   }
 
 }
