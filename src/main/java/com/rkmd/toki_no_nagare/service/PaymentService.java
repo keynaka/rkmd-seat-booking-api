@@ -74,13 +74,14 @@ public class PaymentService {
    * @return ChangePaymentResponseDto
    */
   @Transactional
-  public ChangePaymentResponseDto changePaymentStatus(String bookingCode, PaymentStatus paymentStatus){
+  public ChangePaymentResponseDto changePaymentStatus(String bookingCode, PaymentStatus paymentStatus, String username){
     // Step 1: Get the payment corresponding to the booking code
     Payment payment = getPaymentByBookingCode(bookingCode);
 
-    // Step 2: update the booking status based on the payment status
+    // Step 2: update the booking status based on the payment status and set seller's username
     Booking booking = payment.getBooking();
     updateBookingStatus(booking, paymentStatus);
+    booking.setSeller(username);
 
     // Step 3: update the seat status based on the payment status
     List<Seat> seats = payment.getBooking().getSeats();
@@ -169,6 +170,7 @@ public class PaymentService {
     ChangePaymentResponseDto response = new ChangePaymentResponseDto();
     response.setStatus(booking.getStatus());
     response.setBookingCode(bookingCode);
+    response.setSeller(booking.getSeller());
     response.setDateCreated(booking.getDateCreated());
     response.setExpirationDate(booking.getExpirationDate());
     response.setContact(modelMapper.map(booking.getClient(), ContactDto.class));

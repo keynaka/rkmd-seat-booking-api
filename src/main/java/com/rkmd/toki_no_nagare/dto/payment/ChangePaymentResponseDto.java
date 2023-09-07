@@ -47,6 +47,12 @@ public class ChangePaymentResponseDto {
       example = "2023-08-17T15:30:45.123456789-03:00[America/Argentina/Buenos_Aires]")
   private ZonedDateTime expirationDate;
 
+  @Schema(
+          name = "seller",
+          description = "detail: Username del seller",
+          example = "RKMD_X")
+  private String seller;
+
   private ContactDto contact;
 
   private PaymentDto payment;

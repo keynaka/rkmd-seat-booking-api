@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @Component
 @Log4j2
 public class ExpirationJob {
+    public static final String AUTOMATIC_EXPIRATION_JOB = "AUTOMATIC_EXPIRATION_JOB";
     public static String SEPARATOR = ", ";
     @Autowired
     private PaymentService paymentService;
@@ -36,7 +37,7 @@ public class ExpirationJob {
             if (expirationService.isExpiredForAdmin(payment.getExpirationDate())) {
                 expiredPayments.add(payment);
                 // This step changes the payment status to EXPIRED
-                paymentService.changePaymentStatus(payment.getBooking().getHashedBookingCode(), PaymentStatus.EXPIRED);
+                paymentService.changePaymentStatus(payment.getBooking().getHashedBookingCode(), PaymentStatus.EXPIRED, AUTOMATIC_EXPIRATION_JOB);
             }
         }
 
