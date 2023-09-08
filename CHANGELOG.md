@@ -1,3 +1,4 @@
+- feat: caching user data for better performance (6e502fa)
 # Changelog
 
 ### 2023.09.08
