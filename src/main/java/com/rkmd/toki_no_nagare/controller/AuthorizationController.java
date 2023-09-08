@@ -13,7 +13,7 @@ public class AuthorizationController {
     @Autowired
     private AuthorizationService authorizationService;
 
-    @PostMapping(value = "/v1/login", produces = "application/json")
+    @GetMapping(value = "/v1/login", produces = "application/json")
     public ResponseEntity<?> login(@RequestHeader("x-auth-username") String userName,
                                    @RequestHeader("x-auth-password") String password) {
         if (!authorizationService.validatePassword(userName, password))

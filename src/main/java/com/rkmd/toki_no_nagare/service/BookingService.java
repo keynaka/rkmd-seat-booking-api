@@ -354,7 +354,7 @@ public class BookingService {
       boolean response = false;
       switch (currentStatus) {
           case PENDING -> response = List.of(BookingStatus.PENDING, BookingStatus.PAID, BookingStatus.EXPIRED, BookingStatus.CANCELED).contains(newStatus);
-          case PAID -> response = List.of(BookingStatus.PAID, BookingStatus.CANCELED).contains(newStatus);
+          case PAID -> response = List.of(BookingStatus.PAID).contains(newStatus);
           case EXPIRED -> response = List.of(BookingStatus.EXPIRED).contains(newStatus);
           case CANCELED -> response = List.of(BookingStatus.CANCELED).contains(newStatus);
       }
