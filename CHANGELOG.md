@@ -11,7 +11,7 @@
 - refactor: Se habilita el log de las sentencias SQL que ejecuta Hibernate (a5d0a01)
 - feat: Se agrega implementación para enviar mail de backup de una reserva completa (3d2aaa0)
 - refactor: Se agrega anotación ToString de Lombok en las entidades Booking, Contact, Payment y Seat (6c13a49)
-- refactor: Se modifica la ubicación de los beans de configuración a la
+- refactor: Se modifica la ubicación de los beans de configuración a la clase AppConfig (c01a820)
 - add: bookingList ordered desc by dateCreated (30f9bcc)
 - add: PRE-EXPIRED at bookingList (30f9bcc)
 ### 2023.09.07
