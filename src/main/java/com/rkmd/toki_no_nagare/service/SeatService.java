@@ -113,7 +113,7 @@ public class SeatService {
     }
 
     public List<Seat> prereserveSeats(PrereserveInputDto prereserveInputDto) {
-        validateAvailableSeatForBooking(getSeatsRequestedByUser(prereserveInputDto.getSeats()));
+        validateIsNotPrereserved(getSeatsRequestedByUser(prereserveInputDto.getSeats()));
 
         List<Seat> prereservedSeats = new ArrayList<>();
         for (SeatRequestDto seat : prereserveInputDto.getSeats()) {
@@ -337,6 +337,19 @@ public class SeatService {
                 throw new RequestTimeoutException("seat_booking_timeout",
                         String.format(
                                 "The seat row: %d - column: %d - sector: %s is not prereserved",
+                                seat.getRow(), seat.getColumn(), seat.getSector().name()
+                        )
+                );
+            }
+        }
+    }
+
+    public void validateIsNotPrereserved(List<Seat> seats){
+        for(Seat seat : seats){
+            if (isPrereserved(seat)) {
+                throw new RequestTimeoutException("seat_booking_timeout",
+                        String.format(
+                                "The seat row: %d - column: %d - sector: %s is already prereserved",
                                 seat.getRow(), seat.getColumn(), seat.getSector().name()
                         )
                 );

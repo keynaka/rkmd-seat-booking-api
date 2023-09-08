@@ -2,7 +2,7 @@
 
 ### 2023.09.08
 - add: prereserve validation before prereserving
-
+- fix: change to validateIsNotPrereserved
 ### 2023.09.07
 - delete: RoleType 
 - delete: relation between User and Contact
