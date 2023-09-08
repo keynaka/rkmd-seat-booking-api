@@ -58,7 +58,8 @@ public class PaymentService {
    * @return ZonedDateTime
    */
   public ZonedDateTime expirationDateByPaymentMethod(PaymentMethod paymentMethod, ZonedDateTime dateCreated){
-    return expirationServiceFactory.getExpirationService(paymentMethod).getExpirationDate(dateCreated);
+    //return expirationServiceFactory.getExpirationService(paymentMethod).getExpirationDate(dateCreated); PRODUCTIVE
+    return expirationServiceFactory.getExpirationService(PaymentMethod.MERCADO_PAGO).getExpirationDate(dateCreated);
   }
 
 
