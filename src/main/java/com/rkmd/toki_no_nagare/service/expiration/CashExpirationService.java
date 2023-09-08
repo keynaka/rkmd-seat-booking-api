@@ -10,9 +10,9 @@ import java.time.temporal.TemporalAdjusters;
 
 @Service
 public class CashExpirationService extends ExpirationService{
-    public static final long ADMIN_EXTRA_DAYS = 1l;
+    public static final long ADMIN_EXTRA_DAYS = 2l;
     @Override
-    protected Long adminExpireExtraDays() {
+    public Long adminExpireExtraDays() {
         return ADMIN_EXTRA_DAYS;
     }
 

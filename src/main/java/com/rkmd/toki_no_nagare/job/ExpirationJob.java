@@ -2,6 +2,7 @@ package com.rkmd.toki_no_nagare.job;
 
 import com.rkmd.toki_no_nagare.dto.payment.PaymentResponseDto;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
+import com.rkmd.toki_no_nagare.entities.payment.PaymentMethod;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentStatus;
 import com.rkmd.toki_no_nagare.service.PaymentService;
 import com.rkmd.toki_no_nagare.service.expiration.ExpirationService;
@@ -36,7 +37,8 @@ public class ExpirationJob {
 
         List<Payment> expiredPayments = new ArrayList<>();
         for (Payment payment : pendingPayments.getPayments()) {
-            ExpirationService expirationService = expirationServiceFactory.getExpirationService(payment.getPaymentMethod());
+            //ExpirationService expirationService = expirationServiceFactory.getExpirationService(payment.getPaymentMethod()); TODO: ROLLBACK TO THIS PRODUCTIVE
+            ExpirationService expirationService = expirationServiceFactory.getExpirationService(PaymentMethod.MERCADO_PAGO);
             if (expirationService.isExpiredForAdmin(payment.getExpirationDate())) {
                 expiredPayments.add(payment);
                 // This step changes the payment status to EXPIRED
