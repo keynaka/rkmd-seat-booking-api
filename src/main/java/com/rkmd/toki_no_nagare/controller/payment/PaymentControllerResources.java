@@ -29,12 +29,9 @@ public interface PaymentControllerResources {
               responseCode = "500",
               description = "Internal server error",
               content = @Content(schema = @Schema(implementation = ApiError.class)))})
-  ChangePaymentResponseDto changePaymentStatus(@RequestBody ChangePaymentRequestDto request);
-
-  /*ChangePaymentResponseDto changePaymentStatus(@RequestBody ChangePaymentRequestDto request,
+  ChangePaymentResponseDto changePaymentStatus(@RequestBody ChangePaymentRequestDto request,
                                                @RequestHeader("x-auth-username") String userName,
                                                @RequestHeader("x-auth-password") String password);
-  */
 
 
   @Operation(
