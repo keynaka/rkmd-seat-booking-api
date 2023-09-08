@@ -1,4 +1,3 @@
-- feat: caching user data for better performance (6e502fa)
 # Changelog
 
 ### 2023.09.08
@@ -13,6 +12,9 @@
 - feat: Se agrega implementación para enviar mail de backup de una reserva completa (3d2aaa0)
 - refactor: Se agrega anotación ToString de Lombok en las entidades Booking, Contact, Payment y Seat (6c13a49)
 - refactor: Se modifica la ubicación de los beans de configuración a la clase AppConfig (c01a820)
+- add: GET/POST login (6e502fa)
+- add: response payload for POST login (6e502fa)
+- feat: caching user data for better performance (6e502fa)
 
 ### 2023.09.07
 - delete: RoleType 
