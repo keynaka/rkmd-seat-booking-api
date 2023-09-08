@@ -17,6 +17,9 @@
 - refactor: add expires to title if PRE-EXPIRED (b219155)
 - refactor: set both MP and cash to 2 days extra for expiration  (b219155)
 - test: hardcode MP expiration (b219155)
+- add: GET/POST login (6e502fa)
+- add: response payload for POST login (6e502fa)
+- feat: caching user data for better performance (6e502fa)
 
 ### 2023.09.07
 - delete: RoleType 
