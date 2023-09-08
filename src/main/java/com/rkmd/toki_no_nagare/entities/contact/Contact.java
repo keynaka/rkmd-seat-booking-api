@@ -6,11 +6,13 @@ import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.user.User;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name="contact")
 public class Contact {
 
@@ -34,6 +36,7 @@ public class Contact {
     @OneToOne(mappedBy = "contact", cascade = CascadeType.ALL)
     private User user;
 
+    @ToString.Exclude
     @JsonManagedReference
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "client", cascade = CascadeType.ALL) //TODO: Change to LAZY if possible
     private List<Booking> bookings;

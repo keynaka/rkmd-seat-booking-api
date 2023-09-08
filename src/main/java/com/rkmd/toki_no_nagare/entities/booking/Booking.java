@@ -7,11 +7,13 @@ import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(
     name="booking",

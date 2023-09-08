@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.utils.Tools;
 import jakarta.persistence.*;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
 @Entity
 @IdClass(SeatId.class)
+@ToString
 @Table(name="seat")
 public class Seat {
     @Id
@@ -44,6 +46,7 @@ public class Seat {
     @Column(name = "version")
     private Long version;
 
+    @ToString.Exclude
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "booking_id")
