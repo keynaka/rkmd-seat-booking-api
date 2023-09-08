@@ -8,7 +8,9 @@ event:
   place: ${EVENT_PLACE}
 mail:
   headerImageCanonicalPath: ${MAIL_HEADER_IMAGE_CANONICAL_PATH}
-  backupRecipient: ${MAIL_BACKUP_RECIPIENT}
+  backupRecipient1: ${MAIL_BACKUP_RECIPIENT1}
+  backupRecipient2: ${MAIL_BACKUP_RECIPIENT2}
+  backupRecipient3: ${MAIL_BACKUP_RECIPIENT3}
 server:
   port: ${APP_PORT}
 spring:
