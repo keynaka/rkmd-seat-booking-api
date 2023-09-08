@@ -2,6 +2,14 @@
 
 ### 2023.09.08
 - add: prereserve validation before prereserving
+- refactor: Se agrega CC para el envio de mails de backup (0f48d9a)
+- refactor: Se agregan dos variables de entorno que representan los mails que van en copia para el back (6efc1f8)
+- refactor: Se quitan los simbolos en la generación del bookingCode para que sea mas facil la gestión de los admins (5372b84)
+- feat: Se agrega método para enviar mail de backup de una reserva completa (2d42192)
+- refactor: Se habilita el log de las sentencias SQL que ejecuta Hibernate (a5d0a01)
+- feat: Se agrega implementación para enviar mail de backup de una reserva completa (3d2aaa0)
+- refactor: Se agrega anotación ToString de Lombok en las entidades Booking, Contact, Payment y Seat (6c13a49)
+- refactor: Se modifica la ubicación de los beans de configuración a la clase AppConfig (c01a820)
 
 ### 2023.09.07
 - delete: RoleType 
