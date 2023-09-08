@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @Tag(name = "Operaciones de pago")
 public interface PaymentControllerResources {
@@ -29,6 +30,11 @@ public interface PaymentControllerResources {
               description = "Internal server error",
               content = @Content(schema = @Schema(implementation = ApiError.class)))})
   ChangePaymentResponseDto changePaymentStatus(@RequestBody ChangePaymentRequestDto request);
+
+  /*ChangePaymentResponseDto changePaymentStatus(@RequestBody ChangePaymentRequestDto request,
+                                               @RequestHeader("x-auth-username") String userName,
+                                               @RequestHeader("x-auth-password") String password);
+  */
 
 
   @Operation(

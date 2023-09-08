@@ -31,10 +31,8 @@ public class Booking {
     @JoinColumn(name = "client_id")
     private Contact client;
 
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private Contact seller;
+    @Column(name = "seller_id")
+    private String seller;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -85,11 +83,11 @@ public class Booking {
         this.client = client;
     }
 
-    public Contact getSeller() {
+    public String getSeller() {
         return seller;
     }
 
-    public void setSeller(Contact seller) {
+    public void setSeller(String seller) {
         this.seller = seller;
     }
 

@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @Component
 @Log4j2
 public class ExpirationJob {
+    public static final String AUTOMATIC_EXPIRATION_JOB = "AUTOMATIC_EXPIRATION_JOB";
     public static String SEPARATOR = ", ";
     @Autowired
     private PaymentService paymentService;
@@ -25,8 +26,11 @@ public class ExpirationJob {
     private ExpirationServiceFactory expirationServiceFactory;
 
     // These cron must be set after the FIXED_LIMIT_HOUR AND FIXED_LIMIT_MINUTE of ExpirationService
-    //@Scheduled(cron = "0 * * * * *") // Every minute for testing
-    @Scheduled(cron = "0 0 0 * * *") // Every day at 00:00
+    // "0 * * * * *" // Every minute for testing
+    // "0 */30 * * * *" // Every 30 minutes for testing
+    // "0 0 0 * * *" // Every day at 00:00 PRODUCTIVE
+
+    @Scheduled(cron = "${JOB_CRON}")
     public void expirateExpiredBookings() {
         PaymentResponseDto pendingPayments = paymentService.getPaymentsByStatus(PaymentStatus.PENDING);
 
@@ -36,7 +40,7 @@ public class ExpirationJob {
             if (expirationService.isExpiredForAdmin(payment.getExpirationDate())) {
                 expiredPayments.add(payment);
                 // This step changes the payment status to EXPIRED
-                paymentService.changePaymentStatus(payment.getBooking().getHashedBookingCode(), PaymentStatus.EXPIRED);
+                paymentService.changePaymentStatus(payment.getBooking().getHashedBookingCode(), PaymentStatus.EXPIRED, AUTOMATIC_EXPIRATION_JOB);
             }
         }
 

@@ -2,8 +2,6 @@ package com.rkmd.toki_no_nagare.service;
 
 import com.rkmd.toki_no_nagare.dto.Contact.ContactRequestDto;
 import com.rkmd.toki_no_nagare.entities.contact.Contact;
-import com.rkmd.toki_no_nagare.entities.user.RoleType;
-import com.rkmd.toki_no_nagare.entities.user.User;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.repositories.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,19 +32,11 @@ public class ContactService {
         newContact.setLastName((String) json.get("last_name"));
         newContact.setDni(Long.valueOf((String) json.get("dni")));
 
-        User newUser = null;
         if (json.containsKey("username") && json.containsKey("password")) {
             if (userService.get((String) json.get("username")).isPresent())
                 throw new BadRequestException("username_already_exists", "This username already exists");
-
-            newUser = new User();
-            newUser.setUserName((String) json.get("username"));
-            newUser.setPasswordHash((String) json.get("password"));
-            newUser.setRole(RoleType.VIEWER);
-            newUser.setContact(newContact);
         }
 
-        newContact.setUser(newUser);
         newContact.setBookings(null);
         try {
             return contactRepository.save(newContact);

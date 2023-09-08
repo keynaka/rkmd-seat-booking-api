@@ -13,6 +13,7 @@ import com.rkmd.toki_no_nagare.entities.booking.BookingStatus;
 import com.rkmd.toki_no_nagare.entities.contact.Contact;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentMethod;
+import com.rkmd.toki_no_nagare.entities.payment.PaymentStatus;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
 import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
@@ -334,6 +335,38 @@ public class BookingService {
     }
 
     return recentSales;
+  }
+
+    /** This method updates the booking status based on the payment status if it is a valid status transition
+     * @param booking Booking data
+     * @param paymentStatus Payment status
+     * */
+    public static void updateBookingStatus(Booking booking, PaymentStatus paymentStatus){
+        BookingStatus newBookingStatus = BookingStatus.PENDING;
+        switch (paymentStatus) {
+            case PENDING -> newBookingStatus = BookingStatus.PENDING;
+            case PAID -> newBookingStatus = BookingStatus.PAID;
+            case CANCELED -> newBookingStatus = BookingStatus.CANCELED;
+            case EXPIRED -> newBookingStatus = BookingStatus.EXPIRED;
+        }
+
+        if (!validStatusTransition(booking.getStatus(), newBookingStatus))
+            throw new BadRequestException("invalid_status", String.format("Invalid status transition from %s to %s", booking.getStatus().name(), newBookingStatus.name()));
+
+        booking.setStatus(newBookingStatus);
+        booking.setLastUpdated(Tools.getCurrentDate());
+    }
+
+  private static boolean validStatusTransition(BookingStatus currentStatus, BookingStatus newStatus) {
+      boolean response = false;
+      switch (currentStatus) {
+          case PENDING -> response = List.of(BookingStatus.PENDING, BookingStatus.PAID, BookingStatus.EXPIRED, BookingStatus.CANCELED).contains(newStatus);
+          case PAID -> response = List.of(BookingStatus.PAID).contains(newStatus);
+          case EXPIRED -> response = List.of(BookingStatus.EXPIRED).contains(newStatus);
+          case CANCELED -> response = List.of(BookingStatus.CANCELED).contains(newStatus);
+      }
+
+      return response;
   }
 
 }

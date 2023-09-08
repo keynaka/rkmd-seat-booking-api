@@ -15,5 +15,5 @@ public class PrereserveInputDto {
             name = "seats",
             description = "detail: List of seats",
             example = "[{row: '1', column: '1', sector: 'platea'}]")
-    private List<PrereserveSeatDto> seats;
+    private List<SeatRequestDto> seats;
 }

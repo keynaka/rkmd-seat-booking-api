@@ -46,6 +46,9 @@ public class AdminAvailableDateService {
         if (adminAvailableDateRepository.findById(id).isPresent())
             throw new BadRequestException("date_plate_already_exists", "This init date and place is already created");
 
+        if (initDate.isBefore(Tools.getCurrentDate()))
+            throw new BadRequestException("invalid_init_date", "This init date is too early");
+
         ZonedDateTime endDate = Tools.formatDateStringToZonedDateTime(request.getEndDate());
         if (endDate.isBefore(initDate) || endDate.getDayOfYear() != initDate.getDayOfYear())
             throw new BadRequestException("invalid_end_date", "The end date must be the same of the init and later");

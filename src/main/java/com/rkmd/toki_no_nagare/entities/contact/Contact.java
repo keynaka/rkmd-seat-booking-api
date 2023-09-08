@@ -3,9 +3,9 @@ package com.rkmd.toki_no_nagare.entities.contact;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
-import com.rkmd.toki_no_nagare.entities.user.User;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.ToString;
 
 import java.util.List;
@@ -31,10 +31,6 @@ public class Contact {
 
     @Column(name = "phone")
     private String phone;
-
-    @JsonManagedReference
-    @OneToOne(mappedBy = "contact", cascade = CascadeType.ALL)
-    private User user;
 
     @ToString.Exclude
     @JsonManagedReference
@@ -91,14 +87,6 @@ public class Contact {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public List<Booking> getBookings() {

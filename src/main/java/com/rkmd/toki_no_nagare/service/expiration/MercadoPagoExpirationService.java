@@ -8,7 +8,7 @@ import java.time.ZonedDateTime;
 
 @Service
 public class MercadoPagoExpirationService extends ExpirationService{
-    public static final long ADMIN_EXTRA_DAYS = 2l;
+    public static final long ADMIN_EXTRA_DAYS = 1l;
     @Value("${paymentTimeLimitFor.mercadoPago}")
     private Long expirationLimit;
 

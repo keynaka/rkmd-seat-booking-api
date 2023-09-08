@@ -4,12 +4,10 @@ import com.rkmd.toki_no_nagare.dto.Contact.ContactDto;
 import com.rkmd.toki_no_nagare.dto.payment.*;
 import com.rkmd.toki_no_nagare.dto.seat.SeatDto;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
-import com.rkmd.toki_no_nagare.entities.booking.BookingStatus;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentMethod;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentStatus;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
-import com.rkmd.toki_no_nagare.entities.seat.SeatStatus;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
 import com.rkmd.toki_no_nagare.repositories.PaymentRepository;
@@ -19,7 +17,6 @@ import com.rkmd.toki_no_nagare.utils.Tools;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -61,7 +58,8 @@ public class PaymentService {
    * @return ZonedDateTime
    */
   public ZonedDateTime expirationDateByPaymentMethod(PaymentMethod paymentMethod, ZonedDateTime dateCreated){
-    return expirationServiceFactory.getExpirationService(paymentMethod).getExpirationDate(dateCreated);
+    //return expirationServiceFactory.getExpirationService(paymentMethod).getExpirationDate(dateCreated); PRODUCTIVE
+    return expirationServiceFactory.getExpirationService(PaymentMethod.MERCADO_PAGO).getExpirationDate(dateCreated);
   }
 
 
@@ -74,21 +72,21 @@ public class PaymentService {
    * @return ChangePaymentResponseDto
    */
   @Transactional
-  public ChangePaymentResponseDto changePaymentStatus(String bookingCode, PaymentStatus paymentStatus){
+  public ChangePaymentResponseDto changePaymentStatus(String bookingCode, PaymentStatus paymentStatus, String username){
     // Step 1: Get the payment corresponding to the booking code
     Payment payment = getPaymentByBookingCode(bookingCode);
 
-    // Step 2: update the booking status based on the payment status
+    // Step 2: update the booking status based on the payment status and set seller's username
     Booking booking = payment.getBooking();
-    updateBookingStatus(booking, paymentStatus);
+    BookingService.updateBookingStatus(booking, paymentStatus);
+    booking.setSeller(username);
 
     // Step 3: update the seat status based on the payment status
     List<Seat> seats = payment.getBooking().getSeats();
-    updateSeatStatus(seats, paymentStatus);
+    SeatService.updateSeatStatus(seats, paymentStatus);
 
     // Step 4: update the payment status
-    payment.setPaymentStatus(paymentStatus);
-    payment.setLastUpdated(Tools.getCurrentDate());
+    updatePaymentStatus(payment, paymentStatus);
 
     // Step 5: save the payment data
     paymentRepository.saveAndFlush(payment);
@@ -129,36 +127,6 @@ public class PaymentService {
   }
 
 
-  /** This method updates the booking status based on the payment status
-   * @param booking Booking data
-   * @param paymentStatus Payment status
-   * */
-  public void updateBookingStatus(Booking booking, PaymentStatus paymentStatus){
-    switch (paymentStatus) {
-      case PAID -> booking.setStatus(BookingStatus.PAID);
-      case CANCELED -> booking.setStatus(BookingStatus.CANCELED);
-      case EXPIRED -> booking.setStatus(BookingStatus.EXPIRED);
-    }
-    booking.setLastUpdated(Tools.getCurrentDate());
-  }
-
-
-  /** This method updates the seats status based on the payment status
-   * @param seats List of seats
-   * @param paymentStatus Payment status
-   * */
-  public void updateSeatStatus(List<Seat> seats, PaymentStatus paymentStatus){
-    for(Seat seat : seats){
-      if(paymentStatus.equals(PaymentStatus.PAID)){
-        seat.setStatus(SeatStatus.OCCUPIED);
-      } else {
-        seat.setStatus(SeatStatus.VACANT);
-        seat.setBooking(null);
-      }
-    }
-  }
-
-
   /** This method creates the user response according to the booking data passed as parameters.
    * @param booking Booking data
    * @param bookingCode Booking code
@@ -169,6 +137,7 @@ public class PaymentService {
     ChangePaymentResponseDto response = new ChangePaymentResponseDto();
     response.setStatus(booking.getStatus());
     response.setBookingCode(bookingCode);
+    response.setSeller(booking.getSeller());
     response.setDateCreated(booking.getDateCreated());
     response.setExpirationDate(booking.getExpirationDate());
     response.setContact(modelMapper.map(booking.getClient(), ContactDto.class));
@@ -215,6 +184,30 @@ public class PaymentService {
     }
 
     return paymentOptional.get();
+  }
+
+  /** This method updates the payment status if it is a valid status transition
+   * @param payment Booking data
+   * @param newStatus Payment status
+   * */
+  public void updatePaymentStatus(Payment payment, PaymentStatus newStatus){
+    if (!validStatusTransition(payment.getPaymentStatus(), newStatus))
+      throw new BadRequestException("invalid_status", String.format("Invalid status transition from %s to %s", payment.getPaymentStatus().name(), newStatus.name()));
+
+    payment.setPaymentStatus(newStatus);
+    payment.setLastUpdated(Tools.getCurrentDate());
+  }
+
+  private boolean validStatusTransition(PaymentStatus currentStatus, PaymentStatus newStatus) {
+    boolean response = false;
+    switch (currentStatus) {
+      case PENDING -> response = List.of(PaymentStatus.PENDING, PaymentStatus.PAID, PaymentStatus.EXPIRED, PaymentStatus.CANCELED).contains(newStatus);
+      case PAID -> response = List.of(PaymentStatus.PAID).contains(newStatus);
+      case EXPIRED -> response = List.of(PaymentStatus.EXPIRED).contains(newStatus);
+      case CANCELED -> response = List.of(PaymentStatus.CANCELED).contains(newStatus);
+    }
+
+    return response;
   }
 
 }
