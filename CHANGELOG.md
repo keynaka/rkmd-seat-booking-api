@@ -12,6 +12,14 @@
 - feat: Se agrega implementación para enviar mail de backup de una reserva completa (3d2aaa0)
 - refactor: Se agrega anotación ToString de Lombok en las entidades Booking, Contact, Payment y Seat (6c13a49)
 - refactor: Se modifica la ubicación de los beans de configuración a la clase AppConfig (c01a820)
+- add: bookingList ordered desc by dateCreated (30f9bcc)
+- add: PRE-EXPIRED at bookingList (30f9bcc)
+- refactor: add expires to title if PRE-EXPIRED (b219155)
+- refactor: set both MP and cash to 2 days extra for expiration  (b219155)
+- test: hardcode MP expiration (b219155)
+- add: GET/POST login (6e502fa)
+- add: response payload for POST login (6e502fa)
+- feat: caching user data for better performance (6e502fa)
 
 ### 2023.09.07
 - delete: RoleType 

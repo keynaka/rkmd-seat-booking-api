@@ -67,8 +67,8 @@ public class BookingService {
         return bookingRepository.findById(id);
     }
 
-    public List<Booking> getAll() {
-        return bookingRepository.findAll();
+    public List<Booking> getAllOrderedByDateCreated() {
+        return bookingRepository.findAllByOrderByDateCreatedDesc();
     }
 
     public BookingResponseDto getBookingByCode(String code){
@@ -227,22 +227,6 @@ public class BookingService {
         response.setContact(modelMapper.map(reservedBooking.getClient(), ContactDto.class));
         return response;
     }
-
-    public String formatTitle(Booking booking) {
-        String sector = "";
-        Long row = 0l;
-        String seats = "";
-
-        List<Seat> sortedSeats = booking.getSeats().stream().sorted((a, b) -> a.getColumn().compareTo(b.getColumn())).collect(Collectors.toList());
-        for (Seat seat : sortedSeats) {
-            sector = seat.getSector().name();
-            row = seat.getRow();
-            seats = String.format("%s %s", seats, seat.getColumn().toString());
-        }
-
-        return String.format("Sector %s - Fila %s - Asiento %s - $ %s", sector, row, seats, booking.getPayment().getAmount().toString());
-    }
-
 
 
   /** This method generates reports:
