@@ -90,6 +90,9 @@ public abstract class AbstractMailingService {
     public abstract String notifyExpiration(String recipient, String name, String lastname, String bookingCode,
                                             ZonedDateTime expirationTime);
 
+    /** Notifica por e-mail la reserva realizada para almacenar un json ante un eventual incidente. */
+    public abstract void notifyReservationBackUp(String bookingCode, String booking, String contact, String payment, String seats);
+
     public String readMailTemplate(String filePath){
 
         InputStream inputStream = this.getClass().getResourceAsStream(filePath);

@@ -11,7 +11,9 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,6 +25,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Service
+@Log4j2
 public class TransportMailSenderImpl extends AbstractMailingService{
 
     private static final Logger logger = Logger.getLogger(TransportMailSenderImpl.class.getName());
@@ -63,6 +66,9 @@ public class TransportMailSenderImpl extends AbstractMailingService{
 
     @Value("${spring.mail.password}")
     private String password;
+
+    @Value("${mail.backupRecipient}")
+    private String backupRecipient;
 
     private Properties props;
     private Session session;
@@ -290,4 +296,20 @@ public class TransportMailSenderImpl extends AbstractMailingService{
 
         return sendHtmlEmail(new EmailDto(recipient, htmlBody, getExpirationSubject(), imagesData));
     }
+
+
+    @Async
+    @Override
+    public void notifyReservationBackUp(String bookingCode, String booking, String contact, String payment, String seats) {
+        String messageBody = String.format("Booking: %s, Contact: %s, Payment: %s, Seats: %s", booking, contact, payment, seats);
+        EmailDto emailDto = new EmailDto(backupRecipient, messageBody,"Backup booking code: " + bookingCode);
+
+        try{
+            sendSimpleMail(emailDto);
+        }catch (Exception e){
+            log.info("The email could not be sent. Booking data: " + messageBody);
+            log.error(e.getMessage());
+        }
+    }
+
 }
