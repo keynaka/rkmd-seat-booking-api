@@ -67,8 +67,14 @@ public class TransportMailSenderImpl extends AbstractMailingService{
     @Value("${spring.mail.password}")
     private String password;
 
-    @Value("${mail.backupRecipient}")
-    private String backupRecipient;
+    @Value("${mail.backupRecipient1}")
+    private String backupRecipient1;
+
+    @Value("${mail.backupRecipient2}")
+    private String backupRecipient2;
+
+    @Value("${mail.backupRecipient3}")
+    private String backupRecipient3;
 
     private Properties props;
     private Session session;
@@ -102,6 +108,8 @@ public class TransportMailSenderImpl extends AbstractMailingService{
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(details.getRecipient()));
+            message.addRecipient(Message.RecipientType.CC, new InternetAddress(backupRecipient2));
+            message.addRecipient(Message.RecipientType.CC, new InternetAddress(backupRecipient3));
             message.setSubject(details.getSubject());
             message.setText(details.getMsgBody());
 
@@ -301,8 +309,8 @@ public class TransportMailSenderImpl extends AbstractMailingService{
     @Async
     @Override
     public void notifyReservationBackUp(String bookingCode, String booking, String contact, String payment, String seats) {
-        String messageBody = String.format("Booking: %s, Contact: %s, Payment: %s, Seats: %s", booking, contact, payment, seats);
-        EmailDto emailDto = new EmailDto(backupRecipient, messageBody,"Backup booking code: " + bookingCode);
+        String messageBody = String.format("Booking: %s %n%nContact: %s %n%nPayment: %s %n%nSeats: %s", booking, contact, payment, seats);
+        EmailDto emailDto = new EmailDto(backupRecipient1, messageBody,"Backup booking code: " + bookingCode);
 
         try{
             sendSimpleMail(emailDto);
