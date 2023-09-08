@@ -228,22 +228,6 @@ public class BookingService {
         return response;
     }
 
-    public String formatTitle(Booking booking) {
-        String sector = "";
-        Long row = 0l;
-        String seats = "";
-
-        List<Seat> sortedSeats = booking.getSeats().stream().sorted((a, b) -> a.getColumn().compareTo(b.getColumn())).collect(Collectors.toList());
-        for (Seat seat : sortedSeats) {
-            sector = seat.getSector().name();
-            row = seat.getRow();
-            seats = String.format("%s %s", seats, seat.getColumn().toString());
-        }
-
-        return String.format("Sector %s - Fila %s - Asiento %s - $ %s", sector, row, seats, booking.getPayment().getAmount().toString());
-    }
-
-
 
   /** This method generates reports:
    * <li> General booking reports

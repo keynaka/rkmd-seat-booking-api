@@ -46,7 +46,7 @@ public class ReportController implements ReportControllerResources{
             BookingListResponseDto bookingDto = new BookingListResponseDto();
             bookingDto.setBookingCode(booking.getHashedBookingCode());
             bookingDto.setDni(booking.getClient().getDni());
-            bookingDto.setTitle(bookingService.formatTitle(booking));
+            bookingDto.setTitle(reportService.formatTitle(booking));
             bookingDto.setStatus(reportService.calculateStatus(booking));
             bookingDto.setPaymentMethod(booking.getPayment().getPaymentMethod().name());
 

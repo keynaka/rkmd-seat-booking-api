@@ -11,7 +11,7 @@ public abstract class ExpirationService {
     public static final int FIXED_LIMIT_HOUR = 17;
     public static final int FIXED_LIMIT_MINUTE = 50;
 
-    protected abstract Long adminExpireExtraDays();
+    public abstract Long adminExpireExtraDays();
     public abstract ZonedDateTime getExpirationDate(ZonedDateTime dateCreated);
 
     public boolean isExpiredForClient(ZonedDateTime date) {
