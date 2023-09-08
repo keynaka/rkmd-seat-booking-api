@@ -9,6 +9,7 @@
 - add: seller AUTOMATIC_EXPIRATION_JOB 
 - add: authorization for changePaymentStatus()
 - add: UnAuthorizedException
+- add: validStatusTransition for booking, payment and seat
 - refactor: Se modifica la implementación de los reportes estadisticos (0edd119)
 - refactor: Se modifica tipo de respuesta en el endpoint de reportes estadisticos (d8a691c)
 - refactor: Se agregan clases DTO para las respuestas de los endpoints de reporte (cae5aa5)

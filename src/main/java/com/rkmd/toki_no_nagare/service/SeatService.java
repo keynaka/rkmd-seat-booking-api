@@ -5,6 +5,7 @@ import com.rkmd.toki_no_nagare.dto.seat.PrereserveInputDto;
 import com.rkmd.toki_no_nagare.dto.seat.PrereserveSeatDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatRequestDto;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
+import com.rkmd.toki_no_nagare.entities.payment.PaymentStatus;
 import com.rkmd.toki_no_nagare.entities.seat.Seat;
 import com.rkmd.toki_no_nagare.entities.seat.SeatId;
 import com.rkmd.toki_no_nagare.entities.seat.SeatSector;
@@ -95,6 +96,9 @@ public class SeatService {
     }
 
     public Seat updateSeatStatus(Seat seat, SeatStatus updatedStatus) {
+        if (!validStatusTransition(seat.getStatus(), updatedStatus))
+            throw new BadRequestException("invalid_status", String.format("Invalid status transition from %s to %s", seat.getStatus().name(), updatedStatus.name()));
+
         seat.setStatus(updatedStatus);
 
         try {
@@ -358,6 +362,34 @@ public class SeatService {
             seat.setStatus(SeatStatus.RESERVED);
             seatRepository.save(seat);
         }
+    }
+
+    /** This method updates the seats status based on the payment status if it is a valid status transition
+     * @param seats List of seats
+     * @param paymentStatus Payment status
+     * */
+    public static void updateSeatStatus(List<Seat> seats, PaymentStatus paymentStatus){
+        SeatStatus newStatus = paymentStatus.equals(PaymentStatus.PAID) ?
+            SeatStatus.OCCUPIED : SeatStatus.VACANT;
+
+        for (Seat seat : seats){
+            if (!validStatusTransition(seat.getStatus(), newStatus))
+                throw new BadRequestException("invalid_status", String.format("Invalid status transition from %s to %s", seat.getStatus().name(), newStatus.name()));
+        }
+
+        for (Seat seat : seats){
+            seat.setStatus(newStatus);
+        }
+    }
+
+    private static boolean validStatusTransition(SeatStatus currentStatus, SeatStatus newStatus) {
+        boolean response = false;
+        switch (currentStatus) {
+            case VACANT, RESERVED -> response = List.of(SeatStatus.VACANT, SeatStatus.RESERVED, SeatStatus.OCCUPIED).contains(newStatus);
+            case OCCUPIED -> response = List.of(SeatStatus.OCCUPIED).contains(newStatus);
+        }
+
+        return response;
     }
 
 }
