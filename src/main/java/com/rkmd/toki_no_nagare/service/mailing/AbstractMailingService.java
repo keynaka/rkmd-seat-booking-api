@@ -74,7 +74,7 @@ public abstract class AbstractMailingService {
     }
 
     /** Envía un email en formato texto */
-    public abstract String sendSimpleMail(EmailDto details);
+    public abstract void sendSimpleMail(EmailDto details);
 
     /** Notifica por e-mail la reserva provisoria de entradas. */
     public abstract String notifyReservation(String recipient, String name, String lastname, String bookingCode,

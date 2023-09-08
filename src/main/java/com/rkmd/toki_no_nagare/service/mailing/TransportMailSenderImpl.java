@@ -103,7 +103,8 @@ public class TransportMailSenderImpl extends AbstractMailingService{
     }
 
     /** Envía un e-mail con contenido en formato texto. */
-    public String sendSimpleMail(EmailDto details) {
+    @Override
+    public void sendSimpleMail(EmailDto details) {
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
@@ -115,11 +116,9 @@ public class TransportMailSenderImpl extends AbstractMailingService{
 
             Transport.send(message);
 
-            return "Mail Sent Successfully...";
-
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            return "Error while Sending Mail...";
+        } catch (Exception e) {
+            log.info("The email could not be sent. Booking data: " + details.getMsgBody());
+            log.error(e.getStackTrace());
         }
     }
 
@@ -311,13 +310,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
     public void notifyReservationBackUp(String bookingCode, String booking, String contact, String payment, String seats) {
         String messageBody = String.format("Booking: %s %n%nContact: %s %n%nPayment: %s %n%nSeats: %s", booking, contact, payment, seats);
         EmailDto emailDto = new EmailDto(backupRecipient1, messageBody,"Backup booking code: " + bookingCode);
-
-        try{
-            sendSimpleMail(emailDto);
-        }catch (Exception e){
-            log.info("The email could not be sent. Booking data: " + messageBody);
-            log.error(e.getMessage());
-        }
+        sendSimpleMail(emailDto);
     }
 
 }
