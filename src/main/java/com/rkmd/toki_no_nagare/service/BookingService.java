@@ -67,8 +67,8 @@ public class BookingService {
         return bookingRepository.findById(id);
     }
 
-    public List<Booking> getAll() {
-        return bookingRepository.findAll();
+    public List<Booking> getAllOrderedByDateCreated() {
+        return bookingRepository.findAllByOrderByDateCreatedDesc();
     }
 
     public BookingResponseDto getBookingByCode(String code){

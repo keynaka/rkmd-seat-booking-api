@@ -36,6 +36,9 @@ import static com.rkmd.toki_no_nagare.utils.Constants.TOTAL_SEATS;
         "DB_NAME=test",
         "DB_CONNECTION_PARAMS=test",
         "JOB_CRON=0 0 0 * * *",
+        "MAIL_BACKUP_RECIPIENT1=test",
+        "MAIL_BACKUP_RECIPIENT2=test",
+        "MAIL_BACKUP_RECIPIENT3=test",
 })
 public class SeatServiceTest {
     @Autowired

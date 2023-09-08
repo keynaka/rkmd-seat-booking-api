@@ -5,6 +5,7 @@ import com.rkmd.toki_no_nagare.dto.booking.BookingResponseDto;
 import com.rkmd.toki_no_nagare.dto.report.BookingStatisticsDto;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.service.BookingService;
+import com.rkmd.toki_no_nagare.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,10 @@ import java.util.List;
 @RestController
 @RequestMapping("")
 public class ReportController implements ReportControllerResources{
-
     @Autowired
     private BookingService bookingService;
+    @Autowired
+    private ReportService reportService;
 
     @GetMapping("/v1/reports/bookings/{code_id}")
     public ResponseEntity<BookingResponseDto> getBookingReport(@PathVariable("code_id") String codeId) {
@@ -37,7 +39,7 @@ public class ReportController implements ReportControllerResources{
 
     @GetMapping("/v1/reports/bookings")
     public ResponseEntity<List<BookingListResponseDto>> getBookingList() {
-        List<Booking> bookings = bookingService.getAll();
+        List<Booking> bookings = bookingService.getAllOrderedByDateCreated();
 
         List<BookingListResponseDto> result = new ArrayList<>();
         for (Booking booking : bookings) {
@@ -45,7 +47,7 @@ public class ReportController implements ReportControllerResources{
             bookingDto.setBookingCode(booking.getHashedBookingCode());
             bookingDto.setDni(booking.getClient().getDni());
             bookingDto.setTitle(bookingService.formatTitle(booking));
-            bookingDto.setStatus(booking.getStatus().name());
+            bookingDto.setStatus(reportService.calculateStatus(booking));
             bookingDto.setPaymentMethod(booking.getPayment().getPaymentMethod().name());
 
             result.add(bookingDto);
