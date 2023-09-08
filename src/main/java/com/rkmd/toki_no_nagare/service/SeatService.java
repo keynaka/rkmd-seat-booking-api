@@ -2,7 +2,6 @@ package com.rkmd.toki_no_nagare.service;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.rkmd.toki_no_nagare.dto.seat.PrereserveInputDto;
-import com.rkmd.toki_no_nagare.dto.seat.PrereserveSeatDto;
 import com.rkmd.toki_no_nagare.dto.seat.SeatRequestDto;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentStatus;
@@ -114,8 +113,10 @@ public class SeatService {
     }
 
     public List<Seat> prereserveSeats(PrereserveInputDto prereserveInputDto) {
+        validateAvailableSeatForBooking(getSeatsRequestedByUser(prereserveInputDto.getSeats()));
+
         List<Seat> prereservedSeats = new ArrayList<>();
-        for (PrereserveSeatDto seat : prereserveInputDto.getSeats()) {
+        for (SeatRequestDto seat : prereserveInputDto.getSeats()) {
             prereservedSeats.add(prereserveSeat(seat.getSector(), seat.getRow(), seat.getColumn()));
         }
 

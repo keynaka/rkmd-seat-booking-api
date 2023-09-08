@@ -1,5 +1,8 @@
 # Changelog
 
+### 2023.09.08
+- add: prereserve validation before prereserving
+
 ### 2023.09.07
 - delete: RoleType 
 - delete: relation between User and Contact
