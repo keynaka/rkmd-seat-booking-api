@@ -7,7 +7,8 @@ event:
   name: ${EVENT_NAME}
   place: ${EVENT_PLACE}
 mail:
-  headerImageCanonicalPath: ${MAIL_HEADER_IMAGE_CANONICAL_PATH} #localmente usar: ./src/main/resources/mailing/images/toki-no-nagare-header-mail-2x.png
+  headerImageCanonicalPath: ${MAIL_HEADER_IMAGE_CANONICAL_PATH}
+  backupRecipient: ${MAIL_BACKUP_RECIPIENT}
 server:
   port: ${APP_PORT}
 spring:

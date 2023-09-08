@@ -1,5 +1,8 @@
 app:
   profile: ${SPRING_PROFILES_ACTIVE}
+mail:
+  headerImageCanonicalPath: ${MAIL_HEADER_IMAGE_CANONICAL_PATH}
+  backupRecipient: ${MAIL_BACKUP_RECIPIENT}
 spring:
   datasource:
     url: "jdbc:postgresql://localhost:5434/tokinonagare"
