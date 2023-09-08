@@ -20,12 +20,12 @@ public class PaymentController implements PaymentControllerResources{
 
   @PutMapping(value = "/v1/payments", produces = "application/json")
   @ResponseStatus(value = HttpStatus.OK)
-  public ChangePaymentResponseDto changePaymentStatus(ChangePaymentRequestDto request,
-                                                      @RequestHeader("x-auth-username") String userName,
-                                                      @RequestHeader("x-auth-password") String password) {
-    if (!authorizationService.validatePassword(userName, password))
-      throw new UnAuthorizedException("invalid_password", "The password is invalid");
+  //public ChangePaymentResponseDto changePaymentStatus(ChangePaymentRequestDto request, @RequestHeader("x-auth-username") String userName, @RequestHeader("x-auth-password") String password) {
+  public ChangePaymentResponseDto changePaymentStatus(ChangePaymentRequestDto request) {
+    //if (!authorizationService.validatePassword(userName, password))
+      //throw new UnAuthorizedException("invalid_password", "The password is invalid");
 
+    String userName = "SOME_USER";
     return paymentService.changePaymentStatus(request.getBookingCode(), request.getPaymentStatus(), userName);
   }
 

@@ -27,7 +27,8 @@ public class ExpirationJob {
 
     // These cron must be set after the FIXED_LIMIT_HOUR AND FIXED_LIMIT_MINUTE of ExpirationService
     //@Scheduled(cron = "0 * * * * *") // Every minute for testing
-    @Scheduled(cron = "0 0 0 * * *") // Every day at 00:00
+    //@Scheduled(cron = "0 0 0 * * *") // Every day at 00:00 PRODUCTIVE
+    @Scheduled(cron = "0 0 21 * * *") // Every day at 00:00
     public void expirateExpiredBookings() {
         PaymentResponseDto pendingPayments = paymentService.getPaymentsByStatus(PaymentStatus.PENDING);
 
