@@ -14,6 +14,10 @@
 - refactor: Se modifica la ubicación de los beans de configuración a la clase AppConfig (c01a820)
 - add: bookingList ordered desc by dateCreated (30f9bcc)
 - add: PRE-EXPIRED at bookingList (30f9bcc)
+- refactor: add expires to title if PRE-EXPIRED (b219155)
+- refactor: set both MP and cash to 2 days extra for expiration  (b219155)
+- test: hardcode MP expiration (b219155)
+
 ### 2023.09.07
 - delete: RoleType 
 - delete: relation between User and Contact
