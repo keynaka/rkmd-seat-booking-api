@@ -5,11 +5,14 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.ToString;
 
 import java.util.List;
 
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name="contact")
 public class Contact {
 
@@ -29,6 +32,7 @@ public class Contact {
     @Column(name = "phone")
     private String phone;
 
+    @ToString.Exclude
     @JsonManagedReference
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "client", cascade = CascadeType.ALL) //TODO: Change to LAZY if possible
     private List<Booking> bookings;

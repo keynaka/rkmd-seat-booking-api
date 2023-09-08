@@ -15,7 +15,7 @@ public class Tools {
 
   public static final String ZONED_ID = "America/Argentina/Buenos_Aires";
   static int hashLength = 8;
-  static String hashCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@$%&*_+";
+  static String hashCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
   public static ZonedDateTime getCurrentDate(){
     ZoneId zoneIdArgentina = ZoneId.of(ZONED_ID);

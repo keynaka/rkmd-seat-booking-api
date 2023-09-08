@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -15,6 +16,7 @@ import java.time.ZonedDateTime;
 @SequenceGenerator(name = "seq_payment", initialValue = 1, allocationSize = 1, sequenceName = "seq_payment")
 @Table(name = "payment")
 @Getter
+@ToString
 @NoArgsConstructor
 public class Payment {
 

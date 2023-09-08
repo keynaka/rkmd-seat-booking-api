@@ -74,7 +74,7 @@ public abstract class AbstractMailingService {
     }
 
     /** Envía un email en formato texto */
-    public abstract String sendSimpleMail(EmailDto details);
+    public abstract void sendSimpleMail(EmailDto details);
 
     /** Notifica por e-mail la reserva provisoria de entradas. */
     public abstract String notifyReservation(String recipient, String name, String lastname, String bookingCode,
@@ -89,6 +89,9 @@ public abstract class AbstractMailingService {
     /** Notifica por e-mail la expiración de la reserva provisoria. */
     public abstract String notifyExpiration(String recipient, String name, String lastname, String bookingCode,
                                             ZonedDateTime expirationTime);
+
+    /** Notifica por e-mail la reserva realizada para almacenar un json ante un eventual incidente. */
+    public abstract void notifyReservationBackUp(String bookingCode, String booking, String contact, String payment, String seats);
 
     public String readMailTemplate(String filePath){
 

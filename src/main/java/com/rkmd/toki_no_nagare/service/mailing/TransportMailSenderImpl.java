@@ -11,7 +11,9 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,6 +25,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Service
+@Log4j2
 public class TransportMailSenderImpl extends AbstractMailingService{
 
     private static final Logger logger = Logger.getLogger(TransportMailSenderImpl.class.getName());
@@ -64,6 +67,15 @@ public class TransportMailSenderImpl extends AbstractMailingService{
     @Value("${spring.mail.password}")
     private String password;
 
+    @Value("${mail.backupRecipient1}")
+    private String backupRecipient1;
+
+    @Value("${mail.backupRecipient2}")
+    private String backupRecipient2;
+
+    @Value("${mail.backupRecipient3}")
+    private String backupRecipient3;
+
     private Properties props;
     private Session session;
 
@@ -91,21 +103,22 @@ public class TransportMailSenderImpl extends AbstractMailingService{
     }
 
     /** Envía un e-mail con contenido en formato texto. */
-    public String sendSimpleMail(EmailDto details) {
+    @Override
+    public void sendSimpleMail(EmailDto details) {
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(details.getRecipient()));
+            message.addRecipient(Message.RecipientType.CC, new InternetAddress(backupRecipient2));
+            message.addRecipient(Message.RecipientType.CC, new InternetAddress(backupRecipient3));
             message.setSubject(details.getSubject());
             message.setText(details.getMsgBody());
 
             Transport.send(message);
 
-            return "Mail Sent Successfully...";
-
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            return "Error while Sending Mail...";
+        } catch (Exception e) {
+            log.info("The email could not be sent. Booking data: " + details.getMsgBody());
+            log.error(e.getStackTrace());
         }
     }
 
@@ -290,4 +303,14 @@ public class TransportMailSenderImpl extends AbstractMailingService{
 
         return sendHtmlEmail(new EmailDto(recipient, htmlBody, getExpirationSubject(), imagesData));
     }
+
+
+    @Async
+    @Override
+    public void notifyReservationBackUp(String bookingCode, String booking, String contact, String payment, String seats) {
+        String messageBody = String.format("Booking: %s %n%nContact: %s %n%nPayment: %s %n%nSeats: %s", booking, contact, payment, seats);
+        EmailDto emailDto = new EmailDto(backupRecipient1, messageBody,"Backup booking code: " + bookingCode);
+        sendSimpleMail(emailDto);
+    }
+
 }
