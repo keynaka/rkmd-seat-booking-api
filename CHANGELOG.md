@@ -2,6 +2,7 @@
 
 ### 2023.09.09
 - add: dateCreated + lastUpdated + seller to bookingList (871b987)
+- add: shuffleRecommendations (33d2860)
 
 ### 2023.09.08
 - add: prereserve validation before prereserving
