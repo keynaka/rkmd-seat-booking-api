@@ -275,4 +275,22 @@ public class SeatServiceTest {
         Assertions.assertTrue(plateaBestRow.get(18).getColumn().equals(5L) && plateaBestRow.get(18).getStatus().equals(SeatStatus.RESERVED)); //The column 5 is reserved at FIRST ITERATION
 
     }
+
+    @Test
+    public void testShuffleRecommendations() {
+        Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
+
+        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(SeatSector.PLATEA, SeatStatus.VACANT);
+        int comboSize = 5;
+        int comboCount = 9;
+
+        Map<Long, Map<String, Object>> topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
+        Map<Long, Map<String, Object>> shuffledRecommendations = seatService.shuffleRecommendations(topCombosByRow);
+
+        Assertions.assertTrue(!shuffledRecommendations.isEmpty());
+
+        shuffledRecommendations = seatService.shuffleRecommendations(topCombosByRow);
+
+        Assertions.assertTrue(!shuffledRecommendations.isEmpty());
+    }
 }

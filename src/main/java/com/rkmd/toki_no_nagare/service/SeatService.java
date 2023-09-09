@@ -152,6 +152,20 @@ public class SeatService {
         return filterTopCombos(comboCount, bestComboByRow);
     }
 
+    public Map<Long, Map<String, Object>> shuffleRecommendations(Map<Long, Map<String, Object>> bestCombosByRow) {
+        List<Map.Entry<Long, Map<String, Object>>> entryList = new ArrayList<>(bestCombosByRow.entrySet());
+        // Shuffle the list randomly
+        Collections.shuffle(entryList);
+
+        Map<Long, Map<String, Object>> shuffled = new LinkedHashMap<>();
+        // Iterate over the shuffled list and access the keys and values
+        for (Map.Entry<Long, Map<String, Object>> entry : entryList) {
+            shuffled.put(entry.getKey(), entry.getValue());
+        }
+
+        return shuffled;
+    }
+
     /*
     * This method search the best combo of each Row. It will return the score and the list of seats that represent
     * the combo

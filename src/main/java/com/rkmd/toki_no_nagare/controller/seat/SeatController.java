@@ -104,7 +104,9 @@ public class SeatController {
 
         Map<Long, Map<String, Object>> bestCombosByRow = seatService.searchTopCombosByRow(seats, comboSize, comboCount);
 
-        return ResponseEntity.ok().body(bestCombosByRow);
+        Map<Long, Map<String, Object>> shuffled = seatService.shuffleRecommendations(bestCombosByRow);
+
+        return ResponseEntity.ok().body(shuffled);
     }
 
     @PutMapping("/prices/sector")
