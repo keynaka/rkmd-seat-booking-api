@@ -1,5 +1,8 @@
 # Changelog
 
+### 2023.09.09
+- add: dateCreated + lastUpdated + seller to bookingList (871b987)
+
 ### 2023.09.08
 - add: prereserve validation before prereserving
 - fix: change to validateIsNotPrereserved
