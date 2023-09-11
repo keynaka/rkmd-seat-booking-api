@@ -112,7 +112,7 @@ public class SeatController {
     @GetMapping("/recommendation/{sector}/max-size")
     public ResponseEntity<Integer> getMaxRecommendationSize(@PathVariable("sector") String sector) {
         SeatSector seatSector = SeatSector.valueOf(sector.toUpperCase());
-        Map<Long, List<Seat>> seats = seatService.getSectorSeatsByRow(seatSector, null);
+        Map<Long, List<Seat>> seats = seatService.getSectorSeatsByRow(seatSector, SeatStatus.VACANT);
 
         Integer maxSize = seatService.getMaxRecommendationSize(seats);
 
