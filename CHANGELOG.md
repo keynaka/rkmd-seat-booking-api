@@ -1,5 +1,9 @@
 # Changelog
 
+### 2023.09.11
+- add: /recommendation/{sector}/max-size (f4b5edd)
+- add: some testing (f4b5edd)
+
 ### 2023.09.09
 - add: dateCreated + lastUpdated + seller to bookingList (871b987)
 - add: shuffleRecommendations (33d2860)
