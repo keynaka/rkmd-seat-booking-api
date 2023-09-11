@@ -137,6 +137,14 @@ public class SeatServiceTest {
 
         List<Seat> vacantSeats = seatService.getSeatsOfStatus(SeatStatus.VACANT);
         Assertions.assertTrue(vacantSeats.isEmpty());
+
+        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(SeatSector.PLATEA, SeatStatus.VACANT);
+        Integer maxSize = seatService.getMaxRecommendationSize(plateaSeatsByRow);
+        Assertions.assertTrue(maxSize == 0);
+
+        Map<Long, List<Seat>> pullmanSeatsByRow = seatService.getSectorSeatsByRow(SeatSector.PLATEA, SeatStatus.VACANT);
+        maxSize = seatService.getMaxRecommendationSize(pullmanSeatsByRow);
+        Assertions.assertTrue(maxSize == 0);
     }
 
     @Test
@@ -292,5 +300,16 @@ public class SeatServiceTest {
         shuffledRecommendations = seatService.shuffleRecommendations(topCombosByRow);
 
         Assertions.assertTrue(!shuffledRecommendations.isEmpty());
+    }
+
+    @Test
+    public void testMaxRecommendationSize() {
+        Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
+
+        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(SeatSector.PLATEA, SeatStatus.VACANT);
+
+        Integer maxSize = seatService.getMaxRecommendationSize(plateaSeatsByRow);
+
+        Assertions.assertTrue(maxSize == Constants.MAX_ROW_SIZE);
     }
 }

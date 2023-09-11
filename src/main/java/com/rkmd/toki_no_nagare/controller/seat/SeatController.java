@@ -109,6 +109,16 @@ public class SeatController {
         return ResponseEntity.ok().body(shuffled);
     }
 
+    @GetMapping("/recommendation/{sector}/max-size")
+    public ResponseEntity<Integer> getMaxRecommendationSize(@PathVariable("sector") String sector) {
+        SeatSector seatSector = SeatSector.valueOf(sector.toUpperCase());
+        Map<Long, List<Seat>> seats = seatService.getSectorSeatsByRow(seatSector, null);
+
+        Integer maxSize = seatService.getMaxRecommendationSize(seats);
+
+        return ResponseEntity.ok().body(maxSize);
+    }
+
     @PutMapping("/prices/sector")
     public ResponseEntity<Void> setupSeatPricesBySector(@RequestBody SeatPricesBySectorDto request) {
         seatService.setSeatPricesBySector(request.getPullmanSeatPrices(), request.getPlateaSeatPrices());

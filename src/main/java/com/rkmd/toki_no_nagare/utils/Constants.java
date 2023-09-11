@@ -73,4 +73,6 @@ public class Constants {
     public static final String RESERVED_SEATS = "reservedSeats";
     public static final String VACANT_SEATS = "vacantSeats";
     public static final String DATE = "date";
+    public static final Integer MAX_ROW_SIZE = 32;
+
 }
