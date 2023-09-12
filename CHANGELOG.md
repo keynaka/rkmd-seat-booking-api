@@ -3,6 +3,7 @@
 ### 2023.09.11
 - add: /recommendation/{sector}/max-size (f4b5edd)
 - add: some testing (f4b5edd)
+- refactor: Mejora del title del bookingList (fbd76b8)
 
 ### 2023.09.09
 - add: dateCreated + lastUpdated + seller to bookingList (871b987)
