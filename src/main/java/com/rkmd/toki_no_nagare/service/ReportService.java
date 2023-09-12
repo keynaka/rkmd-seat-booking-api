@@ -25,7 +25,7 @@ public class ReportService {
         String result =  String.format(
                 "%s %s - Sector: %s - Precio: $%s",
                 booking.getClient().getName(), booking.getClient().getLastName(),
-                booking.getSeats().get(0).getSector().name(),
+                booking.getSeats() != null && !booking.getSeats().isEmpty() ? booking.getSeats().get(0).getSector().name() : "-",
                 booking.getPayment().getAmount().toString()
         );
 
