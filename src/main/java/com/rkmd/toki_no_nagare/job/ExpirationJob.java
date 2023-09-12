@@ -29,7 +29,7 @@ public class ExpirationJob {
     // These cron must be set after the FIXED_LIMIT_HOUR AND FIXED_LIMIT_MINUTE of ExpirationService
     // "0 * * * * *" // Every minute for testing
     // "0 */30 * * * *" // Every 30 minutes for testing
-    // "0 0 0 * * *" // Every day at 00:00 PRODUCTIVE
+    // "0 0 3 * * *" // Every day at 00:00 at GMT-3 PRODUCTIVE
 
     @Scheduled(cron = "${JOB_CRON}")
     public void expirateExpiredBookings() {

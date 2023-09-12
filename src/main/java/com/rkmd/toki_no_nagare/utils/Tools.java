@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 
 public class Tools {
 
-  public static final String ZONED_ID = "America/Argentina/Buenos_Aires";
+  public static final String ARGENTINIAN_ZONED_ID = "America/Argentina/Buenos_Aires";
   static int hashLength = 8;
   static String hashCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
   public static ZonedDateTime getCurrentDate(){
-    ZoneId zoneIdArgentina = ZoneId.of(ZONED_ID);
+    ZoneId zoneIdArgentina = ZoneId.of(ARGENTINIAN_ZONED_ID);
     return ZonedDateTime.now(zoneIdArgentina);
   }
 
@@ -50,11 +50,15 @@ public class Tools {
   }
 
   public static ZonedDateTime formatDateStringToZonedDateTime(String dateString){
-    ZoneId zoneId = ZoneId.of(ZONED_ID);
+    ZoneId zoneId = ZoneId.of(ARGENTINIAN_ZONED_ID);
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
     ZonedDateTime zonedDateTime = ZonedDateTime.parse(dateString, formatter).withZoneSameLocal(zoneId);
 
     return zonedDateTime;
+  }
+
+  public static ZonedDateTime changeToArgentinianZonedId(ZonedDateTime zonedDateTime) {
+    return zonedDateTime != null ? zonedDateTime.withZoneSameInstant(ZoneId.of(ARGENTINIAN_ZONED_ID)) : null;
   }
 
   /** Converts a list of Seat into a list of SeatDto */
@@ -67,7 +71,7 @@ public class Tools {
   }
 
   public static String getCurrentDateAsString(){
-    ZoneId zoneIdArgentina = ZoneId.of(ZONED_ID);
+    ZoneId zoneIdArgentina = ZoneId.of(ARGENTINIAN_ZONED_ID);
     ZonedDateTime date = ZonedDateTime.now(zoneIdArgentina);
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
     return date.format(formatter);
