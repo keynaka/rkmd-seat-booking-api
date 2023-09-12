@@ -22,18 +22,12 @@ public class ReportService {
     public static final String PRE_EXPIRED = "PRE-EXPIRED";
 
     public String formatTitle(Booking booking) {
-        String sector = "";
-        Long row = 0l;
-        String seats = "";
-
-        List<Seat> sortedSeats = booking.getSeats().stream().sorted((a, b) -> a.getColumn().compareTo(b.getColumn())).collect(Collectors.toList());
-        for (Seat seat : sortedSeats) {
-            sector = seat.getSector().name();
-            row = seat.getRow();
-            seats = String.format("%s %s", seats, seat.getColumn().toString());
-        }
-
-        String result =  String.format("Sector %s - Fila %s - Asiento %s - $ %s", sector, row, seats, booking.getPayment().getAmount().toString());
+        String result =  String.format(
+                "%s %s - Sector: %s - Precio: $%s",
+                booking.getClient().getName(), booking.getClient().getLastName(),
+                booking.getSeats().get(0).getSector().name(),
+                booking.getPayment().getAmount().toString()
+        );
 
         if (isPreExpiredBooking(booking)) {
             //Long adminExtraDays = expirationServiceFactory.getExpirationService(booking.getPayment().getPaymentMethod()).adminExpireExtraDays(); TODO: ROLLBACK TO THIS PRODUCTIVE
