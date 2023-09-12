@@ -4,6 +4,7 @@
 - add: /recommendation/{sector}/max-size (f4b5edd)
 - add: some testing (f4b5edd)
 - refactor: Mejora del title del bookingList (fbd76b8)
+- refactor: PRERESERVED_DURATION = 8 (9f0c2f6)
 
 ### 2023.09.09
 - add: dateCreated + lastUpdated + seller to bookingList (871b987)
