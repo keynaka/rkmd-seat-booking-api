@@ -1,3 +1,4 @@
+- fix: para que se mande mail cuando se expira para el cliente y no para el admin (69ad597)
 # Changelog
 
 ### 2023.09.12
