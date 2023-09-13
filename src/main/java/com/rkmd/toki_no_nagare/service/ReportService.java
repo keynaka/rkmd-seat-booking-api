@@ -47,7 +47,6 @@ public class ReportService {
         ExpirationService expirationService = expirationServiceFactory.getExpirationService(PaymentMethod.MERCADO_PAGO);
 
         return booking.getStatus().equals(BookingStatus.PENDING) &&
-                expirationService.isExpiredForClient(booking.getExpirationDate()) &&
-                !expirationService.isExpiredForAdmin(booking.getExpirationDate());
+                expirationService.isExpiredForClient(booking.getExpirationDate());
     }
 }
