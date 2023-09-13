@@ -1,9 +1,10 @@
+-  (5109340)
 # Changelog
 
 ### 2023.09.12
 - refactor: FIXED_LIMIT_HOUR to 23 (f729e08)
 - enhance: format bookingList date results to GMT-3 (f729e08)
-- fix: para que se mande mail cuando se expira para el cliente y no para el admin
+- fix: para que se mande mail cuando se expira para el cliente y no para el admin (5109340)
 
 ### 2023.09.11
 - add: /recommendation/{sector}/max-size (f4b5edd)
