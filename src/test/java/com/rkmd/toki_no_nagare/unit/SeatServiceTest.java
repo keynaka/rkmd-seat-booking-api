@@ -137,6 +137,14 @@ public class SeatServiceTest {
 
         List<Seat> vacantSeats = seatService.getSeatsOfStatus(SeatStatus.VACANT);
         Assertions.assertTrue(vacantSeats.isEmpty());
+
+        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(SeatSector.PLATEA, SeatStatus.VACANT);
+        Integer maxSize = seatService.getMaxRecommendationSize(plateaSeatsByRow);
+        Assertions.assertTrue(maxSize == 0);
+
+        Map<Long, List<Seat>> pullmanSeatsByRow = seatService.getSectorSeatsByRow(SeatSector.PLATEA, SeatStatus.VACANT);
+        maxSize = seatService.getMaxRecommendationSize(pullmanSeatsByRow);
+        Assertions.assertTrue(maxSize == 0);
     }
 
     @Test
@@ -274,5 +282,34 @@ public class SeatServiceTest {
         Assertions.assertTrue(plateaBestRow.get(17).getColumn().equals(3L) && plateaBestRow.get(17).getStatus().equals(SeatStatus.RESERVED)); //The column 3 is reserved at THIRD ITERATION
         Assertions.assertTrue(plateaBestRow.get(18).getColumn().equals(5L) && plateaBestRow.get(18).getStatus().equals(SeatStatus.RESERVED)); //The column 5 is reserved at FIRST ITERATION
 
+    }
+
+    @Test
+    public void testShuffleRecommendations() {
+        Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
+
+        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(SeatSector.PLATEA, SeatStatus.VACANT);
+        int comboSize = 5;
+        int comboCount = 9;
+
+        Map<Long, Map<String, Object>> topCombosByRow = seatService.searchTopCombosByRow(plateaSeatsByRow, comboSize, comboCount);
+        Map<Long, Map<String, Object>> shuffledRecommendations = seatService.shuffleRecommendations(topCombosByRow);
+
+        Assertions.assertTrue(!shuffledRecommendations.isEmpty());
+
+        shuffledRecommendations = seatService.shuffleRecommendations(topCombosByRow);
+
+        Assertions.assertTrue(!shuffledRecommendations.isEmpty());
+    }
+
+    @Test
+    public void testMaxRecommendationSize() {
+        Assertions.assertEquals(TOTAL_SEATS, seatService.bootstrapTheaterSeats());
+
+        Map<Long, List<Seat>> plateaSeatsByRow = seatService.getSectorSeatsByRow(SeatSector.PLATEA, SeatStatus.VACANT);
+
+        Integer maxSize = seatService.getMaxRecommendationSize(plateaSeatsByRow);
+
+        Assertions.assertTrue(maxSize == Constants.MAX_ROW_SIZE);
     }
 }

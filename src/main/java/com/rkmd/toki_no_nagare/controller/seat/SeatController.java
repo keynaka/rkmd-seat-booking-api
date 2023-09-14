@@ -104,7 +104,19 @@ public class SeatController {
 
         Map<Long, Map<String, Object>> bestCombosByRow = seatService.searchTopCombosByRow(seats, comboSize, comboCount);
 
-        return ResponseEntity.ok().body(bestCombosByRow);
+        Map<Long, Map<String, Object>> shuffled = seatService.shuffleRecommendations(bestCombosByRow);
+
+        return ResponseEntity.ok().body(shuffled);
+    }
+
+    @GetMapping("/recommendation/{sector}/max-size")
+    public ResponseEntity<Integer> getMaxRecommendationSize(@PathVariable("sector") String sector) {
+        SeatSector seatSector = SeatSector.valueOf(sector.toUpperCase());
+        Map<Long, List<Seat>> seats = seatService.getSectorSeatsByRow(seatSector, SeatStatus.VACANT);
+
+        Integer maxSize = seatService.getMaxRecommendationSize(seats);
+
+        return ResponseEntity.ok().body(maxSize);
     }
 
     @PutMapping("/prices/sector")

@@ -152,6 +152,20 @@ public class SeatService {
         return filterTopCombos(comboCount, bestComboByRow);
     }
 
+    public Map<Long, Map<String, Object>> shuffleRecommendations(Map<Long, Map<String, Object>> bestCombosByRow) {
+        List<Map.Entry<Long, Map<String, Object>>> entryList = new ArrayList<>(bestCombosByRow.entrySet());
+        // Shuffle the list randomly
+        Collections.shuffle(entryList);
+
+        Map<Long, Map<String, Object>> shuffled = new LinkedHashMap<>();
+        // Iterate over the shuffled list and access the keys and values
+        for (Map.Entry<Long, Map<String, Object>> entry : entryList) {
+            shuffled.put(entry.getKey(), entry.getValue());
+        }
+
+        return shuffled;
+    }
+
     /*
     * This method search the best combo of each Row. It will return the score and the list of seats that represent
     * the combo
@@ -159,11 +173,7 @@ public class SeatService {
     private static Map<Long, Map<String, Object>> getBestComboByRow(Map<Long, List<Seat>> sectorSeats, int comboSize) {
         Map<Long, Map<String, Object>> bestComboByRow = new HashMap<>();
         for (Map.Entry<Long, List<Seat>> row : sectorSeats.entrySet()) {
-            List<Seat> sortedSeats = row.getValue()
-                    .stream()
-                    .sorted((r1, r2) -> r1.getAuxiliarColumn() - r2.getAuxiliarColumn())
-                    .collect(Collectors.toList());
-            List<List<Seat>> combos = findCombosAvailable(sortedSeats, comboSize);
+            List<List<Seat>> combos = findAvailableCombos(row.getValue(), comboSize);
             if (!combos.isEmpty()) {
                 Double maxScore = Double.valueOf(0);
                 List<Seat> selectedRowCombo = new ArrayList<>();
@@ -195,11 +205,16 @@ public class SeatService {
     /*
     * This method looks for all the consecutive seats available for the <comboSize>
     * */
-    public static List<List<Seat>> findCombosAvailable(List<Seat> seats, int comboSize) {
+    public static List<List<Seat>> findAvailableCombos(List<Seat> seats, int comboSize) {
+        List<Seat> sortedSeats = seats
+                .stream()
+                .sorted((r1, r2) -> r1.getAuxiliarColumn() - r2.getAuxiliarColumn())
+                .collect(Collectors.toList());
+
         List<List<Seat>> combos = new ArrayList<>();
 
-        for (int i = 0; i <= seats.size() - comboSize; i++) {
-            List<Seat> subsequence = seats.subList(i, i + comboSize);
+        for (int i = 0; i <= sortedSeats.size() - comboSize; i++) {
+            List<Seat> subsequence = sortedSeats.subList(i, i + comboSize);
             if (isConsecutive(subsequence)) {
                 combos.add(new ArrayList<>(subsequence));
             }
@@ -406,4 +421,16 @@ public class SeatService {
         return response;
     }
 
+    public Integer getMaxRecommendationSize(Map<Long, List<Seat>> seatsByRow) {
+        int maxSize;
+        for (int i = Constants.MAX_ROW_SIZE ; i > 0 ; i--) {
+            maxSize = i;
+            for (List<Seat> seat : seatsByRow.values()) {
+                List<List<Seat>> combos = findAvailableCombos(seat, maxSize);
+                if (!combos.isEmpty()) return maxSize;
+            }
+        }
+
+        return 0;
+    }
 }

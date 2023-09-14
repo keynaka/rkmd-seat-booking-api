@@ -6,6 +6,7 @@ import com.rkmd.toki_no_nagare.dto.report.BookingStatisticsDto;
 import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.service.BookingService;
 import com.rkmd.toki_no_nagare.service.ReportService;
+import com.rkmd.toki_no_nagare.utils.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,9 @@ public class ReportController implements ReportControllerResources{
             bookingDto.setTitle(reportService.formatTitle(booking));
             bookingDto.setStatus(reportService.calculateStatus(booking));
             bookingDto.setPaymentMethod(booking.getPayment().getPaymentMethod().name());
+            bookingDto.setDateCreated(Tools.changeToArgentinianZonedId(booking.getDateCreated()));
+            bookingDto.setLastUpdated(Tools.changeToArgentinianZonedId(booking.getLastUpdated()));
+            bookingDto.setSeller(booking.getSeller());
 
             result.add(bookingDto);
         }
