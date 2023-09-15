@@ -30,8 +30,7 @@ public class ReportService {
         );
 
         if (isPreExpiredBooking(booking)) {
-            //Long adminExtraDays = expirationServiceFactory.getExpirationService(booking.getPayment().getPaymentMethod()).adminExpireExtraDays(); TODO: ROLLBACK TO THIS PRODUCTIVE
-            Long adminExtraDays = expirationServiceFactory.getExpirationService(PaymentMethod.MERCADO_PAGO).adminExpireExtraDays();
+            Long adminExtraDays = expirationServiceFactory.getExpirationService(booking.getPayment().getPaymentMethod()).adminExpireExtraDays();
             result = String.format("(EXPIRES: %s) %s ", Tools.formatArgentinianDate(booking.getExpirationDate().plusDays(adminExtraDays)), result);
         }
 
@@ -43,8 +42,7 @@ public class ReportService {
     }
 
     private boolean isPreExpiredBooking(Booking booking) {
-        // ExpirationService expirationService = expirationServiceFactory.getExpirationService(booking.getPayment().getPaymentMethod()); TODO: ROLLBACK TO THIS PRODUCTIVE
-        ExpirationService expirationService = expirationServiceFactory.getExpirationService(PaymentMethod.MERCADO_PAGO);
+        ExpirationService expirationService = expirationServiceFactory.getExpirationService(booking.getPayment().getPaymentMethod());
 
         return booking.getStatus().equals(BookingStatus.PENDING) &&
                 expirationService.isExpiredForClient(booking.getExpirationDate());
