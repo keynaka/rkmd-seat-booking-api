@@ -40,8 +40,7 @@ public class ExpirationJob {
 
         List<Payment> expiredPayments = new ArrayList<>();
         for (Payment payment : pendingPayments.getPayments()) {
-            //ExpirationService expirationService = expirationServiceFactory.getExpirationService(payment.getPaymentMethod()); TODO: ROLLBACK TO THIS PRODUCTIVE
-            ExpirationService expirationService = expirationServiceFactory.getExpirationService(PaymentMethod.MERCADO_PAGO);
+            ExpirationService expirationService = expirationServiceFactory.getExpirationService(payment.getPaymentMethod());
             if (expirationService.isExpiredForAdmin(payment.getExpirationDate())) {
                 expiredPayments.add(payment);
                 // This step changes the payment status to EXPIRED
