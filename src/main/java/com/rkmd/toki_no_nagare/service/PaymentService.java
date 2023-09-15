@@ -12,7 +12,6 @@ import com.rkmd.toki_no_nagare.exception.BadRequestException;
 import com.rkmd.toki_no_nagare.exception.NotFoundException;
 import com.rkmd.toki_no_nagare.repositories.PaymentRepository;
 import com.rkmd.toki_no_nagare.service.expiration.ExpirationServiceFactory;
-import com.rkmd.toki_no_nagare.service.mailing.AbstractMailingService;
 import com.rkmd.toki_no_nagare.utils.Tools;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -35,8 +34,6 @@ public class PaymentService {
   @Autowired
   private PaymentRepository paymentRepository;
 
-  @Autowired
-  private AbstractMailingService mailingService;
 
   /** This method creates a payment and stores it in the database. The expiration date is calculated according to the
    * payment method.
@@ -66,41 +63,30 @@ public class PaymentService {
   /** This method checks if a booking exists according to the 'contactDni' and 'bookingCode' passed as parameters.
    * If exists, updates the payment status passed as a parameter and change the booking status. If it doesn't exist,
    * it throws an exception.
-   * @param bookingCode Booking code
+   * @param payment Payment
    * @param paymentStatus Payment status
    * @throws BadRequestException Throw BadRequestException is booking not exists
    * @return ChangePaymentResponseDto
    */
   @Transactional
-  public ChangePaymentResponseDto changePaymentStatus(String bookingCode, PaymentStatus paymentStatus, String username){
-    // Step 1: Get the payment corresponding to the booking code
-    Payment payment = getPaymentByBookingCode(bookingCode);
-
-    // Step 2: update the booking status based on the payment status and set seller's username
+  public ChangePaymentResponseDto changePaymentStatus(Payment payment, PaymentStatus paymentStatus, String username){
+    // Step 1: update the booking status based on the payment status and set seller's username
     Booking booking = payment.getBooking();
     BookingService.updateBookingStatus(booking, paymentStatus);
     booking.setSeller(username);
 
-    // Step 3: update the seat status based on the payment status
+    // Step 2: update the seat status based on the payment status
     List<Seat> seats = payment.getBooking().getSeats();
     SeatService.updateSeatStatus(seats, paymentStatus);
 
-    // Step 4: update the payment status
+    // Step 3: update the payment status
     updatePaymentStatus(payment, paymentStatus);
 
-    // Step 5: save the payment data
+    // Step 4: save the payment data
     paymentRepository.saveAndFlush(payment);
 
-    // Step 6: notify confirmation/expiration by sending an e-mail to the client
-    if (paymentStatus.equals(PaymentStatus.PAID)) {
-      mailingService.notifyConfirmation(booking.getClient().getEmail(),
-              booking.getClient().getName(), booking.getClient().getLastName(),
-              bookingCode, booking.getPayment().getPaymentMethod(),
-              payment.getExpirationDate(), Tools.convertSeatToSeatDto(booking.getSeats()));
-    }
-
-    // Step 7: Create the response for the user  // TODO: This response should be sent to the user via email
-    return createResponse(booking, bookingCode, seats);
+    // Step 5: Create the response for the user  // TODO: This response should be sent to the user via email
+    return createResponse(booking, booking.getHashedBookingCode(), seats);
   }
 
 

@@ -45,7 +45,7 @@ public class ExpirationJob {
             if (expirationService.isExpiredForAdmin(payment.getExpirationDate())) {
                 expiredPayments.add(payment);
                 // This step changes the payment status to EXPIRED
-                paymentService.changePaymentStatus(payment.getBooking().getHashedBookingCode(), PaymentStatus.EXPIRED, AUTOMATIC_EXPIRATION_JOB);
+                paymentService.changePaymentStatus(payment, PaymentStatus.EXPIRED, AUTOMATIC_EXPIRATION_JOB);
             } else {
                 // En este if sabemos que no supera los 2 dias de expiracion por admin. Entonces buscamos los casos donde
                 // ya supero la fecha de expiracion del cliente, pero como se mantiene por 2 dias asi (por lo del admin),
