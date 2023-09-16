@@ -307,8 +307,8 @@ public class TransportMailSenderImpl extends AbstractMailingService{
 
     @Async
     @Override
-    public void notifyReservationBackUp(String bookingCode, String booking, String contact, String payment, String seats) {
-        String messageBody = String.format("Booking: %s %n%nContact: %s %n%nPayment: %s %n%nSeats: %s", booking, contact, payment, seats);
+    public void notifyReservationBackUp(String bookingCode, String booking) {
+        String messageBody = String.format("Booking: %s ", booking);
         EmailDto emailDto = new EmailDto(backupRecipient1, messageBody,"Backup booking code: " + bookingCode);
         sendSimpleMail(emailDto);
     }

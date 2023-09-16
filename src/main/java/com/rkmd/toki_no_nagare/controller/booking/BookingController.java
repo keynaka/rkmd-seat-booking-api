@@ -40,12 +40,7 @@ public class BookingController implements BookingControllerResources{
                 Tools.convertSeatToSeatDto(booking.getSeats()));
 
             // Step 10: Notify reservation by sending an e-mail to the backend for backup
-            mailingService.notifyReservationBackUp(
-                booking.getHashedBookingCode(),
-                booking.toString(),
-                booking.getClient().toString(),
-                booking.getPayment().toString(),
-                booking.getSeats().toString());
+            mailingService.notifyReservationBackUp(booking.getHashedBookingCode(), booking.toString());
         }
 
         return response;
