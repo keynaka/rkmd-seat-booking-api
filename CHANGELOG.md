@@ -1,5 +1,10 @@
 # Changelog
 
+### 2023.09.16
+- refactor: Se modifica el momento en el que se envia el mail (del cambio de estado del pago) para evitar envios erróneos ante un error @Transactional. Y se agrega envio de mail de backup (400620e)
+- refactor: Se modifica el momento en el que se envia el mail (de reserva y backup) para evitar envios erróneos ante una condición de carrera en reservas de la misma butaca (e6bae76)
+- refactor: Se agrega busqueda de booking por booking code y elimino envio de mails en BookingService (252d85a)
+
 ### 2023.09.12
 - refactor: FIXED_LIMIT_HOUR to 23 (f729e08)
 - enhance: format bookingList date results to GMT-3 (f729e08)
