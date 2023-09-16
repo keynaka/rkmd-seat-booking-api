@@ -1,6 +1,12 @@
 # Changelog
 
 ### 2023.09.16
+- refactor: Se modifican los asuntos de los mails para el backend (65f1d45)
+- fix: Se corrige envio de mail (expiration backup). Las fechas y estados, se enviaban con un estado distinto al persistido en la base de datos. (270ac78)
+- feat: Se agrega el envio de mail (exception) ante un error interno en el servicio (a203b99)
+- feat: Se agrega envio de mail (backup) en el proceso automatico de expiración (315d7a3)
+- refactor: Se quita los String de las entidades Payment, Seat y Contact en el envio del mail de backup. Se envia el objecto completo Booking con sus relaciones correspondientes. (b5f54eb)
+- fix: Se agrega anotación @ToString.Exclude en Payment por error de recursividad al realizar un .toString() a la entidad Booking. (a869829)
 - refactor: Se modifica el momento en el que se envia el mail (del cambio de estado del pago) para evitar envios erróneos ante un error @Transactional. Y se agrega envio de mail de backup (400620e)
 - refactor: Se modifica el momento en el que se envia el mail (de reserva y backup) para evitar envios erróneos ante una condición de carrera en reservas de la misma butaca (e6bae76)
 - refactor: Se agrega busqueda de booking por booking code y elimino envio de mails en BookingService (252d85a)
