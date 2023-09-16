@@ -51,6 +51,7 @@ public class Payment {
   @Version
   private int version;
 
+  @ToString.Exclude
   @JsonManagedReference
   @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
   private Booking booking;

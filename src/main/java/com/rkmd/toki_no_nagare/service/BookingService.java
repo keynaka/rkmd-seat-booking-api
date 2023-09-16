@@ -143,21 +143,6 @@ public class BookingService {
             // Step 8: Associate the seat data with the booking, changes the seat's status and persists it in the database
             seatService.updateSeatData(seats, booking);
 
-            // Step 9: Notify reservation by sending an e-mail to the client
-            mailingService.notifyReservation(contact.getEmail(),
-                    contact.getName(), contact.getLastName(),
-                    bookingCode, booking.getPayment().getPaymentMethod(),
-                    booking.getExpirationDate(), Tools.convertSeatToSeatDto(seats),
-                    adminAvailableDateService.getAvailableDatesForMail(booking.getPayment().getExpirationDate()));
-
-            // Step 10: Notify reservation by sending an e-mail to the backend for backup
-            mailingService.notifyReservationBackUp(
-                booking.getHashedBookingCode(),
-                booking.toString(),
-                contact.toString(),
-                payment.toString(),
-                seats.toString());
-
             return createResponse(booking, bookingCode, seats);
 
         } catch (DataIntegrityViolationException e){
@@ -352,6 +337,16 @@ public class BookingService {
       }
 
       return response;
+  }
+
+
+  /** Get a booking by the booking code
+   * @param bookingCode
+   * @return Booking
+   * */
+  public Booking getBookingByBookingCode(String bookingCode){
+    Optional<Booking> booking = bookingRepository.findByHashedBookingCode(bookingCode);
+    return booking.orElse(null);
   }
 
 }

@@ -1,9 +1,10 @@
 package com.rkmd.toki_no_nagare.job;
 
 import com.rkmd.toki_no_nagare.dto.payment.PaymentResponseDto;
+import com.rkmd.toki_no_nagare.entities.booking.Booking;
 import com.rkmd.toki_no_nagare.entities.payment.Payment;
-import com.rkmd.toki_no_nagare.entities.payment.PaymentMethod;
 import com.rkmd.toki_no_nagare.entities.payment.PaymentStatus;
+import com.rkmd.toki_no_nagare.service.BookingService;
 import com.rkmd.toki_no_nagare.service.PaymentService;
 import com.rkmd.toki_no_nagare.service.expiration.ExpirationService;
 import com.rkmd.toki_no_nagare.service.expiration.ExpirationServiceFactory;
@@ -22,6 +23,9 @@ import java.util.stream.Collectors;
 public class ExpirationJob {
     public static final String AUTOMATIC_EXPIRATION_JOB = "AUTOMATIC_EXPIRATION_JOB";
     public static String SEPARATOR = ", ";
+
+    @Autowired
+    private BookingService bookingService;
     @Autowired
     private PaymentService paymentService;
     @Autowired
@@ -45,6 +49,10 @@ public class ExpirationJob {
                 expiredPayments.add(payment);
                 // This step changes the payment status to EXPIRED
                 paymentService.changePaymentStatus(payment.getBooking().getHashedBookingCode(), PaymentStatus.EXPIRED, AUTOMATIC_EXPIRATION_JOB);
+                Booking booking = bookingService.getBookingByBookingCode(payment.getBooking().getHashedBookingCode());
+                if(booking != null){
+                    mailingService.notifyReservationBackUp("(BACKUP) Expiration job - Code: " + booking.getHashedBookingCode(), booking.toString());
+                }
             } else {
                 // En este if sabemos que no supera los 2 dias de expiracion por admin. Entonces buscamos los casos donde
                 // ya supero la fecha de expiracion del cliente, pero como se mantiene por 2 dias asi (por lo del admin),

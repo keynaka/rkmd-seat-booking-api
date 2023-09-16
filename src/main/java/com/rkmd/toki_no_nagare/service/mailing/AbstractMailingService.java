@@ -91,7 +91,10 @@ public abstract class AbstractMailingService {
                                             ZonedDateTime expirationTime);
 
     /** Notifica por e-mail la reserva realizada para almacenar un json ante un eventual incidente. */
-    public abstract void notifyReservationBackUp(String bookingCode, String booking, String contact, String payment, String seats);
+    public abstract void notifyReservationBackUp(String bookingCode, String booking);
+
+    /** Notifica por e-mail si se produce un error interno en el servicio. */
+    public abstract void notifyServiceException(Exception e);
 
     public String readMailTemplate(String filePath){
 

@@ -307,9 +307,16 @@ public class TransportMailSenderImpl extends AbstractMailingService{
 
     @Async
     @Override
-    public void notifyReservationBackUp(String bookingCode, String booking, String contact, String payment, String seats) {
-        String messageBody = String.format("Booking: %s %n%nContact: %s %n%nPayment: %s %n%nSeats: %s", booking, contact, payment, seats);
-        EmailDto emailDto = new EmailDto(backupRecipient1, messageBody,"Backup booking code: " + bookingCode);
+    public void notifyReservationBackUp(String backupSubject, String booking) {
+        String messageBody = String.format("Booking: %s ", booking);
+        EmailDto emailDto = new EmailDto(backupRecipient1, messageBody, backupSubject);
+        sendSimpleMail(emailDto);
+    }
+
+    @Override
+    public void notifyServiceException(Exception e){
+        String messageBody = String.format("Exception message: %s %n%nStackTrace : %s ", e.getMessage(), Arrays.toString(e.getStackTrace()));
+        EmailDto emailDto = new EmailDto(backupRecipient1, messageBody,"Alert, an exception occurred");
         sendSimpleMail(emailDto);
     }
 
