@@ -230,7 +230,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
         htmlBody = htmlBody.replace("${NAME}", name);
         htmlBody = htmlBody.replace("${LASTNAME}", lastname);
         htmlBody = htmlBody.replace("${EVENT_NAME}", eventName);
-        htmlBody = htmlBody.replace("${PICKUP_DATE}", pickUpDate);
+        htmlBody = htmlBody.replace("${PICKUP_DATES}", pickUpDate);
         htmlBody = htmlBody.replace("${EVENT_TIME}", eventTime);
         htmlBody = htmlBody.replace("${EVENT_EVENT_PLACE}", eventPlace);
         htmlBody = htmlBody.replace("${EVENT_ADDRESS}", eventAddress);
