@@ -1,17 +1,34 @@
+event:
+  address: ${EVENT_ADDRESS}
+  date: ${EVENT_DATE}
+  time: ${EVENT_TIME}
+  name: ${EVENT_NAME}
+  place: ${EVENT_PLACE}
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-  h2:
-    console:
-      enabled: true
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     open-in-view: false
     properties:
       hibernate:
         globally_quoted_identifiers: true
+        show_sql: ${SHOW_SQL}
         jdbc:
           time_zone: GMT-3
+  mail:
+    host: smtp.gmail.com
+    port: 58
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+spring-doc:
+  swagger-ui:
+    defaultModelsExpandDepth: -1 # Hide the model section
+payment:
+  mercadoPagoAccount: ${PAYMENT_MP_ACCOUNT}
+paymentTimeLimitFor:
+  mercadoPago: 1
+  cash: 5

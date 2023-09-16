@@ -1,0 +1,22 @@
+app:
+  profile: ${SPRING_PROFILES_ACTIVE}
+mail:
+  headerImageCanonicalPath: ${MAIL_HEADER_IMAGE_CANONICAL_PATH}
+  backupRecipient1: ${MAIL_BACKUP_RECIPIENT1}
+  backupRecipient2: ${MAIL_BACKUP_RECIPIENT2}
+  backupRecipient3: ${MAIL_BACKUP_RECIPIENT3}
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:5434/tokinonagare"
+    username: "tokinonagare"
+    password: "Tokinonagare123"
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    properties:
+      hibernate:
+        ddl-auto: "validate"
+        naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+spring-doc:
+  swagger-ui:
+    enabled: true
