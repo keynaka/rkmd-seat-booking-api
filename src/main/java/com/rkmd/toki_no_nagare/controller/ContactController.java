@@ -95,11 +95,11 @@ public class ContactController {
 
         mailingService.notifyReservation(email, name, lastname, "asdf1231",
                 enumPaymentMethod, ZonedDateTime.now().plusDays(2),
-                seats);
+                seats, "");
 
         return ResponseEntity.ok(mailingService.notifyReservation(email, name, lastname, "asdf1231",
                 enumPaymentMethod, ZonedDateTime.now().plusDays(2),
-                seats) + LocalDateTime.now().toString());
+                seats, "") + LocalDateTime.now().toString());
     }
 
     /** Uso provisorio. Eliminar este endpoint al finalizar los tests de envío de e-mails. */

@@ -1,7 +1,6 @@
 package com.rkmd.toki_no_nagare.service;
 
 import com.rkmd.toki_no_nagare.dto.admin_available_date.CreateAdminAvailableDateRequestDto;
-import com.rkmd.toki_no_nagare.dto.booking.BookingResponseDto;
 import com.rkmd.toki_no_nagare.entities.admin_available_date.AdminAvailableDate;
 import com.rkmd.toki_no_nagare.entities.admin_available_date.AdminAvailableDateId;
 import com.rkmd.toki_no_nagare.exception.BadRequestException;
@@ -12,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,7 @@ public class AdminAvailableDateService {
     // Este limite esta pensado en que el que reserva un Miercoles es el que mas tiempo se le da, dado que le da hasta
     // el otro Sabado, que serian 10 dias
     public static final int DELETE_THRESHOLD = 11;
+    public static String NEW_LINE = "<br>";
     @Autowired
     private AdminAvailableDateRepository adminAvailableDateRepository;
 
@@ -38,6 +41,27 @@ public class AdminAvailableDateService {
                 .collect(Collectors.toList());
 
         return availableDatesForBooking;
+    }
+
+    public String getAvailableDatesForMail(ZonedDateTime expirationDate) {
+        List<AdminAvailableDate> availableDates = getAvailableDates(expirationDate);
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("d 'de' MMMM", new Locale("es"));
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        List<String> formattedAvailableDates = new ArrayList<>();
+        for (AdminAvailableDate availableDate : availableDates) {
+            formattedAvailableDates.add(String.format(
+                "%s desde las %s hasta las %s, en %s (%s)",
+                    availableDate.getInitDate().format(dateFormatter),
+                    availableDate.getInitDate().format(timeFormatter),
+                    availableDate.getEndDate().format(timeFormatter),
+                    availableDate.getPlace(),
+                    availableDate.getLink()
+            ));
+        }
+
+        return formattedAvailableDates.stream().collect(Collectors.joining(NEW_LINE));
     }
 
     public AdminAvailableDate createAvailableDate(CreateAdminAvailableDateRequestDto request) {

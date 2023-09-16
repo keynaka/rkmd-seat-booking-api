@@ -79,7 +79,7 @@ public abstract class AbstractMailingService {
     /** Notifica por e-mail la reserva provisoria de entradas. */
     public abstract String notifyReservation(String recipient, String name, String lastname, String bookingCode,
                                              PaymentMethod paymentMethod, ZonedDateTime expirationTime,
-                                             List<SeatDto> seats);
+                                             List<SeatDto> seats, String pickUpDate);
 
     /** Notifica por e-mail la venta de entradas. */
     public abstract String notifyConfirmation(String recipient, String name, String lastname, String bookingCode,
@@ -91,7 +91,10 @@ public abstract class AbstractMailingService {
                                             ZonedDateTime expirationTime);
 
     /** Notifica por e-mail la reserva realizada para almacenar un json ante un eventual incidente. */
-    public abstract void notifyReservationBackUp(String bookingCode, String booking, String contact, String payment, String seats);
+    public abstract void notifyReservationBackUp(String bookingCode, String booking);
+
+    /** Notifica por e-mail si se produce un error interno en el servicio. */
+    public abstract void notifyServiceException(Exception e);
 
     public String readMailTemplate(String filePath){
 

@@ -191,7 +191,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
     /** Selecciona el template html de e-mail de reserva y formatea el template con los datos específicos de la reserva. */
     public String notifyReservation(String recipient, String name, String lastname, String bookingCode,
                                     PaymentMethod paymentMethod, ZonedDateTime expirationTime,
-                                    List<SeatDto> seats){
+                                    List<SeatDto> seats, String pickUpDate){
 
         //TODO: Take out just for profiling
         MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
@@ -230,7 +230,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
         htmlBody = htmlBody.replace("${NAME}", name);
         htmlBody = htmlBody.replace("${LASTNAME}", lastname);
         htmlBody = htmlBody.replace("${EVENT_NAME}", eventName);
-        htmlBody = htmlBody.replace("${EVENT_DATE}", eventDate);
+        htmlBody = htmlBody.replace("${PICKUP_DATES}", pickUpDate);
         htmlBody = htmlBody.replace("${EVENT_TIME}", eventTime);
         htmlBody = htmlBody.replace("${EVENT_EVENT_PLACE}", eventPlace);
         htmlBody = htmlBody.replace("${EVENT_ADDRESS}", eventAddress);
@@ -307,9 +307,16 @@ public class TransportMailSenderImpl extends AbstractMailingService{
 
     @Async
     @Override
-    public void notifyReservationBackUp(String bookingCode, String booking, String contact, String payment, String seats) {
-        String messageBody = String.format("Booking: %s %n%nContact: %s %n%nPayment: %s %n%nSeats: %s", booking, contact, payment, seats);
-        EmailDto emailDto = new EmailDto(backupRecipient1, messageBody,"Backup booking code: " + bookingCode);
+    public void notifyReservationBackUp(String backupSubject, String booking) {
+        String messageBody = String.format("Booking: %s ", booking);
+        EmailDto emailDto = new EmailDto(backupRecipient1, messageBody, backupSubject);
+        sendSimpleMail(emailDto);
+    }
+
+    @Override
+    public void notifyServiceException(Exception e){
+        String messageBody = String.format("Exception message: %s %n%nStackTrace : %s ", e.getMessage(), Arrays.toString(e.getStackTrace()));
+        EmailDto emailDto = new EmailDto(backupRecipient1, messageBody,"Alert, an exception occurred");
         sendSimpleMail(emailDto);
     }
 
