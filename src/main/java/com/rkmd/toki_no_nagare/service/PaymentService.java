@@ -91,21 +91,6 @@ public class PaymentService {
     // Step 5: save the payment data
     paymentRepository.saveAndFlush(payment);
 
-    // Step 6: notify confirmation/expiration by sending an e-mail to the client
-    if (paymentStatus.equals(PaymentStatus.PAID)) {
-      mailingService.notifyConfirmation(booking.getClient().getEmail(),
-              booking.getClient().getName(), booking.getClient().getLastName(),
-              bookingCode, booking.getPayment().getPaymentMethod(),
-              payment.getExpirationDate(), Tools.convertSeatToSeatDto(booking.getSeats()));
-    }
-
-    if (paymentStatus.equals(PaymentStatus.EXPIRED)) {
-      mailingService.notifyExpiration(booking.getClient().getEmail(),
-              booking.getClient().getName(), booking.getClient().getLastName(),
-              bookingCode, payment.getExpirationDate());
-    }
-
-    // Step 7: Create the response for the user  // TODO: This response should be sent to the user via email
     return createResponse(booking, bookingCode, seats);
   }
 
