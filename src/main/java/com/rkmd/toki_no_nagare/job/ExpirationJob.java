@@ -51,7 +51,7 @@ public class ExpirationJob {
                 paymentService.changePaymentStatus(payment.getBooking().getHashedBookingCode(), PaymentStatus.EXPIRED, AUTOMATIC_EXPIRATION_JOB);
                 Booking booking = bookingService.getBookingByBookingCode(payment.getBooking().getHashedBookingCode());
                 if(booking != null){
-                    mailingService.notifyReservationBackUp(booking.getHashedBookingCode(), booking.toString());
+                    mailingService.notifyReservationBackUp("(BACKUP) Expiration job - Code: " + booking.getHashedBookingCode(), booking.toString());
                 }
             } else {
                 // En este if sabemos que no supera los 2 dias de expiracion por admin. Entonces buscamos los casos donde

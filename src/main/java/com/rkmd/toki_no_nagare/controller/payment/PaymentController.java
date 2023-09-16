@@ -64,7 +64,7 @@ public class PaymentController implements PaymentControllerResources{
       }
 
       // Step 8: Notify reservation by sending an e-mail to the backend for backup
-      mailingService.notifyReservationBackUp(booking.getHashedBookingCode(), booking.toString());
+      mailingService.notifyReservationBackUp("(BACKUP) Payment - Code: " + booking.getHashedBookingCode(), booking.toString());
     }
 
     return response;
