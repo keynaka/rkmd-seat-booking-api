@@ -313,4 +313,11 @@ public class TransportMailSenderImpl extends AbstractMailingService{
         sendSimpleMail(emailDto);
     }
 
+    @Override
+    public void notifyServiceException(Exception e){
+        String messageBody = String.format("Exception message: %s %n%nStackTrace : %s ", e.getMessage(), Arrays.toString(e.getStackTrace()));
+        EmailDto emailDto = new EmailDto(backupRecipient1, messageBody,"Ocurrió un error interno");
+        sendSimpleMail(emailDto);
+    }
+
 }

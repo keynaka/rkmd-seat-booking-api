@@ -93,6 +93,9 @@ public abstract class AbstractMailingService {
     /** Notifica por e-mail la reserva realizada para almacenar un json ante un eventual incidente. */
     public abstract void notifyReservationBackUp(String bookingCode, String booking);
 
+    /** Notifica por e-mail si se produce un error interno en el servicio. */
+    public abstract void notifyServiceException(Exception e);
+
     public String readMailTemplate(String filePath){
 
         InputStream inputStream = this.getClass().getResourceAsStream(filePath);
