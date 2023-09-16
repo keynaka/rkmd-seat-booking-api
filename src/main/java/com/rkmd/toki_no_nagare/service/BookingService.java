@@ -147,7 +147,8 @@ public class BookingService {
             mailingService.notifyReservation(contact.getEmail(),
                     contact.getName(), contact.getLastName(),
                     bookingCode, booking.getPayment().getPaymentMethod(),
-                    booking.getExpirationDate(), Tools.convertSeatToSeatDto(seats));
+                    booking.getExpirationDate(), Tools.convertSeatToSeatDto(seats),
+                    adminAvailableDateService.getAvailableDatesForMail(booking.getPayment().getExpirationDate()));
 
             // Step 10: Notify reservation by sending an e-mail to the backend for backup
             mailingService.notifyReservationBackUp(

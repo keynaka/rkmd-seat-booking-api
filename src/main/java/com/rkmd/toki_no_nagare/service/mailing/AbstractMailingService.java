@@ -79,7 +79,7 @@ public abstract class AbstractMailingService {
     /** Notifica por e-mail la reserva provisoria de entradas. */
     public abstract String notifyReservation(String recipient, String name, String lastname, String bookingCode,
                                              PaymentMethod paymentMethod, ZonedDateTime expirationTime,
-                                             List<SeatDto> seats);
+                                             List<SeatDto> seats, String pickUpDate);
 
     /** Notifica por e-mail la venta de entradas. */
     public abstract String notifyConfirmation(String recipient, String name, String lastname, String bookingCode,

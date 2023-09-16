@@ -191,7 +191,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
     /** Selecciona el template html de e-mail de reserva y formatea el template con los datos específicos de la reserva. */
     public String notifyReservation(String recipient, String name, String lastname, String bookingCode,
                                     PaymentMethod paymentMethod, ZonedDateTime expirationTime,
-                                    List<SeatDto> seats){
+                                    List<SeatDto> seats, String pickUpDate){
 
         //TODO: Take out just for profiling
         MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
@@ -230,7 +230,7 @@ public class TransportMailSenderImpl extends AbstractMailingService{
         htmlBody = htmlBody.replace("${NAME}", name);
         htmlBody = htmlBody.replace("${LASTNAME}", lastname);
         htmlBody = htmlBody.replace("${EVENT_NAME}", eventName);
-        htmlBody = htmlBody.replace("${EVENT_DATE}", eventDate);
+        htmlBody = htmlBody.replace("${PICKUP_DATE}", pickUpDate);
         htmlBody = htmlBody.replace("${EVENT_TIME}", eventTime);
         htmlBody = htmlBody.replace("${EVENT_EVENT_PLACE}", eventPlace);
         htmlBody = htmlBody.replace("${EVENT_ADDRESS}", eventAddress);
