@@ -44,8 +44,7 @@ public class AdminAvailableDateController {
         }
 
         ZonedDateTime expirationDate = expirationServiceFactory
-                //.getExpirationService(paymentMethod) TODO: ROLLBACK TO THIS PRODUCTIVE
-                .getExpirationService(PaymentMethod.MERCADO_PAGO)
+                .getExpirationService(paymentMethod)
                 .getExpirationDate(Tools.getCurrentDate());
         List<AdminAvailableDate> availableDates = adminAvailableDateService.getAvailableDates(expirationDate);
 

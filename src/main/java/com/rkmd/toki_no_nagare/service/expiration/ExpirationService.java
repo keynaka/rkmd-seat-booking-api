@@ -6,9 +6,17 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 
 public abstract class ExpirationService {
-    // These FIXED_LIMIT_HOUR AND FIXED_LIMIT_MINUTE must be set before the ExpirationJob's cron
-    //public static final int FIXED_LIMIT_HOUR = 23; TODO: ROLLBACK TO THIS PRODUCTIVE
-    public static final int FIXED_LIMIT_HOUR = 17;
+    /* Este horario es importante que sea menor a las 21 hrs, asi cuando se guarda en la BD que lo convierte a UTC no queda en el dia siguiente
+    *  Mas que nada para no marear a los admins.
+    *  Con eso con el job que corre a las 00:00 GMT-3 va a expirarlas.
+    *  Ejemplo:
+    *      - Un pago vence el 12/09/2023. O sea el 14/09/2023 a las 20:50 GMT-3 sumandole las 48hs para admin
+    *      - El job que corre el 14/09/2023 a las 00:00 GMT-3, NO lo expiraria porque:
+    *                14/09/2023 a las 00:00 GMT-3 es menor a 14/09/2023 a las 20:50 GMT-3
+    *      - El job que corre el 15/09/2023 a las 00:00 GMT-3, SI lo expiraria porque:
+    *                15/09/2023 a las 00:00 GMT-3 es mayor a 14/09/2023 a las 20:50 GMT-3
+     */
+    public static final int FIXED_LIMIT_HOUR = 20;
     public static final int FIXED_LIMIT_MINUTE = 50;
 
     public abstract Long adminExpireExtraDays();
