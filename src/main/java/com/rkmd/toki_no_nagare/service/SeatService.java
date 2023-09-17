@@ -314,6 +314,11 @@ public class SeatService {
         }
     }
 
+    public void setSeatPrice(Seat seat, Long price){
+        seat.setPrice(BigDecimal.valueOf(price));
+        seatRepository.save(seat);
+    }
+
 
     /** This method returns the seats requested by the user from the database.
      * @param request Seats requested by the user
@@ -415,7 +420,7 @@ public class SeatService {
         boolean response = false;
         switch (currentStatus) {
             case VACANT, RESERVED -> response = List.of(SeatStatus.VACANT, SeatStatus.RESERVED, SeatStatus.OCCUPIED).contains(newStatus);
-            case OCCUPIED -> response = List.of(SeatStatus.OCCUPIED).contains(newStatus);
+            case OCCUPIED -> response = List.of(SeatStatus.VACANT, SeatStatus.OCCUPIED).contains(newStatus);
         }
 
         return response;
