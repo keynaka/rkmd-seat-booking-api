@@ -36,13 +36,9 @@ public class CashExpirationService extends ExpirationService{
         ZonedDateTime fixedDate = fixTargetTime(dateCreated);
         DayOfWeek currentDay = fixedDate.getDayOfWeek();
 
-        /*ZonedDateTime expirationLimit = fixedDate.with(TemporalAdjusters.next(DayOfWeek.SATURDAY));
-        if (currentDay == DayOfWeek.WEDNESDAY || currentDay == DayOfWeek.THURSDAY || currentDay == DayOfWeek.FRIDAY)
-            expirationLimit = expirationLimit.plusWeeks(1);*/
-
-        //TODO: Solo en el periodo de venta para miembros y familiares. Luego rollbackear a lo que esta arriba
         ZonedDateTime expirationLimit = fixedDate.with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
-        expirationLimit = expirationLimit.plusWeeks(1);
+        if (currentDay == DayOfWeek.WEDNESDAY || currentDay == DayOfWeek.THURSDAY || currentDay == DayOfWeek.FRIDAY)
+            expirationLimit = expirationLimit.plusWeeks(1);
 
         return expirationLimit;
     }

@@ -51,11 +51,13 @@ public class AdminAvailableDateService {
 
         List<String> formattedAvailableDates = new ArrayList<>();
         for (AdminAvailableDate availableDate : availableDates) {
+            ZonedDateTime initDate = Tools.changeToArgentinianZonedId(availableDate.getInitDate());
+            ZonedDateTime endDate = Tools.changeToArgentinianZonedId(availableDate.getEndDate());
             formattedAvailableDates.add(String.format(
                 "%s desde las %s hasta las %s, en %s (%s)",
-                    availableDate.getInitDate().format(dateFormatter),
-                    availableDate.getInitDate().format(timeFormatter),
-                    availableDate.getEndDate().format(timeFormatter),
+                    initDate.format(dateFormatter),
+                    initDate.format(timeFormatter),
+                    endDate.format(timeFormatter),
                     availableDate.getPlace(),
                     availableDate.getLink()
             ));
