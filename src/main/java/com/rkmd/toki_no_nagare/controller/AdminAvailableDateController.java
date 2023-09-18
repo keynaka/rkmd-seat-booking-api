@@ -31,6 +31,10 @@ public class AdminAvailableDateController {
     public ResponseEntity<List<AdminAvailableDate>> getAvailableDates(@RequestParam(value = "expirationDate", required = false) String expirationDate) {
         ZonedDateTime expirationDateFormatted = expirationDate != null ? Tools.formatDateStringToZonedDateTime(expirationDate) : null;
         List<AdminAvailableDate> availableDates = adminAvailableDateService.getAvailableDates(expirationDateFormatted);
+        for (AdminAvailableDate availableDate : availableDates) {
+            availableDate.setInitDate(Tools.changeToArgentinianZonedId(availableDate.getInitDate()));
+            availableDate.setEndDate(Tools.changeToArgentinianZonedId(availableDate.getEndDate()));
+        }
         return ResponseEntity.ok().body(availableDates);
     }
 
