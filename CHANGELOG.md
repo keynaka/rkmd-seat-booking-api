@@ -1,5 +1,9 @@
 # Changelog
 
+### 2023.09.18
+- refactor: expiration limit a Domingo (a53b1c8)
+- fix: timezone de mail y respuesta de adminAvailableDates (a53b1c8)
+
 ### 2023.09.17
 - add: vip endpoints (27c5b52)
 - refactor: Allow transition from paid to canceled (27c5b52)
