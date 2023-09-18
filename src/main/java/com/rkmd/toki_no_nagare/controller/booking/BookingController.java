@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -89,6 +90,9 @@ public class BookingController implements BookingControllerResources{
         if (!optionalSeat.isPresent()) throw new BadRequestException("invalid_seat", "Seat does not exist");
 
         Seat seat = optionalSeat.get();
+
+        seatService.validateIsNotPrereserved(List.of(seat));
+
         seatService.setSeatPrice(seat, 0L);
 
         // Step 3: Create VIP booking for Matias Asato
