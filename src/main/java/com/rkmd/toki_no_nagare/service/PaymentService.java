@@ -186,7 +186,7 @@ public class PaymentService {
     boolean response = false;
     switch (currentStatus) {
       case PENDING -> response = List.of(PaymentStatus.PENDING, PaymentStatus.PAID, PaymentStatus.EXPIRED, PaymentStatus.CANCELED).contains(newStatus);
-      case PAID -> response = List.of(PaymentStatus.PAID).contains(newStatus);
+      case PAID -> response = List.of(PaymentStatus.PAID, PaymentStatus.CANCELED).contains(newStatus);
       case EXPIRED -> response = List.of(PaymentStatus.EXPIRED).contains(newStatus);
       case CANCELED -> response = List.of(PaymentStatus.CANCELED).contains(newStatus);
     }

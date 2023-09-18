@@ -1,5 +1,10 @@
 # Changelog
 
+### 2023.09.17
+- add: vip endpoints (27c5b52)
+- refactor: Allow transition from paid to canceled (27c5b52)
+- add: validation for pre-reserve (6c83a59)
+
 ### 2023.09.16
 - refactor: Se modifican los asuntos de los mails para el backend (65f1d45)
 - fix: Se corrige envio de mail (expiration backup). Las fechas y estados, se enviaban con un estado distinto al persistido en la base de datos. (270ac78)

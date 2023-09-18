@@ -48,4 +48,24 @@ public interface PaymentControllerResources {
               content = @Content(schema = @Schema(implementation = ApiError.class)))})
   PaymentResponseDto getAllPayment();
 
+  @Operation(
+          summary = "Modifica el estado del pago a canceled para vip",
+          description = "Endpoint de uso interno",
+          responses = {
+                  @ApiResponse(
+                          responseCode = "200",
+                          description = "Ok",
+                          useReturnTypeSchema = true),
+                  @ApiResponse(
+                          responseCode = "400",
+                          description = "Bad Request",
+                          content = @Content(schema = @Schema(implementation = ApiError.class))),
+                  @ApiResponse(
+                          responseCode = "500",
+                          description = "Internal server error",
+                          content = @Content(schema = @Schema(implementation = ApiError.class)))})
+  ChangePaymentResponseDto cancelVipPayment(@RequestBody ChangePaymentRequestDto request,
+                                               @RequestHeader("x-auth-username") String userName,
+                                               @RequestHeader("x-auth-password") String password);
+
 }
