@@ -1,5 +1,8 @@
 # Changelog
 
+### v0.0.5-master
+- refactor: Se quita el limite de 20 registros, al retornar las últimas ventas realizadas. (7fbe890)
+
 ### v0.0.4-master
 - fix: Se corrige error en el seteo de fechas de expiración para el usuario. No se estaba tomando en cuenta el sabado dentro de la validación del currentDate de la reserva (0026365)
 
