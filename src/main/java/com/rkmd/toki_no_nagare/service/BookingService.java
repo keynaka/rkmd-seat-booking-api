@@ -292,8 +292,7 @@ public class BookingService {
   public List<RecentSalesDto> getLastSales(){
     List<Booking> bookings = bookingRepository.findAll();
     List<Booking> lastBookings= bookings.stream().filter(b -> BookingStatus.PAID.equals(b.getStatus()))
-        .sorted(Comparator.comparing(Booking::getLastUpdated).reversed())
-        .limit(20).toList();
+        .sorted(Comparator.comparing(Booking::getLastUpdated).reversed()).toList();
 
     List<RecentSalesDto> recentSales = new ArrayList<>();
     for (Booking booking : lastBookings){
