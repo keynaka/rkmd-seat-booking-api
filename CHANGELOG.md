@@ -1,5 +1,8 @@
 # Changelog
 
+### v0.0.4-master
+- fix: Se corrige error en el seteo de fechas de expiración para el usuario. No se estaba tomando en cuenta el sabado dentro de la validación del currentDate de la reserva (0026365)
+
 ### v0.0.3-master
 - fix: Se agrega conversión de fecha para las estadisticas de ventas recientes. (44872fc)
 
