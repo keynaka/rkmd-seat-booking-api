@@ -299,7 +299,7 @@ public class BookingService {
     for (Booking booking : lastBookings){
       recentSales.add(new RecentSalesDto(
           booking.getHashedBookingCode(),
-          Tools.formatArgentinianDate(booking.getLastUpdated()),
+          Tools.formatArgentinianDate(Tools.changeToArgentinianZonedId(booking.getLastUpdated())),
           booking.getPayment().getPaymentMethod().name().toLowerCase(),
           booking.getPayment().getAmount().toString()));
     }

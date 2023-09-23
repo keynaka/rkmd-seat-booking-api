@@ -1,5 +1,10 @@
 # Changelog
 
+### v0.0.3-master
+- fix: Se agrega conversión de fecha para las estadisticas de ventas recientes. (44872fc)
+
+### v0.0.2-master
+
 ### 2023.09.18
 - refactor: expiration limit a Domingo (a53b1c8)
 - fix: timezone de mail y respuesta de adminAvailableDates (a53b1c8)
